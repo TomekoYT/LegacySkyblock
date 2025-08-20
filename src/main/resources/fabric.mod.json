@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "authors": [
+    "Tomeko"
+  ],
+  "contact": {
+    "sources": "https://github.com/TomekoYT/LegacySkyblock"
+  },
+  "license": "CC0-1.0",
+  "icon": "assets/legacyskyblock/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "tomeko.legacyskyblock.LegacySkyblock"
+    ],
+    "modmenu": [
+      "tomeko.legacyskyblock.config.ModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "legacyskyblock.mixins.json"
+  ],
+  "depends": {
+    "minecraft": "~${minecraft_version}",
+    "java": ">=21",
+    "fabricloader": ">=${fabric_loader_version}",
+    "fabric-api": ">=${fabric_api_version}",
+    "yet_another_config_lib_v3": ">=${yacl_version}",
+    "hypixel-mod-api": ">=${hypixel_mod_api_version}"
+  },
+  "suggests": {
+    "modmenu": ">=${mod_menu_version}"
+  }
+}

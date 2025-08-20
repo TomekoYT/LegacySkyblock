@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "tomeko.legacyskyblock.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "HandledScreenMixin",
+    "InGameHudMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}
