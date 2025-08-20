@@ -11,8 +11,7 @@ public class LegacySkyblockCommand {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
                 dispatcher.register(literal("legacyskyblock")
                         .executes(ctx -> {
-                            MinecraftClient client = MinecraftClient.getInstance();
-                            client.setScreen(LegacySkyblockConfig.configScreen(client.currentScreen));
+                            MinecraftClient.getInstance().setScreen(LegacySkyblockConfig.configScreen(MinecraftClient.getInstance().currentScreen));
                             return 1;
                         })
                 )

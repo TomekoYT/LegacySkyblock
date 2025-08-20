@@ -10,6 +10,7 @@ import tomeko.legacyskyblock.utils.HypixelPackets;
 
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin {
+    //Hide Defense and True Defense
     @WrapMethod(method = "Lnet/minecraft/client/gui/hud/InGameHud;setOverlayMessage(Lnet/minecraft/text/Text;Z)V")
     private void modifyActionbar(Text message, boolean tinted, Operation<Void> original) {
         if (message == null || !HypixelPackets.inSkyblock) {

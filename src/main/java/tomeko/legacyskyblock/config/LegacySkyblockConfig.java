@@ -26,6 +26,11 @@ public class LegacySkyblockConfig {
     @SerialEntry
     public static boolean actionbarHideTrueDefense = false;
 
+    @SerialEntry
+    public static boolean whiteNoRankMessagesEnabled = true;
+    @SerialEntry
+    public static boolean whitePrivateMessagesEnabled = true;
+
     public static Screen configScreen(Screen parent) {
         return YetAnotherConfigLib.create(CONFIG, ((defaults, config, builder) -> builder
                 .title(Text.literal("LegacySkyblock"))
@@ -34,16 +39,16 @@ public class LegacySkyblockConfig {
                         .name(Text.literal("GUI"))
 
                         .group(OptionGroup.createBuilder()
-                                .name(Text.literal("Middle Click GUI"))
+                                .name(Text.literal("Middle Click GUI Items"))
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.literal("Enabled"))
-                                        .description(OptionDescription.of(Text.literal("Enable Middle Click GUI")))
+                                        .description(OptionDescription.of(Text.literal("Enable Middle Click GUI Items")))
                                         .binding(defaults.middleClickGUIEnabled, () -> config.middleClickGUIEnabled, newVal -> config.middleClickGUIEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.literal("Work outside of Skyblock"))
-                                        .description(OptionDescription.of(Text.literal("Make Middle Click GUI work outside of Skyblock")))
+                                        .description(OptionDescription.of(Text.literal("Make Middle Click GUI Items work outside of Skyblock")))
                                         .binding(defaults.middleClickGUIOutsideSkyblock, () -> config.middleClickGUIOutsideSkyblock, newVal -> config.middleClickGUIOutsideSkyblock = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
@@ -66,6 +71,26 @@ public class LegacySkyblockConfig {
                                         .name(Text.literal("Hide True Defense"))
                                         .description(OptionDescription.of(Text.literal("Hide True Defense in actionbar")))
                                         .binding(defaults.actionbarHideTrueDefense, () -> config.actionbarHideTrueDefense, newVal -> config.actionbarHideTrueDefense = newVal)
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .build())
+                        .build())
+
+                .category(ConfigCategory.createBuilder()
+                        .name(Text.literal("Chat"))
+
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("White Chat Messages"))
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Color no rank messages"))
+                                        .description(OptionDescription.of(Text.literal("Make messages of players without a rank white")))
+                                        .binding(defaults.whiteNoRankMessagesEnabled, () -> config.whiteNoRankMessagesEnabled, newVal -> config.whiteNoRankMessagesEnabled = newVal)
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Color private messages"))
+                                        .description(OptionDescription.of(Text.literal("Make private messages white")))
+                                        .binding(defaults.whitePrivateMessagesEnabled, () -> config.whitePrivateMessagesEnabled, newVal -> config.whitePrivateMessagesEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .build())

@@ -12,8 +12,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import tomeko.legacyskyblock.config.LegacySkyblockConfig;
 import tomeko.legacyskyblock.utils.HypixelPackets;
 
-import java.util.Arrays;
-
 @Mixin(HandledScreen.class)
 public abstract class HandledScreenMixin {
 
@@ -24,18 +22,19 @@ public abstract class HandledScreenMixin {
     private void middleClick(HandledScreen instance, Slot slot, int slotId, int button, SlotActionType actionType, Operation<Void> original) {
         if (button != 0
                 || actionType != SlotActionType.PICKUP
-                || Arrays.asList(EXCLUDE_GUIS).contains(instance.getTitle().getString())
                 || !LegacySkyblockConfig.middleClickGUIEnabled
+                || !(instance.getScreenHandler() instanceof GenericContainerScreenHandler handler)
                 || !HypixelPackets.onHypixel
                 || (!LegacySkyblockConfig.middleClickGUIOutsideSkyblock && !HypixelPackets.inSkyblock)
         ) {
             original.call(instance, slot, slotId, button, actionType);
             return;
         }
-
-        if (!(instance.getScreenHandler() instanceof GenericContainerScreenHandler handler)) {
-            original.call(instance, slot, slotId, button, actionType);
-            return;
+        for (String excluded : EXCLUDE_GUIS) {
+            if (instance.getTitle().getString().startsWith(excluded)) {
+                original.call(instance, slot, slotId, button, actionType);
+                return;
+            }
         }
 
         MinecraftClient.getInstance().interactionManager.clickSlot(handler.syncId, slotId, 2, SlotActionType.CLONE, MinecraftClient.getInstance().player);
