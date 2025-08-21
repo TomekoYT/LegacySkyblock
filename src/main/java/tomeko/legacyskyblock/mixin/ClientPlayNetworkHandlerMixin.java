@@ -10,20 +10,43 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Mixin;
 import tomeko.legacyskyblock.config.LegacySkyblockConfig;
+import tomeko.legacyskyblock.utils.Functions;
 import tomeko.legacyskyblock.utils.HypixelPackets;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
-    //White Chat Messages
+    private static boolean guildMOTD = false;
+
     @WrapMethod(method = "onGameMessage")
     private void onChatMessage(GameMessageS2CPacket packet, Operation<Void> original) {
         Text message = packet.content();
-        if (message == null || !HypixelPackets.onHypixel) {
-            original.call(packet);
-            return;
+        String unformattedMessage = Functions.removeFormatting(message.getString());
+
+        //Hide Chat Messages
+        //Hide Guild MOTD
+        if (LegacySkyblockConfig.hideGuildMOTD && HypixelPackets.onHypixel) {
+            if (guildMOTD) {
+                if (unformattedMessage.equals("-----------------------------------------------------")) {
+                    guildMOTD = false;
+                }
+                return;
+            }
+
+            if (unformattedMessage.equals("--------------  Guild: Message Of The Day  --------------")) {
+                guildMOTD = true;
+                return;
+            }
         }
 
-        if (LegacySkyblockConfig.whitePrivateMessagesEnabled && (message.getString().startsWith("From ") || message.getString().startsWith("To "))) {
+        //Hide Custom Chat Messages
+        for (String messageToHide : LegacySkyblockConfig.customChatMessagesToHide) {
+            if (unformattedMessage.contains(messageToHide)) {
+                return;
+            }
+        }
+
+        //White Chat Messages
+        if (LegacySkyblockConfig.whitePrivateMessagesEnabled && HypixelPackets.onHypixel && (message.getString().startsWith("From ") || message.getString().startsWith("To "))) {
             MutableText newMessage = message.copyContentOnly().formatted(Formatting.LIGHT_PURPLE);
             int n = message.getSiblings().size();
             if (n < 1) {
@@ -33,7 +56,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
             boolean semicolonPassed = false;
             for (int i = 0; i < n - 1; i++) {
-                if (!semicolonPassed && message.getSiblings().get(i).copyContentOnly().getString().contains(":")) {
+                if (!semicolonPassed && message.getSiblings().get(i).getString().contains(":")) {
                     String sibling = message.getSiblings().get(i).getString();
                     int colonIndex = sibling.indexOf(":");
                     if (colonIndex > 0) {
@@ -55,8 +78,8 @@ public abstract class ClientPlayNetworkHandlerMixin {
             MinecraftClient.getInstance().player.sendMessage(newMessage, false);
             return;
         }
-        if (LegacySkyblockConfig.whiteNoRankMessagesEnabled && message.getString().contains("§7: ")) {
-            MinecraftClient.getInstance().player.sendMessage(Text.of(message.getString().replace("§7: ", ": §f")), false);
+        if (LegacySkyblockConfig.whiteNoRankMessagesEnabled && HypixelPackets.onHypixel && message.getString().contains("§7: ")) {
+            MinecraftClient.getInstance().player.sendMessage(Text.of(message.getString().replace("§7: ", "§f: ")), false);
             return;
         }
 

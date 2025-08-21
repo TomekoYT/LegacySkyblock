@@ -2,12 +2,16 @@ package tomeko.legacyskyblock.config;
 
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
+import dev.isxander.yacl3.api.controller.StringControllerBuilder;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import dev.isxander.yacl3.platform.YACLPlatform;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LegacySkyblockConfig {
     public static final ConfigClassHandler<LegacySkyblockConfig> CONFIG = ConfigClassHandler.createBuilder(LegacySkyblockConfig.class)
@@ -16,20 +20,31 @@ public class LegacySkyblockConfig {
                     .build())
             .build();
 
+    //Middle Click GUI Items
     @SerialEntry
     public static boolean middleClickGUIEnabled = true;
     @SerialEntry
     public static boolean middleClickGUIOutsideSkyblock = false;
 
+    //Actionbar
     @SerialEntry
     public static boolean actionbarHideDefense = false;
     @SerialEntry
     public static boolean actionbarHideTrueDefense = false;
 
+    //White Chat Messages
     @SerialEntry
     public static boolean whiteNoRankMessagesEnabled = true;
     @SerialEntry
     public static boolean whitePrivateMessagesEnabled = true;
+
+    //Hide Chat Messages
+    @SerialEntry
+    public static boolean hideGuildMOTD = false;
+
+    //Hide Custom Chat Messages
+    @SerialEntry
+    public static List<String> customChatMessagesToHide = new ArrayList<>();
 
     public static Screen configScreen(Screen parent) {
         return YetAnotherConfigLib.create(CONFIG, ((defaults, config, builder) -> builder
@@ -93,6 +108,23 @@ public class LegacySkyblockConfig {
                                         .binding(defaults.whitePrivateMessagesEnabled, () -> config.whitePrivateMessagesEnabled, newVal -> config.whitePrivateMessagesEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
+                                .build())
+
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("Hide Chat Messages"))
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Hide guild MOTD"))
+                                        .description(OptionDescription.of(Text.literal("Hide guild's message of the day")))
+                                        .binding(defaults.hideGuildMOTD, () -> config.hideGuildMOTD, newVal -> config.hideGuildMOTD = newVal)
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .build())
+
+                        .group(ListOption.<String>createBuilder()
+                                .name(Text.literal("Hide Custom Chat Messages"))
+                                .binding(defaults.customChatMessagesToHide, () -> config.customChatMessagesToHide, newVal -> config.customChatMessagesToHide = newVal)
+                                .controller(StringControllerBuilder::create)
+                                .initial("")
                                 .build())
                         .build())
         )).generateScreen(parent);
