@@ -8,7 +8,7 @@
     "Tomeko"
   ],
   "contact": {
-    "homepage": "https://modrinth.com/project/legacyskyblock",
+    "homepage": "https://modrinth.com/mod/legacyskyblock",
     "sources": "https://github.com/TomekoYT/LegacySkyblock",
     "issues": "https://github.com/TomekoYT/LegacySkyblock/issues"
   },
@@ -36,5 +36,15 @@
   },
   "suggests": {
     "modmenu": ">=${mod_menu_version}"
+  },
+  "custom": {
+    "youtube": "https://www.youtube.com/@TomekoYT",
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.com/invite/FfzrbycDws",
+        "modmenu.modrinth": "https://modrinth.com/mod/legacyskyblock"
+      },
+      "update_checker": true
+    }
   }
 }
