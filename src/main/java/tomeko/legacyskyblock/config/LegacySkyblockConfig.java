@@ -33,6 +33,7 @@ public class LegacySkyblockConfig {
     public static boolean actionbarHideTrueDefense = false;
 
     //White Chat Messages
+    private static final String SKYHANNI_CHAT_FORMATTING_WARNING = "\n\n§cDoesn't work with SkyHanni's Chat Formatting enabled!";
     @SerialEntry
     public static boolean whiteNoRankMessagesEnabled = true;
     @SerialEntry
@@ -55,6 +56,7 @@ public class LegacySkyblockConfig {
 
                         .group(OptionGroup.createBuilder()
                                 .name(Text.literal("Middle Click GUI Items"))
+                                .description(OptionDescription.of(Text.literal("Use middle click instead of left click in GUI's")))
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.literal("Enabled"))
                                         .description(OptionDescription.of(Text.literal("Enable Middle Click GUI Items")))
@@ -96,15 +98,16 @@ public class LegacySkyblockConfig {
 
                         .group(OptionGroup.createBuilder()
                                 .name(Text.literal("White Chat Messages"))
+                                .description(OptionDescription.of(Text.literal("§fMake player's messsages white instead of gray" + SKYHANNI_CHAT_FORMATTING_WARNING)))
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.literal("Color no rank messages"))
-                                        .description(OptionDescription.of(Text.literal("Make messages of players without a rank white")))
+                                        .description(OptionDescription.of(Text.literal("§fMake messages of players without a rank white" + SKYHANNI_CHAT_FORMATTING_WARNING)))
                                         .binding(defaults.whiteNoRankMessagesEnabled, () -> config.whiteNoRankMessagesEnabled, newVal -> config.whiteNoRankMessagesEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.literal("Color private messages"))
-                                        .description(OptionDescription.of(Text.literal("Make private messages white")))
+                                        .description(OptionDescription.of(Text.literal("§fMake private messages white" + SKYHANNI_CHAT_FORMATTING_WARNING)))
                                         .binding(defaults.whitePrivateMessagesEnabled, () -> config.whitePrivateMessagesEnabled, newVal -> config.whitePrivateMessagesEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
