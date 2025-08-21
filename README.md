@@ -10,7 +10,7 @@
 
 ### GUI
 
-#### Middle Click GUI
+#### Middle Click GUI Items
 
 - Work outside of Skyblock
 
