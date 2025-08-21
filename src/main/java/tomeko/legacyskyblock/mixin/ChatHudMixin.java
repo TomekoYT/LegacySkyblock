@@ -2,9 +2,8 @@ package tomeko.legacyskyblock.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -13,13 +12,12 @@ import tomeko.legacyskyblock.config.LegacySkyblockConfig;
 import tomeko.legacyskyblock.utils.Functions;
 import tomeko.legacyskyblock.utils.HypixelPackets;
 
-@Mixin(ClientPlayNetworkHandler.class)
-public abstract class ClientPlayNetworkHandlerMixin {
+@Mixin(ChatHud.class)
+public abstract class ChatHudMixin {
     private static boolean guildMOTD = false;
 
-    @WrapMethod(method = "onGameMessage")
-    private void onChatMessage(GameMessageS2CPacket packet, Operation<Void> original) {
-        Text message = packet.content();
+    @WrapMethod(method = "addMessage")
+    private void onChatMessage(Text message, Operation<Void> original) {
         String unformattedMessage = Functions.removeFormatting(message.getString());
 
         //Hide Chat Messages
@@ -49,7 +47,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
             MutableText newMessage = message.copyContentOnly().formatted(Formatting.LIGHT_PURPLE);
             int n = message.getSiblings().size();
             if (n < 1) {
-                original.call(packet);
+                original.call(message);
                 return;
             }
 
@@ -82,6 +80,6 @@ public abstract class ClientPlayNetworkHandlerMixin {
             return;
         }
 
-        original.call(packet);
+        original.call(message);
     }
 }
