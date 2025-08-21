@@ -25,15 +25,13 @@ public abstract class ClientPlayNetworkHandlerMixin {
         //Hide Chat Messages
         //Hide Guild MOTD
         if (LegacySkyblockConfig.hideGuildMOTD && HypixelPackets.onHypixel) {
+            if (unformattedMessage.startsWith("--------------  Guild: Message Of The Day  --------------")) {
+                guildMOTD = true;
+            }
             if (guildMOTD) {
-                if (unformattedMessage.equals("-----------------------------------------------------")) {
+                if (unformattedMessage.endsWith("-----------------------------------------------------")) {
                     guildMOTD = false;
                 }
-                return;
-            }
-
-            if (unformattedMessage.equals("--------------  Guild: Message Of The Day  --------------")) {
-                guildMOTD = true;
                 return;
             }
         }
