@@ -42,6 +42,7 @@ public abstract class ChatHudMixin {
         }
 
         //White Chat Messages
+        //White Private Messages
         if (LegacySkyblockConfig.whitePrivateMessagesEnabled && HypixelPackets.onHypixel && (message.getString().startsWith("From ") || message.getString().startsWith("To "))) {
             MutableText newMessage = message.copyContentOnly().formatted(Formatting.LIGHT_PURPLE);
             int n = message.getSiblings().size();
@@ -62,7 +63,6 @@ public abstract class ChatHudMixin {
                     if (colonIndex + 1 <= sibling.length() - 1) {
                         newMessage.append(Text.literal(sibling.substring(colonIndex + 1)).setStyle(message.getSiblings().get(i).getStyle()));
                     }
-                    newMessage.append(Text.literal(sibling.substring(colonIndex + 1)));
 
                     semicolonPassed = true;
                     continue;
@@ -70,10 +70,17 @@ public abstract class ChatHudMixin {
                 newMessage.append(message.getSiblings().get(i));
             }
 
+            if(!semicolonPassed) {
+                original.call(message);
+                return;
+            }
+
             newMessage.append(message.getSiblings().get(n - 1).copy().formatted(Formatting.WHITE));
             original.call(newMessage);
             return;
         }
+
+        //White No Rank Messages
         if (LegacySkyblockConfig.whiteNoRankMessagesEnabled && HypixelPackets.onHypixel && message.getString().contains("§7: ")) {
             original.call(Text.of(message.getString().replace("§7: ", "§f: ")));
             return;
