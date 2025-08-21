@@ -40,6 +40,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
         //Hide Custom Chat Messages
         for (String messageToHide : LegacySkyblockConfig.customChatMessagesToHide) {
+            if (messageToHide.isEmpty()) continue;
             if (unformattedMessage.contains(messageToHide)) {
                 return;
             }
