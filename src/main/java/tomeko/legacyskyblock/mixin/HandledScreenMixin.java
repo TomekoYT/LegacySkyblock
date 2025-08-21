@@ -14,7 +14,7 @@ import tomeko.legacyskyblock.utils.HypixelPackets;
 @Mixin(HandledScreen.class)
 public abstract class HandledScreenMixin {
     private static final String[] EXCLUDE_GUIS_EQUALS = {"Chest", "Large Chest", "Anvil", "Storage", "Enchant Item", "Drill Anvil", "Runic Pedestal", "Reforge Anvil", "Rune Removal", "Reforge Item", "Exp Sharing", "Offer Pets", "Upgrade Item", "Convert to Dungeon Item"};
-    private static final String[] EXCLUDE_GUIS_STARTSWITH = {"Ender Chest", "Hunting Toolkit"};
+    private static final String[] EXCLUDE_GUIS_STARTSWITH = {"Ender Chest", "Wardrobe", "Hunting Toolkit"};
     private static final String[] EXCLUDE_GUIS_CONTAINS = {"Backpack"};
 
     //Middle Click GUI Items
