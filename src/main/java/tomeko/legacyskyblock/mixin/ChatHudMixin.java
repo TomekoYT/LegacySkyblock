@@ -3,7 +3,6 @@ package tomeko.legacyskyblock.mixin;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.minecraft.client.gui.hud.ChatHud;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -72,11 +71,11 @@ public abstract class ChatHudMixin {
             }
 
             newMessage.append(message.getSiblings().get(n - 1).copy().formatted(Formatting.WHITE));
-            MinecraftClient.getInstance().player.sendMessage(newMessage, false);
+            original.call(newMessage);
             return;
         }
         if (LegacySkyblockConfig.whiteNoRankMessagesEnabled && HypixelPackets.onHypixel && message.getString().contains("§7: ")) {
-            MinecraftClient.getInstance().player.sendMessage(Text.of(message.getString().replace("§7: ", "§f: ")), false);
+            original.call(Text.of(message.getString().replace("§7: ", "§f: ")));
             return;
         }
 

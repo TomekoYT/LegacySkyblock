@@ -2,7 +2,6 @@ package tomeko.legacyskyblock.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.slot.Slot;
@@ -37,6 +36,6 @@ public abstract class HandledScreenMixin {
             }
         }
 
-        MinecraftClient.getInstance().interactionManager.clickSlot(handler.syncId, slotId, 2, SlotActionType.CLONE, MinecraftClient.getInstance().player);
+        original.call(instance, slot, slotId, 2, SlotActionType.CLONE);
     }
 }
