@@ -59,7 +59,7 @@ public abstract class ChatHudMixin {
                         newMessage.append(Text.literal(sibling.substring(0, colonIndex)).setStyle(message.getSiblings().get(i).getStyle()));
                     }
                     newMessage.append(Text.literal(":").formatted(Formatting.WHITE));
-                    if (colonIndex + 1 <= sibling.length()) {
+                    if (colonIndex + 1 <= sibling.length() - 1) {
                         newMessage.append(Text.literal(sibling.substring(colonIndex + 1)).setStyle(message.getSiblings().get(i).getStyle()));
                     }
                     newMessage.append(Text.literal(sibling.substring(colonIndex + 1)));
