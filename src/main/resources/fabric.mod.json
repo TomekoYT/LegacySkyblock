@@ -8,7 +8,8 @@
     "Tomeko"
   ],
   "contact": {
-    "sources": "https://github.com/TomekoYT/LegacySkyblock"
+    "sources": "https://github.com/TomekoYT/LegacySkyblock",
+    "issues": "https://github.com/TomekoYT/LegacySkyblock/issues"
   },
   "license": "CC0-1.0",
   "icon": "assets/legacyskyblock/icon.png",
