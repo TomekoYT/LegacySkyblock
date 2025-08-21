@@ -71,5 +71,5 @@ java {
 }
 
 tasks.named("remapJar") {
-    archiveFileName.set("${project.mod_name}-${project.mod_version}+${project.minecraft_version}-fabric.jar")
+    archiveFileName.set("${project.mod_name}-${project.mod_version}+${project.minecraft_version}-1.21.8_fabric.jar")
 }
