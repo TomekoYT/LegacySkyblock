@@ -10,7 +10,9 @@ import tomeko.legacyskyblock.utils.HypixelPackets;
 
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin {
-    //Hide Defense and True Defense
+    //Actionbar
+    //Hide Defense
+    //Hide True Defense
     @WrapMethod(method = "Lnet/minecraft/client/gui/hud/InGameHud;setOverlayMessage(Lnet/minecraft/text/Text;Z)V")
     private void modifyActionbar(Text message, boolean tinted, Operation<Void> original) {
         if (message == null || !HypixelPackets.inSkyblock) {
@@ -20,9 +22,13 @@ public abstract class InGameHudMixin {
 
         if (LegacySkyblockConfig.actionbarHideTrueDefense) {
             message = Text.of(message.getString().replaceAll("§f.*?§f❂ True Defense     ", ""));
+            message = Text.of(message.getString().replaceAll("     §f.*?§f❂ True Defense", ""));
+            message = Text.of(message.getString().replaceAll("§f.*?§f❂ True Defense", ""));
         }
         if (LegacySkyblockConfig.actionbarHideDefense) {
             message = Text.of(message.getString().replaceAll("§a.*?§a❈ Defense     ", ""));
+            message = Text.of(message.getString().replaceAll("     §a.*?§a❈ Defense", ""));
+            message = Text.of(message.getString().replaceAll("§a.*?§a❈ Defense", ""));
         }
 
         original.call(message, tinted);
