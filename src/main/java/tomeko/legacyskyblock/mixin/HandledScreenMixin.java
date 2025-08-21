@@ -13,8 +13,8 @@ import tomeko.legacyskyblock.utils.HypixelPackets;
 
 @Mixin(HandledScreen.class)
 public abstract class HandledScreenMixin {
-    private static final String[] EXCLUDE_GUIS_EQUALS = {"Chest", "Large Chest", "Anvil", "Storage", "Enchant Item", "Drill Anvil", "Runic Pedestal", "Reforge Anvil", "Rune Removal", "Reforge Item", "Exp Sharing", "Offer Pets", "Upgrade Item", "Convert to Dungeon Item"};
-    private static final String[] EXCLUDE_GUIS_STARTSWITH = {"Ender Chest", "Wardrobe", "Hunting Toolkit"};
+    private static final String[] EXCLUDE_GUIS_EQUALS = {"Chest", "Large Chest", "Anvil", "Storage", "Enchant Item", "Drill Anvil", "Runic Pedestal", "Reforge Anvil", "Rune Removal", "Reforge Item", "Exp Sharing", "Offer Pets", "Upgrade Item", "Convert to Dungeon Item", "Craft Item", "Sack of Sacks", "Fishing Bag", "Potion Bag", "Quiver", "Time Pocket"};
+    private static final String[] EXCLUDE_GUIS_STARTSWITH = {"Ender Chest", "Wardrobe", "Accessory Bag", "Hunting Toolkit"};
     private static final String[] EXCLUDE_GUIS_CONTAINS = {"Backpack"};
 
     //Middle Click GUI Items
@@ -23,7 +23,7 @@ public abstract class HandledScreenMixin {
         if (button != 0
                 || actionType != SlotActionType.PICKUP
                 || !LegacySkyblockConfig.middleClickGUIEnabled
-                || !(instance.getScreenHandler() instanceof GenericContainerScreenHandler handler)
+                || !(instance.getScreenHandler() instanceof GenericContainerScreenHandler)
                 || !HypixelPackets.onHypixel
                 || (!LegacySkyblockConfig.middleClickGUIOutsideSkyblock && !HypixelPackets.inSkyblock)
         ) {
