@@ -28,6 +28,7 @@
 
 - Hide Defense
 - Hide True Defense
+- Hide Florid Zombie Sword's charges
 
 ### Chat
 

@@ -28,9 +28,11 @@ public class LegacySkyblockConfig {
 
     //Actionbar
     @SerialEntry
-    public static boolean actionbarHideDefense = false;
+    public static boolean hideDefense = false;
     @SerialEntry
-    public static boolean actionbarHideTrueDefense = false;
+    public static boolean hideTrueDefense = false;
+    @SerialEntry
+    public static boolean hideFloridZombieSwordsCharges = false;
 
     //MVP++ Emotes
     @SerialEntry
@@ -85,13 +87,19 @@ public class LegacySkyblockConfig {
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.literal("Hide Defense"))
                                         .description(OptionDescription.of(Text.literal("Hide Defense in actionbar")))
-                                        .binding(defaults.actionbarHideDefense, () -> config.actionbarHideDefense, newVal -> config.actionbarHideDefense = newVal)
+                                        .binding(defaults.hideDefense, () -> config.hideDefense, newVal -> config.hideDefense = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.literal("Hide True Defense"))
                                         .description(OptionDescription.of(Text.literal("Hide True Defense in actionbar")))
-                                        .binding(defaults.actionbarHideTrueDefense, () -> config.actionbarHideTrueDefense, newVal -> config.actionbarHideTrueDefense = newVal)
+                                        .binding(defaults.hideTrueDefense, () -> config.hideTrueDefense, newVal -> config.hideTrueDefense = newVal)
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Hide Florid Zombie Sword's charges"))
+                                        .description(OptionDescription.of(Text.literal("Hide Florid Zombie Sword's charges in actionbar")))
+                                        .binding(defaults.hideFloridZombieSwordsCharges, () -> config.hideFloridZombieSwordsCharges, newVal -> config.hideFloridZombieSwordsCharges = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .build())
