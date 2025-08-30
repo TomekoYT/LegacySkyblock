@@ -32,6 +32,10 @@ public class LegacySkyblockConfig {
     @SerialEntry
     public static boolean actionbarHideTrueDefense = false;
 
+    //MVP++ Emotes
+    @SerialEntry
+    public static boolean MVPEmotesEnabled = false;
+
     //White Chat Messages
     private static final String SKYHANNI_CHAT_FORMATTING_WARNING = "\n\n§cDoesn't work with SkyHanni's Chat Formatting enabled!";
     @SerialEntry
@@ -97,8 +101,13 @@ public class LegacySkyblockConfig {
                         .name(Text.literal("Chat"))
 
                         .group(OptionGroup.createBuilder()
-                                .name(Text.literal("White Chat Messages"))
-                                .description(OptionDescription.of(Text.literal("§fMake player's messsages white instead of gray" + SKYHANNI_CHAT_FORMATTING_WARNING)))
+                                .name(Text.literal("Modify Chat Messages"))
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("MVP++ emotes"))
+                                        .description(OptionDescription.of(Text.literal("Use MVP++ emotes in chat\nExample: ❤ instead of <3")))
+                                        .binding(defaults.MVPEmotesEnabled, () -> config.MVPEmotesEnabled, newVal -> config.MVPEmotesEnabled = newVal)
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.literal("Color no rank messages"))
                                         .description(OptionDescription.of(Text.literal("§fMake messages of players without a rank white" + SKYHANNI_CHAT_FORMATTING_WARNING)))
