@@ -13,11 +13,11 @@ import tomeko.legacyskyblock.utils.HypixelPackets;
 
 @Mixin(HandledScreen.class)
 public abstract class HandledScreenMixin {
-    private static final String[] EXCLUDE_GUIS_EQUALS = {"Chest", "Large Chest", "Anvil", "Storage", "Enchant Item", "Drill Anvil", "Runic Pedestal", "Reforge Anvil", "Rune Removal", "Reforge Item", "Exp Sharing", "Offer Pets", "Upgrade Item", "Convert to Dungeon Item", "Craft Item", "Fishing Bag", "Potion Bag", "Quiver", "Time Pocket", "Personal Vault", "Beacon", "Rift Transfer Chest"};
-    private static final String[] EXCLUDE_GUIS_STARTSWITH = {"Ender Chest", "Wardrobe", "Accessory Bag", "Museum", "Rift Storage", "Hunting Toolkit", "You "};
-    private static final String[] EXCLUDE_GUIS_CONTAINS = {"Backpack", "Minion", "Sack"};
-
     //Middle Click GUI Items
+    private static final String[] EXCLUDE_GUIS_EQUALS = {"Chest", "Large Chest", "Anvil", "Storage", "Enchant Item", "Drill Anvil", "Runic Pedestal", "Reforge Anvil", "Rune Removal", "Reforge Item", "Exp Sharing", "Offer Pets", "Upgrade Item", "Convert to Dungeon Item", "Craft Item", "Fishing Bag", "Potion Bag", "Quiver", "Time Pocket", "Personal Vault", "Beacon", "Rift Transfer Chest", "Stats Tuning"};
+    private static final String[] EXCLUDE_GUIS_STARTSWITH = {"Ender Chest", "Wardrobe", "Accessory Bag (", "Museum", "Rift Storage", "Hunting Toolkit", "You "};
+    private static final String[] EXCLUDE_GUIS_CONTAINS = {"Backpack", "Minion", "Sack", "iphone"};
+
     @WrapOperation(method = "mouseClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V"))
     private void middleClick(HandledScreen instance, Slot slot, int slotId, int button, SlotActionType actionType, Operation<Void> original) {
         if (button != 0
