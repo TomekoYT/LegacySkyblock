@@ -16,7 +16,7 @@ public abstract class ChatHudMixin {
     private static boolean guildMOTD = false;
 
     @WrapMethod(method = "addMessage")
-    private void onChatMessage(Text message, Operation<Void> original) {
+    private void addMessage(Text message, Operation<Void> original) {
         String unformattedMessage = Functions.removeFormatting(message.getString());
 
         //Hide Chat Messages

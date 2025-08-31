@@ -19,7 +19,7 @@ public abstract class HandledScreenMixin {
     private static final String[] EXCLUDE_GUIS_CONTAINS = {"Backpack", "Minion", "Sack", "iphone"};
 
     @WrapOperation(method = "mouseClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V"))
-    private void middleClick(HandledScreen instance, Slot slot, int slotId, int button, SlotActionType actionType, Operation<Void> original) {
+    private void mouseClicked(HandledScreen instance, Slot slot, int slotId, int button, SlotActionType actionType, Operation<Void> original) {
         if (button != 0
                 || actionType != SlotActionType.PICKUP
                 || !LegacySkyblockConfig.middleClickGUIEnabled
