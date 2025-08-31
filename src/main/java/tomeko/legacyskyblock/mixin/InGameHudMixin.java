@@ -11,8 +11,8 @@ import tomeko.legacyskyblock.utils.HypixelPackets;
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin {
     //Actionbar
-    @WrapMethod(method = "Lnet/minecraft/client/gui/hud/InGameHud;setOverlayMessage(Lnet/minecraft/text/Text;Z)V")
-    private void modifyActionbar(Text message, boolean tinted, Operation<Void> original) {
+    @WrapMethod(method = "setOverlayMessage")
+    private void setOverlayMessage(Text message, boolean tinted, Operation<Void> original) {
         if (message == null || !HypixelPackets.inSkyblock) {
             original.call(message, tinted);
             return;
@@ -20,25 +20,32 @@ public abstract class InGameHudMixin {
 
         //Hide True Defense
         if (LegacySkyblockConfig.hideTrueDefense) {
-            message = Text.of(message.getString().replaceAll("§f.*?§f❂ True Defense     ", ""));
-            message = Text.of(message.getString().replaceAll("     §f.*?§f❂ True Defense", ""));
-            message = Text.of(message.getString().replaceAll("§f.*?§f❂ True Defense", ""));
+            message = replace(message, "§f.*?§f❂ True Defense");
         }
 
         //Hide Defense
         if (LegacySkyblockConfig.hideDefense) {
-            message = Text.of(message.getString().replaceAll("§a.*?§a❈ Defense     ", ""));
-            message = Text.of(message.getString().replaceAll("     §a.*?§a❈ Defense", ""));
-            message = Text.of(message.getString().replaceAll("§a.*?§a❈ Defense", ""));
+            message = replace(message, "§a.*?§a❈ Defense");
         }
 
         //Hide Florid Zombie Sword's charges
         if (LegacySkyblockConfig.hideFloridZombieSwordsCharges) {
-            message = Text.of(message.getString().replaceAll("§e§lⓩⓩⓩⓩⓩ§6§l     ", ""));
-            message = Text.of(message.getString().replaceAll("     §e§lⓩⓩⓩⓩⓩ§6§l", ""));
-            message = Text.of(message.getString().replaceAll("§e§lⓩⓩⓩⓩⓩ§6§l", ""));
+            message = replace(message, "§e§lⓩⓩⓩⓩⓩ§6§l");
+            message = replace(message, "§e§lⓩⓩⓩⓩ§6§lⓄ");
+            message = replace(message, "§e§lⓩⓩⓩ§6§lⓄⓄ");
+            message = replace(message, "§e§lⓩⓩ§6§lⓄⓄⓄ");
+            message = replace(message, "§e§lⓩ§6§lⓄⓄⓄⓄ");
+            message = replace(message, "§e§l§6§lⓄⓄⓄⓄⓄ");
         }
 
         original.call(message, tinted);
+    }
+
+    Text replace(Text message, String replace) {
+        String blank = "     ";
+        message = Text.of(message.getString().replaceAll(replace + blank, ""));
+        message = Text.of(message.getString().replaceAll(blank + replace, ""));
+        message = Text.of(message.getString().replaceAll(replace, ""));
+        return message;
     }
 }
