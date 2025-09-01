@@ -41,7 +41,7 @@ public abstract class InGameHudMixin {
         original.call(message, tinted);
     }
 
-    Text replace(Text message, String replace) {
+    private static Text replace(Text message, String replace) {
         String blank = "     ";
         message = Text.of(message.getString().replaceAll(replace + blank, ""));
         message = Text.of(message.getString().replaceAll(blank + replace, ""));
