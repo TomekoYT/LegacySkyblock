@@ -1,6 +1,7 @@
 package tomeko.legacyskyblock.chat;
 
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
+import tomeko.legacyskyblock.config.LegacySkyblockConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,12 +46,31 @@ public class MVPEmotes {
 
     public static void register() {
         ClientSendMessageEvents.MODIFY_CHAT.register((message) -> {
-            if (message.isEmpty() || message.startsWith("/")) return message;
-
-            for (SimpleEntry<String, String> entry : EMOTES) {
-                message = message.replace(entry.getKey(), entry.getValue());
+            if (LegacySkyblockConfig.MVPEmotesEnabled) {
+                return replace(message);
             }
+
             return message;
         });
+
+        ClientSendMessageEvents.MODIFY_COMMAND.register((command) -> {
+            if (LegacySkyblockConfig.MVPEmotesEnabled) {
+                String[] words = command.split(" ");
+                StringBuilder newCommand = new StringBuilder(words[0]);
+                for (int i = 1; i < words.length; i++) {
+                    newCommand.append(" ").append(replace(words[i]));
+                }
+                return newCommand.toString();
+            }
+
+            return command;
+        });
+    }
+
+    private static String replace(String message) {
+        for (SimpleEntry<String, String> entry : EMOTES) {
+            message = message.replace(entry.getKey(), entry.getValue());
+        }
+        return message;
     }
 }
