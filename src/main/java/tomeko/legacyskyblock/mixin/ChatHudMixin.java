@@ -15,7 +15,7 @@ import tomeko.legacyskyblock.utils.HypixelPackets;
 public abstract class ChatHudMixin {
     private static boolean guildMOTD = false;
 
-    @WrapMethod(method = "addMessage")
+    @WrapMethod(method = "addMessage(Lnet/minecraft/text/Text;)V")
     private void addMessage(Text message, Operation<Void> original) {
         String unformattedMessage = Functions.removeFormatting(message.getString());
 
