@@ -3,9 +3,7 @@
   "package": "tomeko.legacyskyblock.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "ChatHudMixin",
-    "HandledScreenMixin",
-    "InGameHudMixin"
+    "HandledScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
