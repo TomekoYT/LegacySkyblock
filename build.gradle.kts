@@ -38,20 +38,14 @@ dependencies {
 
     val yacl = mapOf(
         "1.21.5" to "3.8.0+1.21.5-fabric",
-        "1.21.6" to "3.8.0+1.21.6-fabric",
-        "1.21.7" to "3.7.1+1.21.6-fabric",
         "1.21.8" to "3.7.1+1.21.6-fabric",
-        "1.21.9" to "3.8.0+1.21.9-fabric",
         "1.21.10" to "3.8.0+1.21.9-fabric"
     )
     modImplementation("dev.isxander:yet-another-config-lib:${yacl[mcData.version.toString()]}")
 
     val modmenu = mapOf(
         "1.21.5" to "14.0.0-rc.2",
-        "1.21.6" to "15.0.0",
-        "1.21.7" to "15.0.0",
         "1.21.8" to "15.0.0",
-        "1.21.9" to "16.0.0-rc.1",
         "1.21.10" to "16.0.0-rc.1"
     )
     modImplementation("com.terraformersmc:modmenu:${modmenu[mcData.version.toString()]}")
