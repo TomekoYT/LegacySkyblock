@@ -51,6 +51,10 @@ public class LegacySkyblockConfig {
     @SerialEntry
     public static List<String> customChatMessagesToHide = new ArrayList<>();
 
+    //No Death Animation
+    @SerialEntry
+    public static boolean NoDeathAnimationEnabled = true;
+
     public static Screen configScreen(Screen parent) {
         return YetAnotherConfigLib.create(CONFIG, ((defaults, config, builder) -> builder
                 .title(Text.literal("LegacySkyblock"))
@@ -137,6 +141,21 @@ public class LegacySkyblockConfig {
                                 .binding(defaults.customChatMessagesToHide, () -> config.customChatMessagesToHide, newVal -> config.customChatMessagesToHide = newVal)
                                 .controller(StringControllerBuilder::create)
                                 .initial("")
+                                .build())
+                        .build())
+
+                .category(ConfigCategory.createBuilder()
+                        .name(Text.literal("Misc"))
+
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("No Death Animation"))
+                                .description(OptionDescription.of(Text.literal("Remove death animation when mob is killed")))
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Enabled"))
+                                        .description(OptionDescription.of(Text.literal("Enable No Death Animation")))
+                                        .binding(defaults.NoDeathAnimationEnabled, () -> config.NoDeathAnimationEnabled, newVal -> config.NoDeathAnimationEnabled = newVal)
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
                                 .build())
                         .build())
         )).generateScreen(parent);

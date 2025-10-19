@@ -3,7 +3,8 @@
   "package": "tomeko.legacyskyblock.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "HandledScreenMixin"
+    "HandledScreenMixin",
+    "LivingEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
