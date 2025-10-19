@@ -16,7 +16,7 @@ public abstract class LivingEntityMixin {
     @Inject(method = "onDeath", at = @At("HEAD"))
     private void onDeath(CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
-        if (!LegacySkyblockConfig.NoDeathAnimationEnabled ||
+        if (!LegacySkyblockConfig.noDeathAnimationEnabled ||
                 //#if MC >= 1.21.9
                 //$$!self.getEntityWorld().isClient()
                 //#else

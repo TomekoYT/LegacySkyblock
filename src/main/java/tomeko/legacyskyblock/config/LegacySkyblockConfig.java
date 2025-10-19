@@ -53,7 +53,7 @@ public class LegacySkyblockConfig {
 
     //No Death Animation
     @SerialEntry
-    public static boolean NoDeathAnimationEnabled = true;
+    public static boolean noDeathAnimationEnabled = true;
 
     public static Screen configScreen(Screen parent) {
         return YetAnotherConfigLib.create(CONFIG, ((defaults, config, builder) -> builder
@@ -153,7 +153,7 @@ public class LegacySkyblockConfig {
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.literal("Enabled"))
                                         .description(OptionDescription.of(Text.literal("Enable No Death Animation")))
-                                        .binding(defaults.NoDeathAnimationEnabled, () -> config.NoDeathAnimationEnabled, newVal -> config.NoDeathAnimationEnabled = newVal)
+                                        .binding(defaults.noDeathAnimationEnabled, () -> config.noDeathAnimationEnabled, newVal -> config.noDeathAnimationEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .build())
