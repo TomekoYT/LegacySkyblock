@@ -23,8 +23,6 @@ public class LegacySkyblockConfig {
     //Middle Click GUI Items
     @SerialEntry
     public static boolean middleClickGUIEnabled = true;
-    @SerialEntry
-    public static boolean middleClickGUIOutsideSkyblock = false;
 
     //Actionbar
     @SerialEntry
@@ -67,12 +65,6 @@ public class LegacySkyblockConfig {
                                         .name(Text.literal("Enabled"))
                                         .description(OptionDescription.of(Text.literal("Enable Middle Click GUI Items")))
                                         .binding(defaults.middleClickGUIEnabled, () -> config.middleClickGUIEnabled, newVal -> config.middleClickGUIEnabled = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Work outside of Skyblock"))
-                                        .description(OptionDescription.of(Text.literal("Make Middle Click GUI Items work outside of Skyblock")))
-                                        .binding(defaults.middleClickGUIOutsideSkyblock, () -> config.middleClickGUIOutsideSkyblock, newVal -> config.middleClickGUIOutsideSkyblock = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .build())
