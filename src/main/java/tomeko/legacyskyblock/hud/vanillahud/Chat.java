@@ -1,4 +1,4 @@
-package tomeko.legacyskyblock.vanillahud;
+package tomeko.legacyskyblock.hud.vanillahud;
 
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
