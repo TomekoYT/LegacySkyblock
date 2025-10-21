@@ -1,6 +1,7 @@
 package tomeko.legacyskyblock.config;
 
 import dev.isxander.yacl3.api.*;
+import dev.isxander.yacl3.api.controller.FloatSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
@@ -56,6 +57,14 @@ public class LegacySkyblockConfig {
     @SerialEntry
     public static boolean hideFloridZombieSwordsCharges = false;
 
+    //Health Vignette
+    @SerialEntry
+    public static boolean healthVignetteEnabled = true;
+    @SerialEntry
+    public static float healthVignetteOpacityPercentage = 25F;
+    @SerialEntry
+    public static float healthVignetteHealthPercentage = 2F;
+
     //MVP++ Emotes
     @SerialEntry
     public static boolean MVPEmotesEnabled = false;
@@ -69,7 +78,7 @@ public class LegacySkyblockConfig {
 
     //Hide Chat Messages
     @SerialEntry
-    public static boolean hideGuildMOTD = false;
+    public static boolean hideGuildMOTDEnabled = false;
 
     //Hide Custom Chat Messages
     @SerialEntry
@@ -155,6 +164,35 @@ public class LegacySkyblockConfig {
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .build())
+
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("Health Vignette"))
+                                .description(OptionDescription.of(Text.literal("Turn screen red when below % of health")))
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Enabled"))
+                                        .description(OptionDescription.of(Text.literal("Enable Health Vignette")))
+                                        .binding(defaults.healthVignetteEnabled, () -> config.healthVignetteEnabled, newVal -> config.healthVignetteEnabled = newVal)
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .option(Option.<Float>createBuilder()
+                                        .name(Text.literal("Set Opacity Percentage"))
+                                        .description(OptionDescription.of(Text.literal("Set Health Vignette's opacity\nSet 0% to disable")))
+                                        .binding(defaults.healthVignetteOpacityPercentage, () -> config.healthVignetteOpacityPercentage, newVal -> config.healthVignetteOpacityPercentage = newVal)
+                                        .controller(opt -> FloatSliderControllerBuilder.create(opt)
+                                                .formatValue(value -> Text.literal(String.format("%,.0f", value) + "%"))
+                                                .range(0F, 100F)
+                                                .step(1F))
+                                        .build())
+                                .option(Option.<Float>createBuilder()
+                                        .name(Text.literal("Set Health Percentage"))
+                                        .description(OptionDescription.of(Text.literal("Set % of health for which Health Vignette will be shown")))
+                                        .binding(defaults.healthVignetteHealthPercentage, () -> config.healthVignetteHealthPercentage, newVal -> config.healthVignetteHealthPercentage = newVal)
+                                        .controller(opt -> FloatSliderControllerBuilder.create(opt)
+                                                .formatValue(value -> Text.literal(String.format("%,.0f", value) + "%"))
+                                                .range(0F, 100F)
+                                                .step(1F))
+                                        .build())
+                                .build())
                         .build())
 
                 .category(ConfigCategory.createBuilder()
@@ -187,7 +225,7 @@ public class LegacySkyblockConfig {
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.literal("Hide guild MOTD"))
                                         .description(OptionDescription.of(Text.literal("Hide guild's message of the day")))
-                                        .binding(defaults.hideGuildMOTD, () -> config.hideGuildMOTD, newVal -> config.hideGuildMOTD = newVal)
+                                        .binding(defaults.hideGuildMOTDEnabled, () -> config.hideGuildMOTDEnabled, newVal -> config.hideGuildMOTDEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .build())
