@@ -60,7 +60,7 @@ public class Chat {
 
             //Hide Chat Messages
             //Hide Guild MOTD
-            if (LegacySkyblockConfig.hideGuildMOTD) {
+            if (LegacySkyblockConfig.hideGuildMOTDEnabled) {
                 if (unformattedMessage.startsWith("--------------  Guild: Message Of The Day  --------------")) {
                     guildMOTD = true;
                 }
