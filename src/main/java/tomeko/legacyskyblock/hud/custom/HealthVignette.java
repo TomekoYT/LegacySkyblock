@@ -24,5 +24,4 @@ public class HealthVignette {
         int alpha = (int) ((LegacySkyblockConfig.healthVignetteOpacityPercentage / 100) * 255.0f);
         context.fill(0, 0, client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight(), ((alpha << 24) | 0xFF0000));
     }
-
 }
