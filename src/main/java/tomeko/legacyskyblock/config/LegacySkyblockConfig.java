@@ -9,9 +9,12 @@ import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import dev.isxander.yacl3.platform.YACLPlatform;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
+import tomeko.legacyskyblock.utils.ItemUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class LegacySkyblockConfig {
     public static final ConfigClassHandler<LegacySkyblockConfig> CONFIG = ConfigClassHandler.createBuilder(LegacySkyblockConfig.class)
@@ -19,6 +22,27 @@ public class LegacySkyblockConfig {
                     .setPath(YACLPlatform.getConfigDir().resolve("legacyskyblock.json"))
                     .build())
             .build();
+
+    //Auto Refill
+    public static final ItemUtil[] refillItems = {new ItemUtil("Ender Pearl", "ENDER_PEARL", 16), new ItemUtil("Spirit Leap", "SPIRIT_LEAP", 16), new ItemUtil("Superboom TNT", "SUPERBOOM_TNT", 64), new ItemUtil("Decoy", "DUNGEON_DECOY", 64)};
+    private static final String[] refillOptionNames = new String[refillItems.length];
+    private static final String[] refillOptionDescriptions = new String[refillItems.length];
+
+    static {
+        for (int i = 0; i < refillItems.length; i++) {
+            refillOptionNames[i] = refillItems[i].name + " Refill";
+            refillOptionDescriptions[i] = "Enable " + refillOptionNames[i] + " from sacks when dungeon starts";
+        }
+    }
+
+    @SerialEntry
+    public static Map<String, Boolean> refillEnabled = new HashMap<>();
+
+    static {
+        for (int i = 0; i < refillItems.length; i++) {
+            refillEnabled.put(refillItems[i].id, false);
+        }
+    }
 
     //Middle Click GUI Items
     @SerialEntry
@@ -60,6 +84,39 @@ public class LegacySkyblockConfig {
                 .title(Text.literal("LegacySkyblock"))
 
                 .category(ConfigCategory.createBuilder()
+                        .name(Text.literal("Dungeons"))
+
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("Auto Refill on Dungeon Start"))
+                                .description(OptionDescription.of(Text.literal("Auto refill certain items from sacks when dungeon starts")))
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal(refillOptionNames[0]))
+                                        .description(OptionDescription.of(Text.literal(refillOptionDescriptions[0])))
+                                        .binding(defaults.refillEnabled.get(refillItems[0].id), () -> config.refillEnabled.get(refillItems[0].id), newVal -> config.refillEnabled.put(refillItems[0].id, newVal))
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal(refillOptionNames[1]))
+                                        .description(OptionDescription.of(Text.literal(refillOptionDescriptions[1])))
+                                        .binding(defaults.refillEnabled.get(refillItems[1].id), () -> config.refillEnabled.get(refillItems[1].id), newVal -> config.refillEnabled.put(refillItems[1].id, newVal))
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal(refillOptionNames[2]))
+                                        .description(OptionDescription.of(Text.literal(refillOptionDescriptions[2])))
+                                        .binding(defaults.refillEnabled.get(refillItems[2].id), () -> config.refillEnabled.get(refillItems[2].id), newVal -> config.refillEnabled.put(refillItems[2].id, newVal))
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal(refillOptionNames[3]))
+                                        .description(OptionDescription.of(Text.literal(refillOptionDescriptions[3])))
+                                        .binding(defaults.refillEnabled.get(refillItems[3].id), () -> config.refillEnabled.get(refillItems[3].id), newVal -> config.refillEnabled.put(refillItems[3].id, newVal))
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .build())
+                        .build())
+
+                .category(ConfigCategory.createBuilder()
                         .name(Text.literal("GUI"))
 
                         .group(OptionGroup.createBuilder()
@@ -73,7 +130,6 @@ public class LegacySkyblockConfig {
                                         .build())
                                 .build())
                         .build())
-
 
                 .category(ConfigCategory.createBuilder()
                         .name(Text.literal("HUD"))
