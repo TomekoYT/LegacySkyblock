@@ -14,7 +14,7 @@ public class HypixelPackets {
     }
 
     private static void onLocationPacket(ClientboundLocationPacket packet) {
-        if (!packet.getServerType().isPresent()) {
+        if (packet.getServerType().isEmpty()) {
             disableHypixel();
             return;
         }

@@ -40,8 +40,8 @@ public class LegacySkyblockConfig {
     public static Map<String, Boolean> refillEnabled = new HashMap<>();
 
     static {
-        for (int i = 0; i < refillItems.length; i++) {
-            refillEnabled.put(refillItems[i].id, false);
+        for (ItemUtil refillItem : refillItems) {
+            refillEnabled.put(refillItem.id, false);
         }
     }
 

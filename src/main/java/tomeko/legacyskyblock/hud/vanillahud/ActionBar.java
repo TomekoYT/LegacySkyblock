@@ -36,7 +36,7 @@ public class ActionBar {
     }
 
     private static Text replaceActionBar(Text message, String replace) {
-        String blank = "     ";
+        String blank = " {5}";
         message = Text.of(message.getString().replaceAll(replace + blank, ""));
         message = Text.of(message.getString().replaceAll(blank + replace, ""));
         message = Text.of(message.getString().replaceAll(replace, ""));
