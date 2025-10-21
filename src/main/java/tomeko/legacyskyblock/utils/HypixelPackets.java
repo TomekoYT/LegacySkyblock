@@ -1,5 +1,6 @@
 package tomeko.legacyskyblock.utils;
 
+import net.hypixel.modapi.HypixelModAPI;
 import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationPacket;
 
 public class HypixelPackets {
@@ -7,7 +8,12 @@ public class HypixelPackets {
     public static boolean inSkyblock = false;
     public static boolean inDungeons = false;
 
-    public static void onLocationPacket(ClientboundLocationPacket packet) {
+    public static void register() {
+        HypixelModAPI.getInstance().createHandler(ClientboundLocationPacket.class, HypixelPackets::onLocationPacket);
+        HypixelModAPI.getInstance().subscribeToEventPacket(ClientboundLocationPacket.class);
+    }
+
+    private static void onLocationPacket(ClientboundLocationPacket packet) {
         if (!packet.getServerType().isPresent()) {
             disableHypixel();
             return;
@@ -20,11 +26,7 @@ public class HypixelPackets {
         }
         inSkyblock = true;
 
-        if (!packet.getMode().orElse(null).equalsIgnoreCase("dungeon")) {
-            inDungeons = false;
-            return;
-        }
-        inDungeons = true;
+        inDungeons = packet.getMode().orElse(null).equalsIgnoreCase("dungeon");
     }
 
     private static void disableSkyblock() {

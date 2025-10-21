@@ -1,8 +1,6 @@
 package tomeko.legacyskyblock;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.hypixel.modapi.HypixelModAPI;
-import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationPacket;
 import tomeko.legacyskyblock.commands.*;
 import tomeko.legacyskyblock.config.*;
 import tomeko.legacyskyblock.dungeons.*;
@@ -17,7 +15,6 @@ public class LegacySkyblock implements ClientModInitializer {
         AutoRefill.register();
         ActionBar.register();
         Chat.register();
-        HypixelModAPI.getInstance().createHandler(ClientboundLocationPacket.class, HypixelPackets::onLocationPacket);
-        HypixelModAPI.getInstance().subscribeToEventPacket(ClientboundLocationPacket.class);
+        HypixelPackets.register();
     }
 }
