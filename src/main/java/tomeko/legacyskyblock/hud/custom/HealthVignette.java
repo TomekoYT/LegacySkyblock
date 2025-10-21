@@ -8,10 +8,10 @@ import tomeko.legacyskyblock.config.LegacySkyblockConfig;
 
 public class HealthVignette {
     public static void register() {
-        HudRenderCallback.EVENT.register(HealthVignette::renderHealthVignette);
+        HudRenderCallback.EVENT.register(HealthVignette::render);
     }
 
-    private static void renderHealthVignette(DrawContext context, RenderTickCounter tickDelta) {
+    private static void render(DrawContext context, RenderTickCounter tickDelta) {
         MinecraftClient client = MinecraftClient.getInstance();
         if (!LegacySkyblockConfig.healthVignetteEnabled
                 || client.player == null
