@@ -1,17 +1,17 @@
 package tomeko.legacyskyblock.config;
 
 import dev.isxander.yacl3.api.*;
-import dev.isxander.yacl3.api.controller.FloatSliderControllerBuilder;
-import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
-import dev.isxander.yacl3.api.controller.StringControllerBuilder;
+import dev.isxander.yacl3.api.controller.*;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import dev.isxander.yacl3.platform.YACLPlatform;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 import tomeko.legacyskyblock.utils.ItemUtil;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -84,6 +84,19 @@ public class LegacySkyblockConfig {
     @SerialEntry
     public static List<String> customChatMessagesToHide = new ArrayList<>();
 
+    //Toggle Sprint
+    public static boolean toggleSprintEnabled = false;
+    @SerialEntry
+    public static String toggleSprintText = "Sprint Toggled";
+    @SerialEntry
+    public static Color toggleSprintTextColor = Color.WHITE;
+    @SerialEntry
+    public static boolean toggleSprintTextShadowEnabled = false;
+    @SerialEntry
+    public static int toggleSprintTextPositionX = 10;
+    @SerialEntry
+    public static int toggleSprintTextPositionY = 10;
+
     //No Death Animation
     @SerialEntry
     public static boolean noDeathAnimationEnabled = true;
@@ -133,7 +146,6 @@ public class LegacySkyblockConfig {
                                 .description(OptionDescription.of(Text.literal("Use middle click instead of left click in GUI's")))
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.literal("Enabled"))
-                                        .description(OptionDescription.of(Text.literal("Enable Middle Click GUI Items")))
                                         .binding(defaults.middleClickGUIEnabled, () -> config.middleClickGUIEnabled, newVal -> config.middleClickGUIEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
@@ -170,7 +182,6 @@ public class LegacySkyblockConfig {
                                 .description(OptionDescription.of(Text.literal("Turn screen red when below % of health")))
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.literal("Enabled"))
-                                        .description(OptionDescription.of(Text.literal("Enable Health Vignette")))
                                         .binding(defaults.healthVignetteEnabled, () -> config.healthVignetteEnabled, newVal -> config.healthVignetteEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
@@ -242,11 +253,45 @@ public class LegacySkyblockConfig {
                         .name(Text.literal("Misc"))
 
                         .group(OptionGroup.createBuilder()
+                                .name(Text.literal("Toggle Sprint"))
+                                .description(OptionDescription.of(Text.literal("Use a keybind to toggle sprint")))
+                                .option(Option.<String>createBuilder()
+                                        .name(Text.literal("Text"))
+                                        .binding(defaults.toggleSprintText, () -> config.toggleSprintText, newVal -> config.toggleSprintText = newVal)
+                                        .controller(opt -> StringControllerBuilder.create(opt))
+                                        .build())
+                                .option(Option.<Color>createBuilder()
+                                        .name(Text.literal("Color"))
+                                        .binding(defaults.toggleSprintTextColor, () -> config.toggleSprintTextColor, newVal -> config.toggleSprintTextColor = newVal)
+                                        .controller(opt -> ColorControllerBuilder.create(opt))
+                                        .build())
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Text Shadow"))
+                                        .binding(defaults.toggleSprintTextShadowEnabled, () -> config.toggleSprintTextShadowEnabled, newVal -> config.toggleSprintTextShadowEnabled = newVal)
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .option(Option.<Integer>createBuilder()
+                                        .name(Text.literal("Position X"))
+                                        .binding(defaults.toggleSprintTextPositionX, () -> config.toggleSprintTextPositionX, newVal -> config.toggleSprintTextPositionX = newVal)
+                                        .controller(opt -> IntegerSliderControllerBuilder.create(opt)
+                                                .formatValue(value -> Text.literal(String.valueOf(value)))
+                                                .range(0, MinecraftClient.getInstance().getWindow().getScaledWidth())
+                                                .step(1))
+                                        .build())
+                                .option(Option.<Integer>createBuilder()
+                                        .name(Text.literal("Position Y"))
+                                        .binding(defaults.toggleSprintTextPositionY, () -> config.toggleSprintTextPositionY, newVal -> config.toggleSprintTextPositionY = newVal)
+                                        .controller(opt -> IntegerSliderControllerBuilder.create(opt)
+                                                .formatValue(value -> Text.literal(String.valueOf(value)))
+                                                .range(0, MinecraftClient.getInstance().getWindow().getScaledHeight())
+                                                .step(1))
+                                        .build())
+                                .build())
+                        .group(OptionGroup.createBuilder()
                                 .name(Text.literal("No Death Animation"))
                                 .description(OptionDescription.of(Text.literal("Remove death animation when mob is killed")))
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.literal("Enabled"))
-                                        .description(OptionDescription.of(Text.literal("Enable No Death Animation")))
                                         .binding(defaults.noDeathAnimationEnabled, () -> config.noDeathAnimationEnabled, newVal -> config.noDeathAnimationEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
