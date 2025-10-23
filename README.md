@@ -26,7 +26,7 @@
 
 ### HUD
 
-#### Actionbar
+#### Action Bar
 
 - Hide Defense
 - Hide True Defense
