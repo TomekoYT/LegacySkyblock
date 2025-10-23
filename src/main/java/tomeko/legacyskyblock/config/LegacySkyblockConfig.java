@@ -63,7 +63,7 @@ public class LegacySkyblockConfig {
     @SerialEntry
     public static float healthVignetteOpacityPercentage = 25F;
     @SerialEntry
-    public static float healthVignetteHealthPercentage = 2F;
+    public static float healthVignetteHealthPercentage = 20F;
 
     //MVP++ Emotes
     @SerialEntry
