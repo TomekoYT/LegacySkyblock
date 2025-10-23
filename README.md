@@ -16,11 +16,13 @@
 
 ## Features
 
+### Dungeons
+
+#### Auto Refill Items on Dungeon Start
+
 ### GUI
 
 #### Middle Click GUI Items
-
-- Work outside of Skyblock
 
 ### HUD
 
@@ -29,6 +31,8 @@
 - Hide Defense
 - Hide True Defense
 - Hide Florid Zombie Sword's charges
+
+#### Health Vignette
 
 ### Chat
 
@@ -42,3 +46,9 @@
 
 - Hide guild MOTD
 - Hide custom chat messages
+
+### Misc
+
+#### Toggle Sprint
+
+#### No Death Animation
