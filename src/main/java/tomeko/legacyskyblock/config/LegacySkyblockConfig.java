@@ -109,7 +109,7 @@ public class LegacySkyblockConfig {
                         .name(Text.literal("Dungeons"))
 
                         .group(OptionGroup.createBuilder()
-                                .name(Text.literal("Auto Refill on Dungeon Start"))
+                                .name(Text.literal("Auto Refill Items on Dungeon Start"))
                                 .description(OptionDescription.of(Text.literal("Auto refill certain items from sacks when dungeon starts")))
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.literal(refillOptionNames[0]))
