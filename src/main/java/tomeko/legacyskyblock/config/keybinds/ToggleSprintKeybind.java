@@ -4,7 +4,9 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.util.Identifier;
+//#if MC >= 1.21.9
+//$$import net.minecraft.util.Identifier;
+//#endif
 import org.lwjgl.glfw.GLFW;
 import tomeko.legacyskyblock.config.LegacySkyblockConfig;
 
@@ -25,13 +27,9 @@ public class ToggleSprintKeybind {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (toggleSprintKey.wasPressed()) {
-                manageToggleSprint();
+                LegacySkyblockConfig.toggleSprintEnabled = !LegacySkyblockConfig.toggleSprintEnabled;
+                LegacySkyblockConfig.CONFIG.save();
             }
         });
-    }
-
-    private static void manageToggleSprint() {
-        LegacySkyblockConfig.toggleSprintEnabled = !LegacySkyblockConfig.toggleSprintEnabled;
-        LegacySkyblockConfig.CONFIG.save();
     }
 }
