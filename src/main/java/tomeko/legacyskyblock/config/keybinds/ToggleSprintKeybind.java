@@ -32,5 +32,6 @@ public class ToggleSprintKeybind {
 
     private static void manageToggleSprint() {
         LegacySkyblockConfig.toggleSprintEnabled = !LegacySkyblockConfig.toggleSprintEnabled;
+        LegacySkyblockConfig.CONFIG.save();
     }
 }

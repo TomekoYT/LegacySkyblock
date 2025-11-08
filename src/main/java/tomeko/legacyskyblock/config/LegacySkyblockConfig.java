@@ -85,6 +85,7 @@ public class LegacySkyblockConfig {
     public static List<String> customChatMessagesToHide = new ArrayList<>();
 
     //Toggle Sprint
+    @SerialEntry
     public static boolean toggleSprintEnabled = false;
     @SerialEntry
     public static String toggleSprintText = "Sprint Toggled";
