@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class AutoRefill {
-    private static boolean wasInDungeons = false;
+    private static String lastServerName = "";
     private static boolean shouldScanInventory = false;
     private static int GFSTickDelay = 0;
     private static final Queue<String> GFSQueue = new LinkedList<>();
@@ -26,16 +26,11 @@ public class AutoRefill {
     }
 
     private static void manageRefill(MinecraftClient client) {
-        if (wasInDungeons && !HypixelPackets.inDungeons) {
-            wasInDungeons = false;
+        if (!HypixelPackets.inDungeons || lastServerName.equals(HypixelPackets.currentServerName)) {
             return;
         }
 
-        if (!(!wasInDungeons && HypixelPackets.inDungeons)) {
-            return;
-        }
-
-        wasInDungeons = true;
+        lastServerName = HypixelPackets.currentServerName;
         shouldScanInventory = true;
         GFSTickDelay = 80;
         scanTickDelay = 20;
