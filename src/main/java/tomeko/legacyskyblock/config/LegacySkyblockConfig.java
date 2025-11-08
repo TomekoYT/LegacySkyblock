@@ -254,7 +254,7 @@ public class LegacySkyblockConfig {
                         .name(Text.literal("Misc"))
 
                         .group(OptionGroup.createBuilder()
-                                .name(Text.literal("Toggle Sprint (keybind)"))
+                                .name(Text.literal("Toggle Sprint (KeyBind)"))
                                 .description(OptionDescription.of(Text.literal("Use a keybind to toggle sprint")))
                                 .option(Option.<String>createBuilder()
                                         .name(Text.literal("Text"))
