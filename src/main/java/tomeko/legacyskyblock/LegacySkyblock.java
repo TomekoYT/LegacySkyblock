@@ -15,8 +15,8 @@ public class LegacySkyblock implements ClientModInitializer {
     public void onInitializeClient() {
         LegacySkyblockCommand.register();
 
-        LegacySkyblockConfig.CONFIG.load();
         ToggleSprintKeybind.register();
+        LegacySkyblockConfig.register();
 
         AutoRefill.register();
 
@@ -26,8 +26,8 @@ public class LegacySkyblock implements ClientModInitializer {
         ActionBar.register();
         Chat.register();
 
-        HypixelPackets.register();
-
         NoDeathAnimation.register();
+
+        HypixelPackets.register();
     }
 }

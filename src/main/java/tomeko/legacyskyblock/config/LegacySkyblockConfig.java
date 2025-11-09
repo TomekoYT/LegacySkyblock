@@ -300,4 +300,8 @@ public class LegacySkyblockConfig {
                         .build())
         )).generateScreen(parent);
     }
+
+    public static void register() {
+        LegacySkyblockConfig.CONFIG.load();
+    }
 }
