@@ -20,9 +20,16 @@
 
 #### Auto Refill Items on Dungeon Start
 
+- Refill Ender Pearls
+- Refill Spirit Leaps
+- Refill Superboom TNT
+- Refill Decoys
+
 ### GUI
 
 #### Middle Click GUI Items
+
+- Use middle click instead of left click in GUI's
 
 ### HUD
 
@@ -33,6 +40,9 @@
 - Hide Florid Zombie Sword's charges
 
 #### Health Vignette
+
+- Set Opacity Percentage
+- Set Health Percentage
 
 ### Chat
 
@@ -51,4 +61,9 @@
 
 #### Toggle Sprint
 
+- Use a KeyBind to toggle sprint
+- Customize Text, Color, Text Shadow, Position
+
 #### No Death Animation
+
+- Remove death animation when mob is killed
