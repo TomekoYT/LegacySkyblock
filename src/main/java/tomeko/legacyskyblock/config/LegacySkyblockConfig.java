@@ -144,7 +144,7 @@ public class LegacySkyblockConfig {
 
                         .group(OptionGroup.createBuilder()
                                 .name(Text.literal("Middle Click GUI Items"))
-                                .description(OptionDescription.of(Text.literal("Use middle click instead of left click in GUI's")))
+                                .description(OptionDescription.of(Text.literal("Use middle click instead of left click in GUIs")))
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.literal("Enabled"))
                                         .binding(defaults.middleClickGUIEnabled, () -> config.middleClickGUIEnabled, newVal -> config.middleClickGUIEnabled = newVal)
