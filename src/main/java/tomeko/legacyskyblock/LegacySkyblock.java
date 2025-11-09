@@ -7,6 +7,7 @@ import tomeko.legacyskyblock.config.keybinds.*;
 import tomeko.legacyskyblock.dungeons.*;
 import tomeko.legacyskyblock.hud.custom.*;
 import tomeko.legacyskyblock.hud.vanillahud.*;
+import tomeko.legacyskyblock.misc.*;
 import tomeko.legacyskyblock.utils.*;
 
 public class LegacySkyblock implements ClientModInitializer {
@@ -26,5 +27,7 @@ public class LegacySkyblock implements ClientModInitializer {
         Chat.register();
 
         HypixelPackets.register();
+
+        NoDeathAnimation.register();
     }
 }
