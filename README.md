@@ -22,14 +22,14 @@
 
 - Refill Ender Pearls
 - Refill Spirit Leaps
-- Refill Superboom TNT
+- Refill Superboom TNTs
 - Refill Decoys
 
 ### GUI
 
 #### Middle Click GUI Items
 
-- Use middle click instead of left click in GUI's
+- Use middle click instead of left click in GUIs
 
 ### HUD
 
