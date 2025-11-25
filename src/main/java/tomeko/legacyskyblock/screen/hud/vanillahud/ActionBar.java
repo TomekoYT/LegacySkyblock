@@ -1,4 +1,4 @@
-package tomeko.legacyskyblock.hud.vanillahud;
+package tomeko.legacyskyblock.screen.hud.vanillahud;
 
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.text.Text;
