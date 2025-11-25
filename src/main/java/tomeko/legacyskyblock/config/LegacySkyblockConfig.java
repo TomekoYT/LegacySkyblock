@@ -87,9 +87,9 @@ public class LegacySkyblockConfig {
     @SerialEntry
     public static boolean toggleSprintTextShadowEnabled = false;
     @SerialEntry
-    public static int toggleSprintTextPositionX = 10;
+    public static int toggleSprintTextWidth = 10;
     @SerialEntry
-    public static int toggleSprintTextPositionY = 10;
+    public static int toggleSprintTextHeight = 10;
 
     //No Death Animation
     @SerialEntry
@@ -185,7 +185,7 @@ public class LegacySkyblockConfig {
                                         .build())
                                 .option(Option.<Integer>createBuilder()
                                         .name(Text.literal("Position X"))
-                                        .binding(defaults.toggleSprintTextPositionX, () -> config.toggleSprintTextPositionX, newVal -> config.toggleSprintTextPositionX = newVal)
+                                        .binding(defaults.toggleSprintTextWidth, () -> config.toggleSprintTextWidth, newVal -> config.toggleSprintTextWidth = newVal)
                                         .controller(opt -> IntegerSliderControllerBuilder.create(opt)
                                                 .formatValue(value -> Text.literal(String.valueOf(value)))
                                                 .range(0, MinecraftClient.getInstance().getWindow().getScaledWidth())
@@ -193,7 +193,7 @@ public class LegacySkyblockConfig {
                                         .build())
                                 .option(Option.<Integer>createBuilder()
                                         .name(Text.literal("Position Y"))
-                                        .binding(defaults.toggleSprintTextPositionY, () -> config.toggleSprintTextPositionY, newVal -> config.toggleSprintTextPositionY = newVal)
+                                        .binding(defaults.toggleSprintTextHeight, () -> config.toggleSprintTextHeight, newVal -> config.toggleSprintTextHeight = newVal)
                                         .controller(opt -> IntegerSliderControllerBuilder.create(opt)
                                                 .formatValue(value -> Text.literal(String.valueOf(value)))
                                                 .range(0, MinecraftClient.getInstance().getWindow().getScaledHeight())

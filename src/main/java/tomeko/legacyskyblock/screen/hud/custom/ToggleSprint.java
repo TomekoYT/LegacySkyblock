@@ -8,6 +8,9 @@ import net.minecraft.client.render.RenderTickCounter;
 import tomeko.legacyskyblock.config.LegacySkyblockConfig;
 
 public class ToggleSprint {
+    public static int lastWindowWidth = 0;
+    public static int lastWindowHeight = 0;
+
     public static void register() {
         HudRenderCallback.EVENT.register(ToggleSprint::render);
         ClientTickEvents.START_CLIENT_TICK.register(ToggleSprint::sprint);
@@ -20,7 +23,31 @@ public class ToggleSprint {
             return;
         }
 
-        context.drawText(client.textRenderer, LegacySkyblockConfig.toggleSprintText, LegacySkyblockConfig.toggleSprintTextPositionX, LegacySkyblockConfig.toggleSprintTextPositionY, LegacySkyblockConfig.toggleSprintTextColor.getRGB(), LegacySkyblockConfig.toggleSprintTextShadowEnabled);
+        if (lastWindowWidth == 0 || lastWindowHeight == 0) {
+            lastWindowWidth = client.getWindow().getScaledWidth();
+            lastWindowHeight = client.getWindow().getScaledHeight();
+            return;
+        }
+
+        boolean changed = false;
+
+        if (lastWindowWidth != client.getWindow().getScaledWidth()) {
+            LegacySkyblockConfig.toggleSprintTextWidth = client.getWindow().getScaledWidth() - (lastWindowWidth - LegacySkyblockConfig.toggleSprintTextWidth);
+            lastWindowWidth = client.getWindow().getScaledWidth();
+            changed = true;
+        }
+
+        if (lastWindowHeight != client.getWindow().getScaledHeight()) {
+            LegacySkyblockConfig.toggleSprintTextHeight = client.getWindow().getScaledHeight() - (lastWindowHeight - LegacySkyblockConfig.toggleSprintTextHeight);
+            lastWindowHeight = client.getWindow().getScaledHeight();
+            changed = true;
+        }
+
+        if (changed) {
+            LegacySkyblockConfig.CONFIG.save();
+        }
+
+        context.drawText(client.textRenderer, LegacySkyblockConfig.toggleSprintText, LegacySkyblockConfig.toggleSprintTextWidth, LegacySkyblockConfig.toggleSprintTextHeight, LegacySkyblockConfig.toggleSprintTextColor.getRGB(), LegacySkyblockConfig.toggleSprintTextShadowEnabled);
     }
 
     private static void sprint(MinecraftClient client) {
