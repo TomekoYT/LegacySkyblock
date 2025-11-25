@@ -1,9 +1,6 @@
 @file:Suppress("UnstableApiUsage", "PropertyName")
 
 import dev.deftu.gradle.utils.GameSide
-import dev.deftu.gradle.utils.includeOrShade
-import dev.deftu.gradle.utils.version.MinecraftVersion
-import dev.deftu.gradle.utils.version.MinecraftVersions
 
 plugins {
     java
