@@ -15,7 +15,6 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class LegacySkyblockConfig {
     public static final ConfigClassHandler<LegacySkyblockConfig> CONFIG = ConfigClassHandler.createBuilder(LegacySkyblockConfig.class)
@@ -25,7 +24,7 @@ public class LegacySkyblockConfig {
             .build();
 
     //Auto Refill
-    public static final ItemUtil[] refillItems = {new ItemUtil("Ender Pearl", "ENDER_PEARL", 16), new ItemUtil("Spirit Leap", "SPIRIT_LEAP", 16), new ItemUtil("Superboom TNT", "SUPERBOOM_TNT", 64), new ItemUtil("Decoy", "DUNGEON_DECOY", 64)};
+    public static final ItemUtil[] refillItems = {new ItemUtil("Ender Pearl", "ENDER_PEARL", 16), new ItemUtil("Spirit Leap", "SPIRIT_LEAP", 16), new ItemUtil("Superboom TNT", "SUPERBOOM_TNT", 64), new ItemUtil("Decoy", "DUNGEON_DECOY", 64), new ItemUtil("Inflatable Jerry", "INFLATABLE_JERRY", 64)};
     private static final String[] refillOptionNames = new String[refillItems.length];
     private static final String[] refillOptionDescriptions = new String[refillItems.length];
 
@@ -37,13 +36,7 @@ public class LegacySkyblockConfig {
     }
 
     @SerialEntry
-    public static Map<String, Boolean> refillEnabled = new HashMap<>();
-
-    static {
-        for (ItemUtil refillItem : refillItems) {
-            refillEnabled.put(refillItem.id, false);
-        }
-    }
+    public static HashMap<String, Boolean> refillEnabled = new HashMap<>();
 
     //Middle Click GUI Items
     @SerialEntry
@@ -134,6 +127,12 @@ public class LegacySkyblockConfig {
                                         .name(Text.literal(refillOptionNames[3]))
                                         .description(OptionDescription.of(Text.literal(refillOptionDescriptions[3])))
                                         .binding(defaults.refillEnabled.get(refillItems[3].id), () -> config.refillEnabled.get(refillItems[3].id), newVal -> config.refillEnabled.put(refillItems[3].id, newVal))
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal(refillOptionNames[4]))
+                                        .description(OptionDescription.of(Text.literal(refillOptionDescriptions[4])))
+                                        .binding(defaults.refillEnabled.get(refillItems[4].id), () -> config.refillEnabled.get(refillItems[4].id), newVal -> config.refillEnabled.put(refillItems[4].id, newVal))
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .build())
@@ -296,5 +295,13 @@ public class LegacySkyblockConfig {
 
     public static void register() {
         LegacySkyblockConfig.CONFIG.load();
+
+        for (ItemUtil refillItem : refillItems) {
+            if (!refillEnabled.containsKey(refillItem.id)) {
+                refillEnabled.put(refillItem.id, false);
+            }
+        }
+
+        LegacySkyblockConfig.CONFIG.save();
     }
 }

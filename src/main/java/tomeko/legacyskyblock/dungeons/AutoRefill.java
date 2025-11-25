@@ -101,6 +101,6 @@ public class AutoRefill {
 
         client.player.networkHandler.sendChatCommand(GFSQueue.peek());
         GFSQueue.poll();
-        GFSTickDelay = 40;
+        GFSTickDelay = 45;
     }
 }
