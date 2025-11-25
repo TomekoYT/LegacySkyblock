@@ -95,6 +95,10 @@ public class LegacySkyblockConfig {
     @SerialEntry
     public static boolean noDeathAnimationEnabled = true;
 
+    //Hide Damage Splash
+    @SerialEntry
+    public static boolean hideDamageSplashEnabled = false;
+
     public static Screen configScreen(Screen parent) {
         return YetAnotherConfigLib.create(CONFIG, ((defaults, config, builder) -> builder
                 .title(Text.literal("LegacySkyblock"))
@@ -133,6 +137,16 @@ public class LegacySkyblockConfig {
                                         .name(Text.literal(refillOptionNames[4]))
                                         .description(OptionDescription.of(Text.literal(refillOptionDescriptions[4])))
                                         .binding(defaults.refillEnabled.get(refillItems[4].id), () -> config.refillEnabled.get(refillItems[4].id), newVal -> config.refillEnabled.put(refillItems[4].id, newVal))
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .build())
+
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("Hide Damage Splash"))
+                                .description(OptionDescription.of(Text.literal("Hide damage splash on mobs while in dungeons")))
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Enabled"))
+                                        .binding(defaults.hideDamageSplashEnabled, () -> config.hideDamageSplashEnabled, newVal -> config.hideDamageSplashEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .build())
