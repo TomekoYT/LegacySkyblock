@@ -38,9 +38,23 @@ public class LegacySkyblockConfig {
     @SerialEntry
     public static HashMap<String, Boolean> refillEnabled = new HashMap<>();
 
-    //Middle Click GUI Items
+    //Hide Damage Splash
     @SerialEntry
-    public static boolean middleClickGUIEnabled = true;
+    public static boolean hideDamageSplashEnabled = false;
+
+    //Toggle Sprint
+    @SerialEntry
+    public static boolean toggleSprintEnabled = false;
+    @SerialEntry
+    public static String toggleSprintText = "Sprint Toggled";
+    @SerialEntry
+    public static Color toggleSprintTextColor = Color.WHITE;
+    @SerialEntry
+    public static boolean toggleSprintTextShadowEnabled = false;
+    @SerialEntry
+    public static int toggleSprintTextWidth = 10;
+    @SerialEntry
+    public static int toggleSprintTextHeight = 10;
 
     //Actionbar
     @SerialEntry
@@ -57,6 +71,14 @@ public class LegacySkyblockConfig {
     public static float healthVignetteOpacityPercentage = 25F;
     @SerialEntry
     public static float healthVignetteHealthPercentage = 20F;
+
+    //Middle Click GUI Items
+    @SerialEntry
+    public static boolean middleClickGUIEnabled = true;
+
+    //No Death Animation
+    @SerialEntry
+    public static boolean noDeathAnimationEnabled = true;
 
     //MVP++ Emotes
     @SerialEntry
@@ -76,28 +98,6 @@ public class LegacySkyblockConfig {
     //Hide Custom Chat Messages
     @SerialEntry
     public static List<String> customChatMessagesToHide = new ArrayList<>();
-
-    //Toggle Sprint
-    @SerialEntry
-    public static boolean toggleSprintEnabled = false;
-    @SerialEntry
-    public static String toggleSprintText = "Sprint Toggled";
-    @SerialEntry
-    public static Color toggleSprintTextColor = Color.WHITE;
-    @SerialEntry
-    public static boolean toggleSprintTextShadowEnabled = false;
-    @SerialEntry
-    public static int toggleSprintTextWidth = 10;
-    @SerialEntry
-    public static int toggleSprintTextHeight = 10;
-
-    //No Death Animation
-    @SerialEntry
-    public static boolean noDeathAnimationEnabled = true;
-
-    //Hide Damage Splash
-    @SerialEntry
-    public static boolean hideDamageSplashEnabled = false;
 
     public static Screen configScreen(Screen parent) {
         return YetAnotherConfigLib.create(CONFIG, ((defaults, config, builder) -> builder
@@ -154,16 +154,6 @@ public class LegacySkyblockConfig {
 
                 .category(ConfigCategory.createBuilder()
                         .name(Text.literal("Screen"))
-
-                        .group(OptionGroup.createBuilder()
-                                .name(Text.literal("Middle Click GUI Items"))
-                                .description(OptionDescription.of(Text.literal("Use middle click instead of left click in GUIs")))
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Enabled"))
-                                        .binding(defaults.middleClickGUIEnabled, () -> config.middleClickGUIEnabled, newVal -> config.middleClickGUIEnabled = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .build())
 
                         .group(OptionGroup.createBuilder()
                                 .name(Text.literal("Toggle Sprint (KeyBind)"))
@@ -224,16 +214,6 @@ public class LegacySkyblockConfig {
                                 .build())
 
                         .group(OptionGroup.createBuilder()
-                                .name(Text.literal("No Death Animation"))
-                                .description(OptionDescription.of(Text.literal("Remove death animation when mob is killed")))
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Enabled"))
-                                        .binding(defaults.noDeathAnimationEnabled, () -> config.noDeathAnimationEnabled, newVal -> config.noDeathAnimationEnabled = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .build())
-
-                        .group(OptionGroup.createBuilder()
                                 .name(Text.literal("Health Vignette"))
                                 .description(OptionDescription.of(Text.literal("Turn screen red when below % of health")))
                                 .option(Option.<Boolean>createBuilder()
@@ -258,6 +238,26 @@ public class LegacySkyblockConfig {
                                                 .formatValue(value -> Text.literal(String.format("%,.0f", value) + "%"))
                                                 .range(0F, 100F)
                                                 .step(1F))
+                                        .build())
+                                .build())
+
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("Middle Click GUI Items"))
+                                .description(OptionDescription.of(Text.literal("Use middle click instead of left click in GUIs")))
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Enabled"))
+                                        .binding(defaults.middleClickGUIEnabled, () -> config.middleClickGUIEnabled, newVal -> config.middleClickGUIEnabled = newVal)
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .build())
+
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("No Death Animation"))
+                                .description(OptionDescription.of(Text.literal("Remove death animation when mob is killed")))
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Enabled"))
+                                        .binding(defaults.noDeathAnimationEnabled, () -> config.noDeathAnimationEnabled, newVal -> config.noDeathAnimationEnabled = newVal)
+                                        .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .build())
                         .build())
