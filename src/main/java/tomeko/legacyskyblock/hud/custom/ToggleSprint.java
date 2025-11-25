@@ -10,6 +10,7 @@ import tomeko.legacyskyblock.config.LegacySkyblockConfig;
 public class ToggleSprint {
     public static void register() {
         HudRenderCallback.EVENT.register(ToggleSprint::render);
+        ClientTickEvents.START_CLIENT_TICK.register(ToggleSprint::sprint);
         ClientTickEvents.END_CLIENT_TICK.register(ToggleSprint::sprint);
     }
 
