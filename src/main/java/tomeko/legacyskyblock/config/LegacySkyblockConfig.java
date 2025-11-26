@@ -52,9 +52,9 @@ public class LegacySkyblockConfig {
     @SerialEntry
     public static boolean toggleSprintTextShadowEnabled = false;
     @SerialEntry
-    public static int toggleSprintTextWidth = 10;
+    public static float toggleSprintTextWidthPercentage = 10F;
     @SerialEntry
-    public static int toggleSprintTextHeight = 10;
+    public static float toggleSprintTextHeightPercentage = 10F;
 
     //Actionbar
     @SerialEntry
@@ -191,21 +191,21 @@ public class LegacySkyblockConfig {
                                         .binding(defaults.toggleSprintTextShadowEnabled, () -> config.toggleSprintTextShadowEnabled, newVal -> config.toggleSprintTextShadowEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
-                                .option(Option.<Integer>createBuilder()
+                                .option(Option.<Float>createBuilder()
                                         .name(Text.literal("Position X"))
-                                        .binding(defaults.toggleSprintTextWidth, () -> config.toggleSprintTextWidth, newVal -> config.toggleSprintTextWidth = newVal)
-                                        .controller(opt -> IntegerSliderControllerBuilder.create(opt)
-                                                .formatValue(value -> Text.literal(String.valueOf(value)))
-                                                .range(0, MinecraftClient.getInstance().getWindow().getScaledWidth())
-                                                .step(1))
+                                        .binding(defaults.toggleSprintTextWidthPercentage, () -> config.toggleSprintTextWidthPercentage, newVal -> config.toggleSprintTextWidthPercentage = newVal)
+                                        .controller(opt -> FloatSliderControllerBuilder.create(opt)
+                                                .formatValue(value -> Text.literal(String.format("%,.0f", value) + "%"))
+                                                .range(0F, 100F)
+                                                .step(1F))
                                         .build())
-                                .option(Option.<Integer>createBuilder()
+                                .option(Option.<Float>createBuilder()
                                         .name(Text.literal("Position Y"))
-                                        .binding(defaults.toggleSprintTextHeight, () -> config.toggleSprintTextHeight, newVal -> config.toggleSprintTextHeight = newVal)
-                                        .controller(opt -> IntegerSliderControllerBuilder.create(opt)
-                                                .formatValue(value -> Text.literal(String.valueOf(value)))
-                                                .range(0, MinecraftClient.getInstance().getWindow().getScaledHeight())
-                                                .step(1))
+                                        .binding(defaults.toggleSprintTextHeightPercentage, () -> config.toggleSprintTextHeightPercentage, newVal -> config.toggleSprintTextHeightPercentage = newVal)
+                                        .controller(opt -> FloatSliderControllerBuilder.create(opt)
+                                                .formatValue(value -> Text.literal(String.format("%,.0f", value) + "%"))
+                                                .range(0F, 100F)
+                                                .step(1F))
                                         .build())
                                 .build())
 
@@ -241,7 +241,7 @@ public class LegacySkyblockConfig {
                                         .build())
                                 .option(Option.<Float>createBuilder()
                                         .name(Text.literal("Set Opacity Percentage"))
-                                        .description(OptionDescription.of(Text.literal("Set Health Vignette's opacity\nSet 0% to disable")))
+                                        .description(OptionDescription.of(Text.literal("Set Health Vignette's opacity")))
                                         .binding(defaults.healthVignetteOpacityPercentage, () -> config.healthVignetteOpacityPercentage, newVal -> config.healthVignetteOpacityPercentage = newVal)
                                         .controller(opt -> FloatSliderControllerBuilder.create(opt)
                                                 .formatValue(value -> Text.literal(String.format("%,.0f", value) + "%"))
