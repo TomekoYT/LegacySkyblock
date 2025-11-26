@@ -80,6 +80,24 @@ public class LegacySkyblockConfig {
     @SerialEntry
     public static boolean noDeathAnimationEnabled = true;
 
+    //Modify Screenshot Message
+    @SerialEntry
+    public static boolean modifyScreenshotMessageEnabled = true;
+    @SerialEntry
+    public static boolean modifyScreenshotMessageAddName = false;
+    @SerialEntry
+    public static boolean modifyScreenshotMessageAddCopy = true;
+    @SerialEntry
+    public static boolean modifyScreenshotMessageAddOpen = true;
+    @SerialEntry
+    public static boolean modifyScreenshotMessageAddOpenFolder = true;
+    @SerialEntry
+    public static boolean modifyScreenshotMessageAddDelete = true;
+
+    //Auto Copy Screenshot
+    @SerialEntry
+    public static boolean autoCopyScreenshotEnabled = false;
+
     //MVP++ Emotes
     @SerialEntry
     public static boolean MVPEmotesEnabled = false;
@@ -257,6 +275,55 @@ public class LegacySkyblockConfig {
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.literal("Enabled"))
                                         .binding(defaults.noDeathAnimationEnabled, () -> config.noDeathAnimationEnabled, newVal -> config.noDeathAnimationEnabled = newVal)
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .build())
+                        .build())
+
+                .category(ConfigCategory.createBuilder()
+                        .name(Text.literal("Screenshots"))
+
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("Modify Screenshot Message"))
+                                .description(OptionDescription.of(Text.literal("Modify message sent after taking a screenshot")))
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Enabled"))
+                                        .binding(defaults.modifyScreenshotMessageEnabled, () -> config.modifyScreenshotMessageEnabled, newVal -> config.modifyScreenshotMessageEnabled = newVal)
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Add Screenshot Name"))
+                                        .binding(defaults.modifyScreenshotMessageAddName, () -> config.modifyScreenshotMessageAddName, newVal -> config.modifyScreenshotMessageAddName = newVal)
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Add [COPY] Button"))
+                                        .binding(defaults.modifyScreenshotMessageAddCopy, () -> config.modifyScreenshotMessageAddCopy, newVal -> config.modifyScreenshotMessageAddCopy = newVal)
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Add [OPEN] Button"))
+                                        .binding(defaults.modifyScreenshotMessageAddOpen, () -> config.modifyScreenshotMessageAddOpen, newVal -> config.modifyScreenshotMessageAddOpen = newVal)
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Add [OPEN FOLDER] Button"))
+                                        .binding(defaults.modifyScreenshotMessageAddOpenFolder, () -> config.modifyScreenshotMessageAddOpenFolder, newVal -> config.modifyScreenshotMessageAddOpenFolder = newVal)
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Add [DELETE] Button"))
+                                        .binding(defaults.modifyScreenshotMessageAddDelete, () -> config.modifyScreenshotMessageAddDelete, newVal -> config.modifyScreenshotMessageAddDelete = newVal)
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .build())
+
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("Auto Copy Screenshot"))
+                                .description(OptionDescription.of(Text.literal("Automatically copy the screenshot image after pressing F2")))
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Enabled"))
+                                        .binding(defaults.autoCopyScreenshotEnabled, () -> config.autoCopyScreenshotEnabled, newVal -> config.autoCopyScreenshotEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .build())

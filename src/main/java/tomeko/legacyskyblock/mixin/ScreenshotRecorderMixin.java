@@ -1,0 +1,110 @@
+package tomeko.legacyskyblock.mixin;
+
+import net.minecraft.client.gl.Framebuffer;
+import net.minecraft.client.util.ScreenshotRecorder;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Util;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import tomeko.legacyskyblock.config.LegacySkyblockConfig;
+import tomeko.legacyskyblock.screenshots.ScreenshotManager;
+
+import java.io.File;
+import java.util.function.Consumer;
+
+@Mixin(ScreenshotRecorder.class)
+public class ScreenshotRecorderMixin {
+    //#if MC >= 1.21.7
+    //$$@Inject(at = @At("HEAD"), method = "saveScreenshot(Ljava/io/File;Ljava/lang/String;Lnet/minecraft/client/gl/Framebuffer;ILjava/util/function/Consumer;)V", cancellable = true)
+    //$$private static void saveScreenshot(File gameDirectory, String fileName, Framebuffer framebuffer, int downscaleFactor, Consumer<Text> messageReceiver, CallbackInfo ci) {
+    //#else
+    @Inject(at = @At("HEAD"), method = "saveScreenshot(Ljava/io/File;Ljava/lang/String;Lnet/minecraft/client/gl/Framebuffer;Ljava/util/function/Consumer;)V", cancellable = true)
+    private static void saveScreenshot(File gameDirectory, String fileName, Framebuffer framebuffer, Consumer<Text> messageReceiver, CallbackInfo ci) {
+        //#endif
+        ScreenshotRecorder.takeScreenshot(framebuffer, (nativeImage) -> {
+            File screenshotsFolder = new File(gameDirectory, "screenshots");
+            File screenshotFile;
+            if (fileName == null) {
+                screenshotFile = getScreenshotFilename(screenshotsFolder);
+            } else {
+                screenshotFile = new File(screenshotsFolder, fileName);
+            }
+
+            try {
+                nativeImage.writeTo(screenshotFile);
+                ScreenshotManager.screenshotImages.add(nativeImage);
+                ScreenshotManager.screenshotFiles.add(screenshotFile);
+                MutableText message = Text.literal("Saved screenshot");
+
+                if (LegacySkyblockConfig.modifyScreenshotMessageAddName) {
+                    message.append(Text.literal(" as "));
+                    message.append(Text.literal(screenshotFile.getName()).formatted(Formatting.UNDERLINE));
+                }
+
+                if (LegacySkyblockConfig.modifyScreenshotMessageAddCopy) {
+                    message.append(" ");
+                    message.append(Text.literal("[COPY]").formatted(Formatting.BOLD, Formatting.BLUE).styled(style -> style
+                            .withClickEvent(new ClickEvent.RunCommand("screenshotcopy " + (ScreenshotManager.screenshotImages.toArray().length - 1)))
+                            .withHoverEvent(new HoverEvent.ShowText(Text.literal("Copy the screenshot")))));
+                }
+
+                if (LegacySkyblockConfig.modifyScreenshotMessageAddOpen) {
+                    message.append(" ");
+                    message.append(Text.literal("[OPEN]").formatted(Formatting.BOLD, Formatting.GREEN).styled(style -> style
+                            .withClickEvent(new ClickEvent.OpenFile(screenshotFile.getAbsolutePath()))
+                            .withHoverEvent(new HoverEvent.ShowText(Text.literal("Open " + screenshotFile.getName())))));
+                }
+
+                if (LegacySkyblockConfig.modifyScreenshotMessageAddOpenFolder) {
+                    message.append(" ");
+                    message.append(Text.literal("[OPEN FOLDER]").formatted(Formatting.BOLD, Formatting.GOLD).styled(style -> style
+                            .withClickEvent(new ClickEvent.OpenFile(screenshotsFolder.getAbsolutePath()))
+                            .withHoverEvent(new HoverEvent.ShowText(Text.literal(screenshotsFolder.getPath())))));
+                }
+
+                if (LegacySkyblockConfig.modifyScreenshotMessageAddDelete) {
+                    message.append(" ");
+                    message.append(Text.literal("[DELETE]").formatted(Formatting.BOLD, Formatting.RED).styled(style -> style
+                            .withClickEvent(new ClickEvent.RunCommand("screenshotdelete " + (ScreenshotManager.screenshotFiles.toArray().length - 1)))
+                            .withHoverEvent(new HoverEvent.ShowText(Text.literal("Delete the screenshot")))));
+                }
+
+                messageReceiver.accept(message);
+            } catch (Exception ignored) {
+            } finally {
+                ci.cancel();
+            }
+
+            if (LegacySkyblockConfig.autoCopyScreenshotEnabled) {
+                ScreenshotManager.copyScreenshot(ScreenshotManager.screenshotImages.toArray().length - 1);
+            }
+        });
+        ci.cancel();
+    }
+
+    private static File getScreenshotFilename(File directory) {
+        String time = Util.getFormattedCurrentTime();
+        int i = 1;
+
+        while (true) {
+            String fileName;
+            if (i == 1) {
+                fileName = time + ".png";
+            } else {
+                fileName = time + "_" + i + ".png";
+            }
+
+            File file = new File(directory, fileName);
+            if (!file.exists()) {
+                return file;
+            }
+            i++;
+        }
+    }
+}

@@ -46,4 +46,7 @@ dependencies {
         "1.21.10" to "16.0.0-rc.1"
     )
     modImplementation("com.terraformersmc:modmenu:${modmenu[mcData.version.toString()]}")
+
+    //macOS only
+    implementation("ca.weblite:java-objc-bridge:1.0.0")
 }

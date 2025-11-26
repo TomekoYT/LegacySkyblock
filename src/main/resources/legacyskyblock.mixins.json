@@ -3,7 +3,9 @@
   "package": "tomeko.legacyskyblock.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "HandledScreenMixin"
+    "HandledScreenMixin",
+    "MainMixin",
+    "ScreenshotRecorderMixin"
   ],
   "injectors": {
     "defaultRequire": 1
