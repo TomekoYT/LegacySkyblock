@@ -15,7 +15,7 @@ public class NoDeathAnimation {
             if (client.isPaused()) return;
 
             for (Entity entity : world.getEntities()) {
-                if (entity instanceof LivingEntity livingEntity && livingEntity.isDead()) {
+                if (entity != client.player && entity instanceof LivingEntity livingEntity && livingEntity.isDead()) {
                     entity.discard();
                 }
             }
