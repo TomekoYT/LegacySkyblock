@@ -41,12 +41,12 @@ dependencies {
     modImplementation("dev.isxander:yet-another-config-lib:${yacl[mcData.version.toString()]}")
 
     val modmenu = mapOf(
-        "1.21.5" to "14.0.0-rc.2",
+        "1.21.5" to "14.0.0",
         "1.21.8" to "15.0.0",
         "1.21.10" to "16.0.0-rc.1"
     )
     modImplementation("com.terraformersmc:modmenu:${modmenu[mcData.version.toString()]}")
 
     //macOS only
-    implementation("ca.weblite:java-objc-bridge:1.0.0")
+    implementation("ca.weblite:java-objc-bridge:1.2")
 }
