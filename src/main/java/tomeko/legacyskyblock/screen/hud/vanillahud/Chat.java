@@ -1,54 +1,14 @@
 package tomeko.legacyskyblock.screen.hud.vanillahud;
 
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import tomeko.legacyskyblock.config.LegacySkyblockConfig;
 import tomeko.legacyskyblock.utils.HypixelPackets;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.List;
-
 public class Chat {
     private static boolean guildMOTD = false;
-    private static final List<AbstractMap.SimpleEntry<String, String>> EMOTES = new ArrayList<>();
-
-    static {
-        EMOTES.add(new AbstractMap.SimpleEntry<>("<3", "❤"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":arrow:", "➜"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":bum:", "♿"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":cat:", "= ＾● ⋏ ●＾ ="));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":cute:", "(✿◠‿◠)"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":dab:", "<o/"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":dj:", "ヽ(⌐■_■)ノ♬"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":dog:", "(ᵔᴥᵔ)"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":gimme:", "༼つ◕_◕༽つ"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":java:", "☕"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":maths:", "√(π+x)=L"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":no:", "✖"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":peace:", "✌"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":puffer:", "<('O')>"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":pvp:", "⚔"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":shrug:", "¯\\_(ツ)_/¯"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":skull:", "☠"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":sloth:", "(・⊝・)"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":snail:", "@'-'"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":snow:", "☃"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":star:", "✮"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":tableflip:", "(╯°□°）╯︵ ┻━┻"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":thinking:", "(0.o?)"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":totem:", "☉_☉"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":typing:", "✎..."));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":wizard:", "('-')⊃━☆ﾟ.*･｡ﾟ"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":yes:", "✔"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>(":yey:", "ヽ (◕◡◕) ﾉ"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>("ez", "ｅｚ"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>("h/", "ヽ(^◇^*)/"));
-        EMOTES.add(new AbstractMap.SimpleEntry<>("o/", "( ﾟ◡ﾟ)/"));
-    }
 
     public static void register() {
         ClientReceiveMessageEvents.ALLOW_GAME.register((message, fromActionBar) -> {
@@ -134,39 +94,9 @@ public class Chat {
 
             return message;
         });
-
-        ClientSendMessageEvents.MODIFY_CHAT.register((message) -> {
-            //MVP++ Emotes
-            if (LegacySkyblockConfig.MVPEmotesEnabled) {
-                return replaceEmotes(message);
-            }
-
-            return message;
-        });
-
-        ClientSendMessageEvents.MODIFY_COMMAND.register((command) -> {
-            //MVP++ Emotes
-            if (LegacySkyblockConfig.MVPEmotesEnabled) {
-                String[] words = command.split(" ");
-                StringBuilder newCommand = new StringBuilder(words[0]);
-                for (int i = 1; i < words.length; i++) {
-                    newCommand.append(" ").append(replaceEmotes(words[i]));
-                }
-                return newCommand.toString();
-            }
-
-            return command;
-        });
     }
 
     private static String removeFormatting(String string) {
         return string.replaceAll("§.", "");
-    }
-
-    private static String replaceEmotes(String message) {
-        for (AbstractMap.SimpleEntry<String, String> entry : EMOTES) {
-            message = message.replace(entry.getKey(), entry.getValue());
-        }
-        return message;
     }
 }
