@@ -17,13 +17,29 @@ public class HideDamageSplash {
 
             for (Entity entity : world.getEntities()) {
                 if (entity instanceof ArmorStandEntity armorStandEntity) {
-                    String name = armorStandEntity.getName().getString();
-                    if (name.startsWith("✧") && name.endsWith("✧")) {
-                        name = name.substring(1, name.length() - 1);
+                    String name = armorStandEntity.getName().getString().replace(",", "");
+
+                    if (name.endsWith("k") || name.endsWith("M")) {
+                        name = name.substring(0, name.length() - 1);
                     }
 
                     try {
-                        Long.parseLong(name.replace(",", ""));
+                        Long.parseLong(name);
+                        entity.discard();
+                        continue;
+                    } catch (NumberFormatException ignored) {
+                    }
+
+                    if (name.length() >= 2) {
+                        name = name.substring(1, name.length() - 1);
+                    }
+
+                    if (name.endsWith("k") || name.endsWith("M")) {
+                        name = name.substring(0, name.length() - 1);
+                    }
+
+                    try {
+                        Long.parseLong(name);
                         entity.discard();
                     } catch (NumberFormatException ignored) {
                     }
