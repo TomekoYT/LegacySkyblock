@@ -64,7 +64,6 @@
 ### Chat
 
 #### Modify Chat Messages
-- MVP++ emotes
 - Color no rank messages
 - Color private messages
 
