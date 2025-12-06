@@ -17,7 +17,7 @@ public class HideDamageSplash {
 
             for (Entity entity : world.getEntities()) {
                 if (entity instanceof ArmorStandEntity armorStandEntity) {
-                    String name = armorStandEntity.getName().getString().replace(",", "");
+                    String name = armorStandEntity.getName().getString().replace(",", "").replace(".","");
 
                     if (name.endsWith("k") || name.endsWith("M")) {
                         name = name.substring(0, name.length() - 1);
