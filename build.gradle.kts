@@ -34,9 +34,9 @@ dependencies {
     modImplementation("net.hypixel:mod-api:1.0.1")
 
     val yacl = mapOf(
-        "1.21.5" to "3.8.0+1.21.5-fabric",
-        "1.21.8" to "3.7.1+1.21.6-fabric",
-        "1.21.10" to "3.8.0+1.21.9-fabric"
+        "1.21.5" to "3.8.1+1.21.5-fabric",
+        "1.21.8" to "3.8.1+1.21.6-fabric",
+        "1.21.10" to "3.8.1+1.21.10-fabric"
     )
     modImplementation("dev.isxander:yet-another-config-lib:${yacl[mcData.version.toString()]}")
 
