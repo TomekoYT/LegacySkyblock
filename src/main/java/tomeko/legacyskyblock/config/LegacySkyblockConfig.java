@@ -41,20 +41,6 @@ public class LegacySkyblockConfig {
     @SerialEntry
     public static boolean hideDamageSplashEnabled = false;
 
-    //Toggle Sprint
-    @SerialEntry
-    public static boolean toggleSprintEnabled = false;
-    @SerialEntry
-    public static String toggleSprintText = "Sprint Toggled";
-    @SerialEntry
-    public static Color toggleSprintTextColor = Color.WHITE;
-    @SerialEntry
-    public static boolean toggleSprintTextShadowEnabled = false;
-    @SerialEntry
-    public static float toggleSprintTextWidthPercentage = 10F;
-    @SerialEntry
-    public static float toggleSprintTextHeightPercentage = 10F;
-
     //Actionbar
     @SerialEntry
     public static boolean hideDefense = false;
@@ -74,10 +60,6 @@ public class LegacySkyblockConfig {
     //Middle Click GUI Items
     @SerialEntry
     public static boolean middleClickGUIEnabled = true;
-
-    //No Death Animation
-    @SerialEntry
-    public static boolean noDeathAnimationEnabled = true;
 
     //Modify Screenshot Message
     @SerialEntry
@@ -111,6 +93,30 @@ public class LegacySkyblockConfig {
     //Hide Custom Chat Messages
     @SerialEntry
     public static List<String> customChatMessagesToHide = new ArrayList<>();
+
+    //AutoTip
+    @SerialEntry
+    public static boolean autoTipEnabled = true;
+    @SerialEntry
+    public static boolean hideAutoTipMessagesEnabled = true;
+
+    //No Death Animation
+    @SerialEntry
+    public static boolean noDeathAnimationEnabled = true;
+
+    //Toggle Sprint
+    @SerialEntry
+    public static boolean toggleSprintEnabled = false;
+    @SerialEntry
+    public static String toggleSprintText = "Sprint Toggled";
+    @SerialEntry
+    public static Color toggleSprintTextColor = Color.WHITE;
+    @SerialEntry
+    public static boolean toggleSprintTextShadowEnabled = false;
+    @SerialEntry
+    public static float toggleSprintTextWidthPercentage = 10F;
+    @SerialEntry
+    public static float toggleSprintTextHeightPercentage = 10F;
 
     public static Screen configScreen(Screen parent) {
         return YetAnotherConfigLib.create(CONFIG, ((defaults, config, builder) -> builder
@@ -166,43 +172,7 @@ public class LegacySkyblockConfig {
                         .build())
 
                 .category(ConfigCategory.createBuilder()
-                        .name(Text.literal("Screen"))
-
-                        .group(OptionGroup.createBuilder()
-                                .name(Text.literal("Toggle Sprint (KeyBind)"))
-                                .description(OptionDescription.of(Text.literal("Use a KeyBind to toggle sprint")))
-                                .option(Option.<String>createBuilder()
-                                        .name(Text.literal("Text"))
-                                        .binding(defaults.toggleSprintText, () -> config.toggleSprintText, newVal -> config.toggleSprintText = newVal)
-                                        .controller(opt -> StringControllerBuilder.create(opt))
-                                        .build())
-                                .option(Option.<Color>createBuilder()
-                                        .name(Text.literal("Color"))
-                                        .binding(defaults.toggleSprintTextColor, () -> config.toggleSprintTextColor, newVal -> config.toggleSprintTextColor = newVal)
-                                        .controller(opt -> ColorControllerBuilder.create(opt))
-                                        .build())
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Text Shadow"))
-                                        .binding(defaults.toggleSprintTextShadowEnabled, () -> config.toggleSprintTextShadowEnabled, newVal -> config.toggleSprintTextShadowEnabled = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .option(Option.<Float>createBuilder()
-                                        .name(Text.literal("Position X"))
-                                        .binding(defaults.toggleSprintTextWidthPercentage, () -> config.toggleSprintTextWidthPercentage, newVal -> config.toggleSprintTextWidthPercentage = newVal)
-                                        .controller(opt -> FloatSliderControllerBuilder.create(opt)
-                                                .formatValue(value -> Text.literal(String.format("%,.0f", value) + "%"))
-                                                .range(0F, 100F)
-                                                .step(1F))
-                                        .build())
-                                .option(Option.<Float>createBuilder()
-                                        .name(Text.literal("Position Y"))
-                                        .binding(defaults.toggleSprintTextHeightPercentage, () -> config.toggleSprintTextHeightPercentage, newVal -> config.toggleSprintTextHeightPercentage = newVal)
-                                        .controller(opt -> FloatSliderControllerBuilder.create(opt)
-                                                .formatValue(value -> Text.literal(String.format("%,.0f", value) + "%"))
-                                                .range(0F, 100F)
-                                                .step(1F))
-                                        .build())
-                                .build())
+                        .name(Text.literal("GUI & HUD"))
 
                         .group(OptionGroup.createBuilder()
                                 .name(Text.literal("Action Bar"))
@@ -260,16 +230,6 @@ public class LegacySkyblockConfig {
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.literal("Enabled"))
                                         .binding(defaults.middleClickGUIEnabled, () -> config.middleClickGUIEnabled, newVal -> config.middleClickGUIEnabled = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .build())
-
-                        .group(OptionGroup.createBuilder()
-                                .name(Text.literal("No Death Animation"))
-                                .description(OptionDescription.of(Text.literal("Remove death animation when mob is killed")))
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Enabled"))
-                                        .binding(defaults.noDeathAnimationEnabled, () -> config.noDeathAnimationEnabled, newVal -> config.noDeathAnimationEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .build())
@@ -358,6 +318,72 @@ public class LegacySkyblockConfig {
                                 .binding(defaults.customChatMessagesToHide, () -> config.customChatMessagesToHide, newVal -> config.customChatMessagesToHide = newVal)
                                 .controller(StringControllerBuilder::create)
                                 .initial("")
+                                .build())
+                        .build())
+
+                .category(ConfigCategory.createBuilder()
+                        .name(Text.literal("Misc"))
+
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("AutoTip"))
+                                .description(OptionDescription.of(Text.literal("Send /tip all command every 5 minutes while on Hypixel")))
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Enabled"))
+                                        .binding(defaults.autoTipEnabled, () -> config.autoTipEnabled, newVal -> config.autoTipEnabled = newVal)
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Hide AutoTip Messages"))
+                                        .description(OptionDescription.of(Text.literal("Hide messages sent by Hypixel after doing /tip all")))
+                                        .binding(defaults.hideAutoTipMessagesEnabled, () -> config.hideAutoTipMessagesEnabled, newVal -> config.hideAutoTipMessagesEnabled = newVal)
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .build())
+
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("No Death Animation"))
+                                .description(OptionDescription.of(Text.literal("Remove death animation when mob is killed")))
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Enabled"))
+                                        .binding(defaults.noDeathAnimationEnabled, () -> config.noDeathAnimationEnabled, newVal -> config.noDeathAnimationEnabled = newVal)
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .build())
+
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("Toggle Sprint (KeyBind)"))
+                                .description(OptionDescription.of(Text.literal("Use a KeyBind to toggle sprint")))
+                                .option(Option.<String>createBuilder()
+                                        .name(Text.literal("Text"))
+                                        .binding(defaults.toggleSprintText, () -> config.toggleSprintText, newVal -> config.toggleSprintText = newVal)
+                                        .controller(opt -> StringControllerBuilder.create(opt))
+                                        .build())
+                                .option(Option.<Color>createBuilder()
+                                        .name(Text.literal("Color"))
+                                        .binding(defaults.toggleSprintTextColor, () -> config.toggleSprintTextColor, newVal -> config.toggleSprintTextColor = newVal)
+                                        .controller(opt -> ColorControllerBuilder.create(opt))
+                                        .build())
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Text Shadow"))
+                                        .binding(defaults.toggleSprintTextShadowEnabled, () -> config.toggleSprintTextShadowEnabled, newVal -> config.toggleSprintTextShadowEnabled = newVal)
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .option(Option.<Float>createBuilder()
+                                        .name(Text.literal("Position X"))
+                                        .binding(defaults.toggleSprintTextWidthPercentage, () -> config.toggleSprintTextWidthPercentage, newVal -> config.toggleSprintTextWidthPercentage = newVal)
+                                        .controller(opt -> FloatSliderControllerBuilder.create(opt)
+                                                .formatValue(value -> Text.literal(String.format("%,.0f", value) + "%"))
+                                                .range(0F, 100F)
+                                                .step(1F))
+                                        .build())
+                                .option(Option.<Float>createBuilder()
+                                        .name(Text.literal("Position Y"))
+                                        .binding(defaults.toggleSprintTextHeightPercentage, () -> config.toggleSprintTextHeightPercentage, newVal -> config.toggleSprintTextHeightPercentage = newVal)
+                                        .controller(opt -> FloatSliderControllerBuilder.create(opt)
+                                                .formatValue(value -> Text.literal(String.format("%,.0f", value) + "%"))
+                                                .range(0F, 100F)
+                                                .step(1F))
+                                        .build())
                                 .build())
                         .build())
         )).generateScreen(parent);

@@ -1,4 +1,4 @@
-package tomeko.legacyskyblock.screen;
+package tomeko.legacyskyblock.misc;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
