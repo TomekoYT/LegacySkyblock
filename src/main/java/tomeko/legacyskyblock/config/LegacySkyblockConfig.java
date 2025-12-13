@@ -98,6 +98,8 @@ public class LegacySkyblockConfig {
     @SerialEntry
     public static boolean autoTipEnabled = true;
     @SerialEntry
+    public static int autoTipInterval = 5;
+    @SerialEntry
     public static boolean hideAutoTipMessagesEnabled = true;
 
     //No Death Animation
@@ -331,6 +333,15 @@ public class LegacySkyblockConfig {
                                         .name(Text.literal("Enabled"))
                                         .binding(defaults.autoTipEnabled, () -> config.autoTipEnabled, newVal -> config.autoTipEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .option(Option.<Integer>createBuilder()
+                                        .name(Text.literal("Set Interval"))
+                                        .description(OptionDescription.of(Text.literal("Set /tip all sending interval")))
+                                        .binding(defaults.autoTipInterval, () -> config.autoTipInterval, newVal -> config.autoTipInterval = newVal)
+                                        .controller(opt -> IntegerSliderControllerBuilder.create(opt)
+                                                .formatValue(value -> Text.literal(value + (value > 1 ? " minutes" : " minute")))
+                                                .range(1, 15)
+                                                .step(1))
                                         .build())
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.literal("Hide AutoTip Messages"))
