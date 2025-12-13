@@ -15,13 +15,13 @@ public class ToggleSprintKeybind {
 
     public static void register() {
         toggleSprintKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.legacyskyblock.togglesprint",
+                "key.category.legacyskyblock.togglesprint",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_M,
                 //#if MC >= 1.21.9
-                //$$KeyBinding.Category.create(Identifier.of("legacyskyblock", "category"))
+                //$$KeyBinding.Category.create(Identifier.of("legacyskyblock"))
                 //#else
-                "category.legacyskyblock"
+                "key.category.minecraft.legacyskyblock"
                 //#endif
         ));
 
