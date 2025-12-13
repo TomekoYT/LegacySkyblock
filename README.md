@@ -29,11 +29,18 @@
 - Hide damage splash on mobs while in dungeons
 
 
-### Screen
+### Chat
 
-#### Toggle Sprint
-- Use a KeyBind to toggle sprint
-- Customize Text, Color, Text Shadow, Position
+#### Modify Chat Messages
+- Color no rank messages
+- Color private messages
+
+#### Hide Chat Messages
+- Hide guild MOTD
+- Hide custom chat messages
+
+
+### GUI & HUD
 
 #### Action Bar
 - Hide Defense
@@ -47,9 +54,6 @@
 #### Middle Click GUI Items
 - Use middle click instead of left click in GUIs
 
-#### No Death Animation
-- Remove death animation when mob is killed
-
 
 ### Screenshots
 
@@ -61,12 +65,15 @@
 - Automatically copy the screenshot image after pressing F2
 
 
-### Chat
+### Misc
 
-#### Modify Chat Messages
-- Color no rank messages
-- Color private messages
+#### AutoTip
+- Set interval
+- Hide AutoTip messages
 
-#### Hide Chat Messages
-- Hide guild MOTD
-- Hide custom chat messages
+#### No Death Animation
+- Remove death animation when mob is killed
+
+#### Toggle Sprint
+- Use a KeyBind to toggle sprint
+- Customize Text, Color, Text Shadow, Position
