@@ -41,6 +41,21 @@ public class LegacySkyblockConfig {
     @SerialEntry
     public static boolean hideDamageSplashEnabled = false;
 
+    //White Chat Messages
+    private static final String SKYHANNI_CHAT_FORMATTING_WARNING = "\n\n§cDoesn't work with SkyHanni's Chat Formatting enabled!";
+    @SerialEntry
+    public static boolean whiteNoRankMessagesEnabled = true;
+    @SerialEntry
+    public static boolean whitePrivateMessagesEnabled = true;
+
+    //Hide Chat Messages
+    @SerialEntry
+    public static boolean hideGuildMOTDEnabled = false;
+
+    //Hide Custom Chat Messages
+    @SerialEntry
+    public static List<String> customChatMessagesToHide = new ArrayList<>();
+
     //Actionbar
     @SerialEntry
     public static boolean hideDefense = false;
@@ -78,21 +93,6 @@ public class LegacySkyblockConfig {
     //Auto Copy Screenshot
     @SerialEntry
     public static boolean autoCopyScreenshotEnabled = false;
-
-    //White Chat Messages
-    private static final String SKYHANNI_CHAT_FORMATTING_WARNING = "\n\n§cDoesn't work with SkyHanni's Chat Formatting enabled!";
-    @SerialEntry
-    public static boolean whiteNoRankMessagesEnabled = true;
-    @SerialEntry
-    public static boolean whitePrivateMessagesEnabled = true;
-
-    //Hide Chat Messages
-    @SerialEntry
-    public static boolean hideGuildMOTDEnabled = false;
-
-    //Hide Custom Chat Messages
-    @SerialEntry
-    public static List<String> customChatMessagesToHide = new ArrayList<>();
 
     //AutoTip
     @SerialEntry
