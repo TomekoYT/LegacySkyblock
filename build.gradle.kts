@@ -20,6 +20,8 @@ toolkitLoomHelper {
     disableRunConfigs(GameSide.SERVER)
 
     useMixinRefMap(modData.id)
+
+    loom.enableModProvidedJavadoc.set(false)
 }
 
 repositories {
@@ -36,14 +38,16 @@ dependencies {
     val yacl = mapOf(
         "1.21.5" to "3.8.1+1.21.5-fabric",
         "1.21.8" to "3.8.1+1.21.6-fabric",
-        "1.21.10" to "3.8.1+1.21.10-fabric"
+        "1.21.10" to "3.8.1+1.21.10-fabric",
+        "1.21.11" to "3.8.1+1.21.11-fabric"
     )
     modImplementation("dev.isxander:yet-another-config-lib:${yacl[mcData.version.toString()]}")
 
     val modmenu = mapOf(
         "1.21.5" to "14.0.0",
         "1.21.8" to "15.0.0",
-        "1.21.10" to "16.0.0-rc.1"
+        "1.21.10" to "16.0.0-rc.1",
+        "1.21.11" to "17.0.0-alpha.1"
     )
     modImplementation("com.terraformersmc:modmenu:${modmenu[mcData.version.toString()]}")
 
