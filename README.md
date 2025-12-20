@@ -10,7 +10,7 @@
   <img alt="youtube" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/youtube-singular_vector.svg">
 </a>
 
-# LegacySkyblock
+# Legacy Skyblock
 1.21 Hypixel Skyblock mod aimed to port features from 1.8.9 mods
 
 ## Features
@@ -50,6 +50,7 @@
 #### Health Vignette
 - Set Opacity Percentage
 - Set Health Percentage
+- Work outside of Skyblock
 
 #### Middle Click GUI Items
 - Use middle click instead of left click in GUIs
