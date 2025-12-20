@@ -5,6 +5,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import tomeko.legacyskyblock.config.LegacySkyblockConfig;
+import tomeko.legacyskyblock.utils.HypixelPackets;
 
 public class HealthVignette {
     public static void register() {
@@ -17,9 +18,8 @@ public class HealthVignette {
                 || client.player == null
                 || client.player.getMaxHealth() <= 0
                 || client.player.getHealth() / client.player.getMaxHealth() > LegacySkyblockConfig.healthVignetteHealthPercentage / 100
-        ) {
-            return;
-        }
+                || (!LegacySkyblockConfig.noDeathAnimationWorkOutsideOfSkyblock && !HypixelPackets.inSkyblock)
+        ) return;
 
         int alpha = (int) ((LegacySkyblockConfig.healthVignetteOpacityPercentage / 100) * 255.0f);
         context.fill(0, 0, client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight(), ((alpha << 24) | 0xFF0000));

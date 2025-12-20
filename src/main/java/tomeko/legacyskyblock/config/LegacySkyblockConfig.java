@@ -105,6 +105,8 @@ public class LegacySkyblockConfig {
     //No Death Animation
     @SerialEntry
     public static boolean noDeathAnimationEnabled = true;
+    @SerialEntry
+    public static boolean noDeathAnimationWorkOutsideOfSkyblock = false;
 
     //Toggle Sprint
     @SerialEntry
@@ -260,6 +262,12 @@ public class LegacySkyblockConfig {
                                                 .formatValue(value -> Text.literal(String.format("%,.0f", value) + "%"))
                                                 .range(0F, 100F)
                                                 .step(1F))
+                                        .build())
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Work outside of Skyblock"))
+                                        .description(OptionDescription.of(Text.literal("Make Health Vignette work outside of Hypixel Skyblock")))
+                                        .binding(defaults.noDeathAnimationWorkOutsideOfSkyblock, () -> config.noDeathAnimationWorkOutsideOfSkyblock, newVal -> config.noDeathAnimationWorkOutsideOfSkyblock = newVal)
+                                        .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .build())
 
