@@ -24,7 +24,8 @@ public abstract class HandledScreenMixin {
                 || actionType != SlotActionType.PICKUP
                 || !LegacySkyblockConfig.middleClickGUIEnabled
                 || !(instance.getScreenHandler() instanceof GenericContainerScreenHandler)
-                || !HypixelPackets.inSkyblock
+                || !HypixelPackets.onHypixel
+                || (!LegacySkyblockConfig.middleClickGUIOutsideSkyblock && !HypixelPackets.inSkyblock)
         ) {
             original.call(instance, slot, slotId, button, actionType);
             return;
