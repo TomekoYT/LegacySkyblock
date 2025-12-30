@@ -46,8 +46,8 @@ dependencies {
     val modmenu = mapOf(
         "1.21.5" to "14.0.0",
         "1.21.8" to "15.0.0",
-        "1.21.10" to "16.0.0-rc.1",
-        "1.21.11" to "17.0.0-alpha.1"
+        "1.21.10" to "16.0.0-rc.2",
+        "1.21.11" to "17.0.0-beta.1"
     )
     modImplementation("com.terraformersmc:modmenu:${modmenu[mcData.version.toString()]}")
 
