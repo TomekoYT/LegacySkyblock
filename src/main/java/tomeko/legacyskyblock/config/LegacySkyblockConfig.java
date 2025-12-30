@@ -76,21 +76,7 @@ public class LegacySkyblockConfig {
     @SerialEntry
     public static boolean middleClickGUIEnabled = true;
     @SerialEntry
-    public static boolean middleClickGUIOutsideSkyblock = false;
-
-    //Hitboxes
-    @SerialEntry
-    public static boolean hitboxesRenderSelfHitbox = true;
-    @SerialEntry
-    public static boolean hitboxesRenderPlayerHitbox = true;
-    @SerialEntry
-    public static boolean hitboxesRenderMobHitbox = true;
-    @SerialEntry
-    public static boolean hitboxesRenderProjectileHitbox = true;
-    @SerialEntry
-    public static boolean hitboxesRenderItemHitbox = true;
-    @SerialEntry
-    public static boolean hitboxesRenderMiscEntityHitbox = true;
+    public static boolean middleClickGUIWorkOutsideSkyblock = false;
 
     //Modify Screenshot Message
     @SerialEntry
@@ -122,7 +108,7 @@ public class LegacySkyblockConfig {
     @SerialEntry
     public static boolean noDeathAnimationEnabled = true;
     @SerialEntry
-    public static boolean noDeathAnimationWorkOutsideOfSkyblock = false;
+    public static boolean noDeathAnimationWorkOutsideSkyblock = false;
 
     //Toggle Sprint
     @SerialEntry
@@ -229,7 +215,7 @@ public class LegacySkyblockConfig {
                         .build())
 
                 .category(ConfigCategory.createBuilder()
-                        .name(Text.literal("Screen"))
+                        .name(Text.literal("GUI & HUD"))
 
                         .group(OptionGroup.createBuilder()
                                 .name(Text.literal("Action Bar"))
@@ -282,7 +268,7 @@ public class LegacySkyblockConfig {
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.literal("Work outside Skyblock"))
                                         .description(OptionDescription.of(Text.literal("Make Health Vignette work outside Hypixel Skyblock")))
-                                        .binding(defaults.noDeathAnimationWorkOutsideOfSkyblock, () -> config.noDeathAnimationWorkOutsideOfSkyblock, newVal -> config.noDeathAnimationWorkOutsideOfSkyblock = newVal)
+                                        .binding(defaults.noDeathAnimationWorkOutsideSkyblock, () -> config.noDeathAnimationWorkOutsideSkyblock, newVal -> config.noDeathAnimationWorkOutsideSkyblock = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .build())
@@ -298,42 +284,7 @@ public class LegacySkyblockConfig {
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.literal("Work outside Skyblock"))
                                         .description(OptionDescription.of(Text.literal("Make Middle Click GUI Items work outside Hypixel Skyblock")))
-                                        .binding(defaults.middleClickGUIOutsideSkyblock, () -> config.middleClickGUIOutsideSkyblock, newVal -> config.middleClickGUIOutsideSkyblock = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .build())
-
-                        .group(OptionGroup.createBuilder()
-                                .name(Text.literal("Hitboxes"))
-                                .description(OptionDescription.of(Text.literal("Customize hitbox render")))
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Render your hitbox"))
-                                        .binding(defaults.hitboxesRenderSelfHitbox, () -> config.hitboxesRenderSelfHitbox, newVal -> config.hitboxesRenderSelfHitbox = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Render player hitbox"))
-                                        .binding(defaults.hitboxesRenderPlayerHitbox, () -> config.hitboxesRenderPlayerHitbox, newVal -> config.hitboxesRenderPlayerHitbox = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Render mob hitbox"))
-                                        .binding(defaults.hitboxesRenderMobHitbox, () -> config.hitboxesRenderMobHitbox, newVal -> config.hitboxesRenderMobHitbox = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Render projectile hitbox"))
-                                        .binding(defaults.hitboxesRenderProjectileHitbox, () -> config.hitboxesRenderProjectileHitbox, newVal -> config.hitboxesRenderProjectileHitbox = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Render item hitbox"))
-                                        .binding(defaults.hitboxesRenderItemHitbox, () -> config.hitboxesRenderItemHitbox, newVal -> config.hitboxesRenderItemHitbox = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Render misc entity hitbox"))
-                                        .binding(defaults.hitboxesRenderMiscEntityHitbox, () -> config.hitboxesRenderMiscEntityHitbox, newVal -> config.hitboxesRenderMiscEntityHitbox = newVal)
+                                        .binding(defaults.middleClickGUIWorkOutsideSkyblock, () -> config.middleClickGUIWorkOutsideSkyblock, newVal -> config.middleClickGUIWorkOutsideSkyblock = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .build())

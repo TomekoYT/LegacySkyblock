@@ -18,7 +18,7 @@ public class HealthVignette {
                 || client.player == null
                 || client.player.getMaxHealth() <= 0
                 || client.player.getHealth() / client.player.getMaxHealth() > LegacySkyblockConfig.healthVignetteHealthPercentage / 100
-                || (!LegacySkyblockConfig.noDeathAnimationWorkOutsideOfSkyblock && !HypixelPackets.inSkyblock)
+                || (!LegacySkyblockConfig.noDeathAnimationWorkOutsideSkyblock && !HypixelPackets.inSkyblock)
         ) return;
 
         int alpha = (int) ((LegacySkyblockConfig.healthVignetteOpacityPercentage / 100) * 255.0f);
