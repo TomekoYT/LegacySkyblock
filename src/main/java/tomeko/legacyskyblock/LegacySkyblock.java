@@ -28,7 +28,6 @@ public class LegacySkyblock implements ClientModInitializer {
         ToggleSprintKeybind.register();
 
         AutoTip.register();
-        NoDeathAnimation.register();
         ToggleSprint.register();
 
         HypixelPackets.register();
