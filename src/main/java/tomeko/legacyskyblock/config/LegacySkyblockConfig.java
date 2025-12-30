@@ -40,6 +40,8 @@ public class LegacySkyblockConfig {
     //Hide Damage Splash
     @SerialEntry
     public static boolean hideDamageSplashEnabled = false;
+    @SerialEntry
+    public static boolean hideDamageSplashWorkOutsideDungeons = false;
 
     //White Chat Messages
     private static final String SKYHANNI_CHAT_FORMATTING_WARNING = "\n\n§cDoesn't work with SkyHanni's Chat Formatting enabled!";
@@ -71,6 +73,8 @@ public class LegacySkyblockConfig {
     public static float healthVignetteOpacityPercentage = 25F;
     @SerialEntry
     public static float healthVignetteHealthPercentage = 20F;
+    @SerialEntry
+    public static boolean healthVignetteWorkOutsideSkyblock = false;
 
     //Middle Click GUI Items
     @SerialEntry
@@ -103,12 +107,6 @@ public class LegacySkyblockConfig {
     public static int autoTipInterval = 5;
     @SerialEntry
     public static boolean hideAutoTipMessagesEnabled = true;
-
-    //No Death Animation
-    @SerialEntry
-    public static boolean noDeathAnimationEnabled = true;
-    @SerialEntry
-    public static boolean noDeathAnimationWorkOutsideSkyblock = false;
 
     //Toggle Sprint
     @SerialEntry
@@ -172,6 +170,11 @@ public class LegacySkyblockConfig {
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.literal("Enabled"))
                                         .binding(defaults.hideDamageSplashEnabled, () -> config.hideDamageSplashEnabled, newVal -> config.hideDamageSplashEnabled = newVal)
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Work outside Dungeons"))
+                                        .binding(defaults.hideDamageSplashWorkOutsideDungeons, () -> config.hideDamageSplashWorkOutsideDungeons, newVal -> config.hideDamageSplashWorkOutsideDungeons = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .build())
@@ -268,7 +271,7 @@ public class LegacySkyblockConfig {
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.literal("Work outside Skyblock"))
                                         .description(OptionDescription.of(Text.literal("Make Health Vignette work outside Hypixel Skyblock")))
-                                        .binding(defaults.noDeathAnimationWorkOutsideSkyblock, () -> config.noDeathAnimationWorkOutsideSkyblock, newVal -> config.noDeathAnimationWorkOutsideSkyblock = newVal)
+                                        .binding(defaults.healthVignetteWorkOutsideSkyblock, () -> config.healthVignetteWorkOutsideSkyblock, newVal -> config.healthVignetteWorkOutsideSkyblock = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .build())
@@ -363,16 +366,6 @@ public class LegacySkyblockConfig {
                                         .name(Text.literal("Hide AutoTip Messages"))
                                         .description(OptionDescription.of(Text.literal("Hide messages sent by Hypixel after doing /tip all")))
                                         .binding(defaults.hideAutoTipMessagesEnabled, () -> config.hideAutoTipMessagesEnabled, newVal -> config.hideAutoTipMessagesEnabled = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .build())
-
-                        .group(OptionGroup.createBuilder()
-                                .name(Text.literal("No Death Animation"))
-                                .description(OptionDescription.of(Text.literal("Remove death animation when mob is killed")))
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Enabled"))
-                                        .binding(defaults.noDeathAnimationEnabled, () -> config.noDeathAnimationEnabled, newVal -> config.noDeathAnimationEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .build())

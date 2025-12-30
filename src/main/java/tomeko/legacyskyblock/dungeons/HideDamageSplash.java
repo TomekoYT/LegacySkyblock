@@ -10,7 +10,10 @@ import tomeko.legacyskyblock.utils.HypixelPackets;
 public class HideDamageSplash {
     public static void register() {
         ClientTickEvents.END_WORLD_TICK.register(world -> {
-            if (!HypixelPackets.inDungeons || !LegacySkyblockConfig.hideDamageSplashEnabled) return;
+            if (!LegacySkyblockConfig.hideDamageSplashEnabled
+            || !HypixelPackets.inSkyblock
+            || (!HypixelPackets.inDungeons && !LegacySkyblockConfig.hideDamageSplashWorkOutsideDungeons)
+            ) return;
 
             MinecraftClient client = MinecraftClient.getInstance();
             if (client.isPaused()) return;
