@@ -27,6 +27,7 @@
 
 #### Hide Damage Splash
 - Hide damage splash on mobs while in dungeons
+- Work outside Dungeons
 
 
 ### Chat
@@ -50,10 +51,11 @@
 #### Health Vignette
 - Set Opacity Percentage
 - Set Health Percentage
-- Work outside of Skyblock
+- Work outside Skyblock
 
 #### Middle Click GUI Items
 - Use middle click instead of left click in GUIs
+- Work outside Skyblock
 
 
 ### Screenshots
@@ -71,9 +73,6 @@
 #### AutoTip
 - Set interval
 - Hide AutoTip messages
-
-#### No Death Animation
-- Remove death animation when mob is killed
 
 #### Toggle Sprint
 - Use a KeyBind to toggle sprint
