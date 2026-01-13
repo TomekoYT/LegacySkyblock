@@ -6,6 +6,8 @@ import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import dev.isxander.yacl3.platform.YACLPlatform;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 import tomeko.legacyskyblock.utils.ItemUtil;
@@ -21,6 +23,8 @@ public class LegacySkyblockConfig {
                     .setPath(YACLPlatform.getConfigDir().resolve("legacyskyblock.json"))
                     .build())
             .build();
+
+    public static boolean shouldOpenConfig = false;
 
     //Auto Refill
     public static final ItemUtil[] refillItems = {new ItemUtil("Ender Pearl", "ENDER_PEARL", 16), new ItemUtil("Spirit Leap", "SPIRIT_LEAP", 16), new ItemUtil("Superboom TNT", "SUPERBOOM_TNT", 64), new ItemUtil("Decoy", "DUNGEON_DECOY", 64), new ItemUtil("Inflatable Jerry", "INFLATABLE_JERRY", 64)};
@@ -420,5 +424,14 @@ public class LegacySkyblockConfig {
         }
 
         LegacySkyblockConfig.CONFIG.save();
+
+        ClientTickEvents.END_CLIENT_TICK.register(LegacySkyblockConfig::openConfigOnTick);
+    }
+
+    private static void openConfigOnTick(MinecraftClient client) {
+        if (!shouldOpenConfig) return;
+
+        shouldOpenConfig = false;
+        client.setScreen(configScreen(client.currentScreen));
     }
 }
