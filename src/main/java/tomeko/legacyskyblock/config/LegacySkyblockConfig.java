@@ -81,7 +81,7 @@ public class LegacySkyblockConfig {
     public static boolean middleClickGUIEnabled = true;
     @SerialEntry
     public static boolean middleClickGUIWorkOutsideSkyblock = false;
-    private static final String MIDDLE_CLICK_GUI_WORK_OUTSIDE_SKYBLOCK_WARNING = "\n\n§cEXPECT BUGS WITH THIS OPTION ENABLED!\n§7REPORT ISSUES HERE: §n§3https://github.com/TomekoYT/LegacySkyblock/issues";
+    private static final String MIDDLE_CLICK_GUI_WORK_OUTSIDE_SKYBLOCK_WARNING = "\n\n§cEXPECT BUGS WITH THIS OPTION ENABLED!\n§7Report issues here: §3https://github.com/TomekoYT/LegacySkyblock/issues";
 
     //Modify Screenshot Message
     @SerialEntry
