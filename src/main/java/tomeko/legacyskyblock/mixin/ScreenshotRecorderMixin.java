@@ -51,7 +51,7 @@ public class ScreenshotRecorderMixin {
                 if (LegacySkyblockConfig.modifyScreenshotMessageAddCopy) {
                     message.append(" ");
                     message.append(Text.literal("[COPY]").formatted(Formatting.BOLD, Formatting.BLUE).styled(style -> style
-                            .withClickEvent(new ClickEvent.RunCommand(Constants.SCREENSHOT_COPY_COMMAND + (ScreenshotManager.screenshotImages.toArray().length - 1)))
+                            .withClickEvent(new ClickEvent.RunCommand(Constants.SCREENSHOT_COPY_COMMAND + " " + (ScreenshotManager.screenshotImages.toArray().length - 1)))
                             .withHoverEvent(new HoverEvent.ShowText(Text.literal("Copy the screenshot")))));
                 }
 
@@ -72,7 +72,7 @@ public class ScreenshotRecorderMixin {
                 if (LegacySkyblockConfig.modifyScreenshotMessageAddDelete) {
                     message.append(" ");
                     message.append(Text.literal("[DELETE]").formatted(Formatting.BOLD, Formatting.RED).styled(style -> style
-                            .withClickEvent(new ClickEvent.RunCommand(Constants.SCREENSHOT_DELETE_COMMAND + (ScreenshotManager.screenshotFiles.toArray().length - 1)))
+                            .withClickEvent(new ClickEvent.RunCommand(Constants.SCREENSHOT_DELETE_COMMAND + " " + (ScreenshotManager.screenshotFiles.toArray().length - 1)))
                             .withHoverEvent(new HoverEvent.ShowText(Text.literal("Delete the screenshot")))));
                 }
 
