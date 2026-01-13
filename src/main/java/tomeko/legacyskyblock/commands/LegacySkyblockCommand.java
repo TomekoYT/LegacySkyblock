@@ -10,26 +10,27 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public class LegacySkyblockCommand {
     public static void register() {
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
-                dispatcher.register(literal("legacyskyblock")
-                        .executes(ctx -> {
-                            MinecraftClient client = MinecraftClient.getInstance();
-                            Screen parentScreen = client.currentScreen;
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+            var mainNode = literal("legacyskyblock")
+                    .executes(ctx -> {
+                        MinecraftClient client = MinecraftClient.getInstance();
+                        Screen parentScreen = client.currentScreen;
 
-                            ClientTickEvents.END_CLIENT_TICK.register(new ClientTickEvents.EndTick() {
-                                private boolean opened = false;
+                        ClientTickEvents.END_CLIENT_TICK.register(new ClientTickEvents.EndTick() {
+                            private boolean opened = false;
 
-                                @Override
-                                public void onEndTick(MinecraftClient tickClient) {
-                                    if (!opened) {
-                                        opened = true;
-                                        tickClient.setScreen(LegacySkyblockConfig.configScreen(parentScreen));
-                                    }
+                            @Override
+                            public void onEndTick(MinecraftClient tickClient) {
+                                if (!opened) {
+                                    opened = true;
+                                    tickClient.setScreen(LegacySkyblockConfig.configScreen(parentScreen));
                                 }
-                            });
-                            return 1;
-                        })
-                )
-        );
+                            }
+                        });
+                        return 1;
+                    });
+            dispatcher.register(mainNode);
+            dispatcher.register(literal("lsb").redirect(mainNode.build()));
+        });
     }
 }
