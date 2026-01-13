@@ -13,8 +13,8 @@ public class LegacySkyblock implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         LegacySkyblockCommand.register();
-        ScreenshotCopyCommand.register();
-        ScreenshotDeleteCommand.register();
+        LSBScreenshotCopyCommand.register();
+        LSBScreenshotDeleteCommand.register();
 
         LegacySkyblockConfig.register();
 

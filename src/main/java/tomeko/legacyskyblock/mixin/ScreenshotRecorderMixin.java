@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tomeko.legacyskyblock.config.LegacySkyblockConfig;
 import tomeko.legacyskyblock.screenshots.ScreenshotManager;
+import tomeko.legacyskyblock.utils.Constants;
 
 import java.io.File;
 import java.util.function.Consumer;
@@ -50,7 +51,7 @@ public class ScreenshotRecorderMixin {
                 if (LegacySkyblockConfig.modifyScreenshotMessageAddCopy) {
                     message.append(" ");
                     message.append(Text.literal("[COPY]").formatted(Formatting.BOLD, Formatting.BLUE).styled(style -> style
-                            .withClickEvent(new ClickEvent.RunCommand("screenshotcopy " + (ScreenshotManager.screenshotImages.toArray().length - 1)))
+                            .withClickEvent(new ClickEvent.RunCommand(Constants.SCREENSHOT_COPY_COMMAND + (ScreenshotManager.screenshotImages.toArray().length - 1)))
                             .withHoverEvent(new HoverEvent.ShowText(Text.literal("Copy the screenshot")))));
                 }
 
@@ -71,7 +72,7 @@ public class ScreenshotRecorderMixin {
                 if (LegacySkyblockConfig.modifyScreenshotMessageAddDelete) {
                     message.append(" ");
                     message.append(Text.literal("[DELETE]").formatted(Formatting.BOLD, Formatting.RED).styled(style -> style
-                            .withClickEvent(new ClickEvent.RunCommand("screenshotdelete " + (ScreenshotManager.screenshotFiles.toArray().length - 1)))
+                            .withClickEvent(new ClickEvent.RunCommand(Constants.SCREENSHOT_DELETE_COMMAND + (ScreenshotManager.screenshotFiles.toArray().length - 1)))
                             .withHoverEvent(new HoverEvent.ShowText(Text.literal("Delete the screenshot")))));
                 }
 
