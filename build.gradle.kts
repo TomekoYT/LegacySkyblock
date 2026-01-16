@@ -1,56 +1,92 @@
-@file:Suppress("UnstableApiUsage", "PropertyName")
+val mod_name = property("mod_name")
+val mod_id = property("mod_id")
+val mod_version = property("mod_version")
+val mod_description = property("mod_description")
 
-import dev.deftu.gradle.utils.GameSide
+val minecraft_version = property("minecraft_version")
+val yarn_mappings_version = property("yarn_mappings_version")
+val fabric_loader_version = property("fabric_loader_version")
+val fabric_api_version = property("fabric_api_version")
+
+val hypixel_mod_api_version = property("hypixel_mod_api_version")
+val yacl_version = property("yacl_version")
+val mod_menu_version = property("mod_menu_version")
+
+val java_objective_c_bridge_version = property("java_objective_c_bridge_version")
 
 plugins {
-    java
-    id("dev.deftu.gradle.multiversion")
-    id("dev.deftu.gradle.tools")
-    id("dev.deftu.gradle.tools.resources")
-    id("dev.deftu.gradle.tools.bloom")
-    id("dev.deftu.gradle.tools.minecraft.loom")
-    id("dev.deftu.gradle.tools.shadow")
-    id("dev.deftu.gradle.tools.minecraft.releases")
+    id("net.fabricmc.fabric-loom-remap") version "1.14-SNAPSHOT"
 }
 
-toolkitLoomHelper {
-    useDevAuth("1.2.1")
-    useMixinExtras("0.4.1")
-
-    disableRunConfigs(GameSide.SERVER)
-
-    useMixinRefMap(modData.id)
-
-    loom.enableModProvidedJavadoc.set(false)
+base {
+    archivesName.set("$mod_name-$mod_version+$minecraft_version-fabric")
 }
 
 repositories {
-    mavenCentral()
     maven("https://repo.hypixel.net/repository/Hypixel/")
     maven("https://maven.isxander.dev/releases")
     maven("https://maven.terraformersmc.com/")
 }
 
+loom {
+    runConfigs.all {
+        ideConfigGenerated(stonecutter.current.isActive)
+        runDir = "../../run"
+    }
+    runConfigs.remove(runConfigs["server"])
+}
+
 dependencies {
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${mcData.dependencies.fabric.fabricApiVersion}")
-    modImplementation("net.hypixel:mod-api:1.0.1")
+    minecraft("com.mojang:minecraft:$minecraft_version")
+    mappings("net.fabricmc:yarn:$yarn_mappings_version:v2")
+    modImplementation("net.fabricmc:fabric-loader:$fabric_loader_version")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabric_api_version")
 
-    val yacl = mapOf(
-        "1.21.5" to "3.8.1+1.21.5-fabric",
-        "1.21.8" to "3.8.1+1.21.6-fabric",
-        "1.21.10" to "3.8.1+1.21.10-fabric",
-        "1.21.11" to "3.8.1+1.21.11-fabric"
+    modImplementation("net.hypixel:mod-api:$hypixel_mod_api_version")
+    modImplementation("dev.isxander:yet-another-config-lib:$yacl_version")
+    modImplementation("com.terraformersmc:modmenu:$mod_menu_version")
+
+    implementation("ca.weblite:java-objc-bridge:$java_objective_c_bridge_version")
+}
+
+tasks.processResources {
+    val props = mapOf(
+        "mod_id" to mod_id,
+        "mod_name" to mod_name,
+        "mod_version" to mod_version,
+        "mod_description" to mod_description,
+
+        "minecraft_version" to minecraft_version,
+        "yarn_mappings_version" to yarn_mappings_version,
+        "fabric_loader_version" to fabric_loader_version,
+        "fabric_api_version" to fabric_api_version,
+
+        "hypixel_mod_api_version" to hypixel_mod_api_version,
+        "yacl_version" to yacl_version,
+        "mod_menu_version" to mod_menu_version
     )
-    modImplementation("dev.isxander:yet-another-config-lib:${yacl[mcData.version.toString()]}")
 
-    val modmenu = mapOf(
-        "1.21.5" to "14.0.1",
-        "1.21.8" to "15.0.1",
-        "1.21.10" to "16.0.0",
-        "1.21.11" to "17.0.0-beta.2"
-    )
-    modImplementation("com.terraformersmc:modmenu:${modmenu[mcData.version.toString()]}")
+    inputs.properties(props)
 
-    //macOS only
-    implementation("ca.weblite:java-objc-bridge:1.2")
+    filesMatching("fabric.mod.json") {
+        expand(props)
+    }
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.release.set(21)
+}
+
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.toVersion(21)
+    targetCompatibility = JavaVersion.toVersion(21)
+}
+
+tasks.jar {
+    inputs.property("archivesName", base.archivesName)
+
+    from("LICENSE") {
+        rename { "${it}_${inputs.properties["archivesName"]}" }
+    }
 }

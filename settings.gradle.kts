@@ -1,45 +1,31 @@
-@file:Suppress("PropertyName")
-
-import groovy.lang.MissingPropertyException
-
 pluginManagement {
     repositories {
-        maven("https://maven.deftu.dev/releases")
-        maven("https://maven.fabricmc.net")
-        maven("https://maven.architectury.dev/")
-        maven("https://maven.minecraftforge.net")
-        maven("https://repo.essential.gg/repository/maven-public")
-        maven("https://server.bbkr.space/artifactory/libs-release/")
-        maven("https://jitpack.io/")
-
-        maven("https://maven.deftu.dev/snapshots")
-        mavenLocal()
-
-        gradlePluginPortal()
         mavenCentral()
-    }
+        gradlePluginPortal()
 
-    plugins {
-        id("dev.deftu.gradle.multiversion-root") version("2.69.0")
+        maven("https://maven.fabricmc.net")
+        maven("https://jitpack.io/")
+        maven("https://maven.architectury.dev")
+        maven("https://maven.kikugie.dev/snapshots")
+        maven("https://maven.kikugie.dev/releases")
+    }
+}
+
+plugins {
+    id("dev.kikugie.stonecutter") version "0.8.2"
+}
+
+stonecutter {
+    create(rootProject) {
+        versions("1.21.5", "1.21.8", "1.21.10", "1.21.11")
+        vcsVersion = "1.21.5"
     }
 }
 
-val projectName: String = extra["mod.name"]?.toString()
-    ?: throw MissingPropertyException("mod.name has not been set.")
-
-
-rootProject.name = projectName
-rootProject.buildFileName = "root.gradle.kts"
-
-listOf(
-    "1.21.5-fabric",
-    "1.21.8-fabric",
-    "1.21.10-fabric",
-    "1.21.11-fabric"
-).forEach { version ->
-    include(":$version")
-    project(":$version").apply {
-        projectDir = file("versions/$version")
-        buildFileName = "../../build.gradle.kts"
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("libs")
     }
 }
+
+rootProject.name = "LegacySkyblock"

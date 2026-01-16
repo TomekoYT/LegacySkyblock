@@ -21,13 +21,13 @@ import java.util.function.Consumer;
 
 @Mixin(ScreenshotRecorder.class)
 public class ScreenshotRecorderMixin {
-    //#if MC >= 1.21.6
-    //$$ @Inject(at = @At("HEAD"), method = "saveScreenshot(Ljava/io/File;Ljava/lang/String;Lnet/minecraft/client/gl/Framebuffer;ILjava/util/function/Consumer;)V", cancellable = true)
-    //$$ private static void saveScreenshot(File gameDirectory, String fileName, Framebuffer framebuffer, int downscaleFactor, Consumer<Text> messageReceiver, CallbackInfo ci) {
-    //#else
+    //? if >= 1.21.6 {
+    /* @Inject(at = @At("HEAD"), method = "saveScreenshot(Ljava/io/File;Ljava/lang/String;Lnet/minecraft/client/gl/Framebuffer;ILjava/util/function/Consumer;)V", cancellable = true)
+    private static void saveScreenshot(File gameDirectory, String fileName, Framebuffer framebuffer, int downscaleFactor, Consumer<Text> messageReceiver, CallbackInfo ci) {
+    *///?} else {
     @Inject(at = @At("HEAD"), method = "saveScreenshot(Ljava/io/File;Ljava/lang/String;Lnet/minecraft/client/gl/Framebuffer;Ljava/util/function/Consumer;)V", cancellable = true)
     private static void saveScreenshot(File gameDirectory, String fileName, Framebuffer framebuffer, Consumer<Text> messageReceiver, CallbackInfo ci) {
-        //#endif
+        //?}
         ScreenshotRecorder.takeScreenshot(framebuffer, (nativeImage) -> {
             File screenshotsFolder = new File(gameDirectory, "screenshots");
             File screenshotFile;
