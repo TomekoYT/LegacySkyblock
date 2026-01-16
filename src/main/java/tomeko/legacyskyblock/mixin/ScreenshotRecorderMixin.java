@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 
 @Mixin(ScreenshotRecorder.class)
 public class ScreenshotRecorderMixin {
-    //#if MC >= 1.21.7
+    //#if MC >= 1.21.6
     //$$ @Inject(at = @At("HEAD"), method = "saveScreenshot(Ljava/io/File;Ljava/lang/String;Lnet/minecraft/client/gl/Framebuffer;ILjava/util/function/Consumer;)V", cancellable = true)
     //$$ private static void saveScreenshot(File gameDirectory, String fileName, Framebuffer framebuffer, int downscaleFactor, Consumer<Text> messageReceiver, CallbackInfo ci) {
     //#else
