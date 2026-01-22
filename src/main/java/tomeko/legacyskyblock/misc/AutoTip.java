@@ -16,6 +16,7 @@ public class AutoTip {
     static {
         autoTipMessages.add("You tipped");
         autoTipMessages.add("You already tipped everyone that has boosters active, so there");
+        autoTipMessages.add("No one has a network booster active right now! Try again later.");
     }
 
     public static void register() {
