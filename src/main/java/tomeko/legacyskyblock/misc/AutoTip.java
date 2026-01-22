@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class AutoTip {
     private static int tickCounter = 0;
-    private static ArrayList<String> autoTipMessages = new ArrayList<>();
+    private static final ArrayList<String> autoTipMessages = new ArrayList<>();
 
     static {
         autoTipMessages.add("You tipped");
