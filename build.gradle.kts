@@ -15,7 +15,7 @@ val mod_menu_version = property("mod_menu_version")
 val java_objective_c_bridge_version = property("java_objective_c_bridge_version")
 
 plugins {
-    id("net.fabricmc.fabric-loom-remap") version "1.14-SNAPSHOT"
+    id("net.fabricmc.fabric-loom-remap") version "1.15-SNAPSHOT"
 }
 
 base {
