@@ -10,7 +10,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
-import tomeko.legacyskyblock.utils.ItemUtil;
+import tomeko.legacyskyblock.utils.SkyblockItem;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class LegacySkyblockConfig {
     public static boolean shouldOpenConfig = false;
 
     //Auto Refill
-    public static final ItemUtil[] refillItems = {new ItemUtil("Ender Pearl", "ENDER_PEARL", 16), new ItemUtil("Spirit Leap", "SPIRIT_LEAP", 16), new ItemUtil("Superboom TNT", "SUPERBOOM_TNT", 64), new ItemUtil("Decoy", "DUNGEON_DECOY", 64), new ItemUtil("Inflatable Jerry", "INFLATABLE_JERRY", 64)};
+    public static final SkyblockItem[] refillItems = {new SkyblockItem("Ender Pearl", "ENDER_PEARL", 16), new SkyblockItem("Spirit Leap", "SPIRIT_LEAP", 16), new SkyblockItem("Superboom TNT", "SUPERBOOM_TNT", 64), new SkyblockItem("Decoy", "DUNGEON_DECOY", 64), new SkyblockItem("Inflatable Jerry", "INFLATABLE_JERRY", 64)};
     private static final String[] refillOptionNames = new String[refillItems.length];
     private static final String[] refillOptionDescriptions = new String[refillItems.length];
 
@@ -417,7 +417,7 @@ public class LegacySkyblockConfig {
     public static void register() {
         LegacySkyblockConfig.CONFIG.load();
 
-        for (ItemUtil refillItem : refillItems) {
+        for (SkyblockItem refillItem : refillItems) {
             if (!refillEnabled.containsKey(refillItem.id)) {
                 refillEnabled.put(refillItem.id, false);
             }
