@@ -11,16 +11,19 @@ public class HideDamageSplash {
     public static void register() {
         ClientTickEvents.END_WORLD_TICK.register(world -> {
             if (!LegacySkyblockConfig.hideDamageSplashEnabled
-            || !HypixelPackets.inSkyblock
-            || (!HypixelPackets.inDungeons && !LegacySkyblockConfig.hideDamageSplashWorkOutsideDungeons)
+                    || !HypixelPackets.inSkyblock
+                    || (!HypixelPackets.inDungeons && !LegacySkyblockConfig.hideDamageSplashWorkOutsideDungeons)
             ) return;
 
             MinecraftClient client = MinecraftClient.getInstance();
             if (client.isPaused()) return;
 
-            for (Entity entity : world.getEntities()) {
+            var entities = world.getEntities();
+            for (Entity entity : entities) {
+                if (entity == null) continue;
+
                 if (entity instanceof ArmorStandEntity armorStandEntity) {
-                    String name = armorStandEntity.getName().getString().replace(",", "").replace(".","");
+                    String name = armorStandEntity.getName().getString().replace(",", "").replace(".", "");
 
                     if (name.endsWith("k") || name.endsWith("M")) {
                         name = name.substring(0, name.length() - 1);
