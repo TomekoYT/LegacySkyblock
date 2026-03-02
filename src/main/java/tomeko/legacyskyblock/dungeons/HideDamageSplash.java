@@ -16,7 +16,7 @@ public class HideDamageSplash {
             ) return;
 
             MinecraftClient client = MinecraftClient.getInstance();
-            if (client.isPaused()) return;
+            if (client.isPaused() || world == null) return;
 
             var entities = world.getEntities();
             for (Entity entity : entities) {
