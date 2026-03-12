@@ -8,8 +8,10 @@ import tomeko.legacyskyblock.config.LegacySkyblockConfig;
 import tomeko.legacyskyblock.utils.Debug;
 import tomeko.legacyskyblock.utils.HypixelPackets;
 
+//Hide Chat Messages
 public class Chat {
-    //Hide Chat Messages
+    private static boolean guildMOTD = false;
+
     public static void register() {
         Debug.print("Hide Chat Messages registered");
         ClientReceiveMessageEvents.ALLOW_GAME.register((message, fromActionBar) -> {
@@ -20,9 +22,18 @@ public class Chat {
             String unformattedMessage = removeFormatting(message.getString());
 
             //Hide Guild MOTD
-            if (LegacySkyblockConfig.hideGuildMOTDEnabled && unformattedMessage.startsWith("--------------  Guild: Message Of The Day  --------------")) {
-                Debug.print("Guild MOTD canceled");
-                return false;
+            if (LegacySkyblockConfig.hideGuildMOTDEnabled) {
+                if (unformattedMessage.startsWith("--------------  Guild: Message Of The Day  --------------")) {
+                    guildMOTD = true;
+                }
+                if (guildMOTD) {
+                    if (unformattedMessage.endsWith("-----------------------------------------------------")) {
+                        guildMOTD = false;
+                    }
+
+                    Debug.print("Guild MOTD canceled");
+                    return false;
+                }
             }
 
             //Hide Custom Chat Messages
