@@ -7,6 +7,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 import tomeko.legacyskyblock.config.LegacySkyblockConfig;
+import tomeko.legacyskyblock.utils.Debug;
 
 public class ToggleSprintKeybind {
     private static KeyBinding toggleSprintKey;
@@ -25,5 +26,7 @@ public class ToggleSprintKeybind {
                 LegacySkyblockConfig.CONFIG.save();
             }
         });
+
+        Debug.print("ToggleSprintKeybind registered");
     }
 }

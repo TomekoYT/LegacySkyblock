@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tomeko.legacyskyblock.config.LegacySkyblockConfig;
 import tomeko.legacyskyblock.screenshots.ScreenshotManager;
 import tomeko.legacyskyblock.utils.Constants;
+import tomeko.legacyskyblock.utils.Debug;
 
 import java.io.File;
 import java.util.function.Consumer;
@@ -28,8 +29,10 @@ public class ScreenshotRecorderMixin {
             File screenshotFile;
             if (fileName == null) {
                 screenshotFile = getScreenshotFilename(screenshotsFolder);
+                Debug.print("fileName not determined");
             } else {
                 screenshotFile = new File(screenshotsFolder, fileName);
+                Debug.print("fileName determined");
             }
 
             try {
@@ -72,9 +75,11 @@ public class ScreenshotRecorderMixin {
                 }
 
                 messageReceiver.accept(message);
+                Debug.print("Screenshot message sent successfully");
             } catch (Exception ignored) {
             } finally {
                 ci.cancel();
+                Debug.print("Failed to show screenshot message");
             }
 
             if (LegacySkyblockConfig.autoCopyScreenshotEnabled) {

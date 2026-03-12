@@ -6,12 +6,14 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import tomeko.legacyskyblock.config.LegacySkyblockConfig;
+import tomeko.legacyskyblock.utils.Debug;
 
 public class ToggleSprint {
     public static void register() {
         HudRenderCallback.EVENT.register(ToggleSprint::render);
         ClientTickEvents.START_CLIENT_TICK.register(ToggleSprint::sprint);
         ClientTickEvents.END_CLIENT_TICK.register(ToggleSprint::sprint);
+        Debug.print("ToggleSprint registered");
     }
 
     private static void render(DrawContext context, RenderTickCounter tickDelta) {

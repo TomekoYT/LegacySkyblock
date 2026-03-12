@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import tomeko.legacyskyblock.config.LegacySkyblockConfig;
+import tomeko.legacyskyblock.utils.Debug;
 import tomeko.legacyskyblock.utils.HypixelPackets;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class AutoTip {
     public static void register() {
         ClientTickEvents.END_CLIENT_TICK.register(AutoTip::autoTip);
         ClientReceiveMessageEvents.ALLOW_GAME.register(AutoTip::hideAutoTipMessages);
+        Debug.print("AutoTip registered");
     }
 
     private static void autoTip(MinecraftClient client) {

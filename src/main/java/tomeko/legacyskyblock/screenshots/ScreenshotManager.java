@@ -6,6 +6,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import tomeko.legacyskyblock.utils.Debug;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -19,9 +20,16 @@ public class ScreenshotManager {
     private static final MinecraftClient client = MinecraftClient.getInstance();
 
     public static void copyScreenshot(int pos) {
-        if (pos >= screenshotImages.toArray().length) return;
+        Debug.print("Copying screenshot at position " + pos);
+
+        if (pos >= screenshotImages.toArray().length) {
+            Debug.print("No screenshot at position " + pos);
+            return;
+        }
 
         if (System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("mac")) {
+            Debug.print("ScreenshotManager mac os detected");
+
             Client macClient = Client.getInstance();
             Proxy url = macClient.sendProxy("NSURL", "fileURLWithPath:", screenshotFiles.get(pos).getPath());
 
@@ -37,6 +45,8 @@ public class ScreenshotManager {
 
             if (client.player != null)
                 client.player.sendMessage(Text.literal("Screenshot copied to clipboard!").styled(style -> style.withColor(Formatting.GREEN)), false);
+
+            Debug.print("Mac os screenshot copied to clipboard!");
             return;
         }
 
@@ -46,15 +56,23 @@ public class ScreenshotManager {
 
         if (client.player != null)
             client.player.sendMessage(Text.literal("Screenshot copied to clipboard!").styled(style -> style.withColor(Formatting.GREEN)), false);
+
+        Debug.print("Screenshot copied to clipboard!");
     }
 
     public static void deleteScreenshot(int pos) {
-        if (pos >= screenshotFiles.toArray().length || !screenshotFiles.get(pos).exists()) return;
+        Debug.print("Deleting screenshot at position " + pos);
+        if (pos >= screenshotFiles.toArray().length || !screenshotFiles.get(pos).exists()) {
+            Debug.print("No screenshot at position " + pos);
+            return;
+        }
 
         screenshotFiles.get(pos).delete();
 
         if (client.player != null)
             client.player.sendMessage(Text.literal("Screenshot deleted!").styled(style -> style.withColor(Formatting.RED)), false);
+
+        Debug.print("Screenshot deleted!");
     }
 
     private static BufferedImage convert(NativeImage image) {

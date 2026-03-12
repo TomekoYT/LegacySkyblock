@@ -5,10 +5,13 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import tomeko.legacyskyblock.config.LegacySkyblockConfig;
+import tomeko.legacyskyblock.utils.Debug;
 import tomeko.legacyskyblock.utils.HypixelPackets;
 
 public class HideDamageSplash {
     public static void register() {
+        Debug.print("Hide Damage Splash registered");
+
         ClientTickEvents.END_WORLD_TICK.register(world -> {
             if (!LegacySkyblockConfig.hideDamageSplashEnabled
                     || !HypixelPackets.inSkyblock

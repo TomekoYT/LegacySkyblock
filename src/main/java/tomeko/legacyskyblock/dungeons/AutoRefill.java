@@ -5,6 +5,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import tomeko.legacyskyblock.config.LegacySkyblockConfig;
+import tomeko.legacyskyblock.utils.Debug;
 import tomeko.legacyskyblock.utils.HypixelPackets;
 
 import java.util.Arrays;
@@ -20,6 +21,7 @@ public class AutoRefill {
     private static int scanBlockTime = 0;
 
     public static void register() {
+        Debug.print("Auto Refill registered");
         ClientTickEvents.END_CLIENT_TICK.register(AutoRefill::manageRefill);
         ClientTickEvents.END_CLIENT_TICK.register(AutoRefill::manageGFS);
         ClientTickEvents.END_CLIENT_TICK.register(AutoRefill::scanInventory);

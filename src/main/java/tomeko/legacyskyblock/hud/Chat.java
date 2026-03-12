@@ -5,11 +5,13 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import tomeko.legacyskyblock.config.LegacySkyblockConfig;
+import tomeko.legacyskyblock.utils.Debug;
 import tomeko.legacyskyblock.utils.HypixelPackets;
 
 public class Chat {
     //Hide Chat Messages
     public static void register() {
+        Debug.print("Hide Chat Messages registered");
         ClientReceiveMessageEvents.ALLOW_GAME.register((message, fromActionBar) -> {
             if (fromActionBar || message == null) {
                 return true;
@@ -19,6 +21,7 @@ public class Chat {
 
             //Hide Guild MOTD
             if (LegacySkyblockConfig.hideGuildMOTDEnabled && unformattedMessage.startsWith("--------------  Guild: Message Of The Day  --------------")) {
+                Debug.print("Guild MOTD canceled");
                 return false;
             }
 
@@ -29,6 +32,7 @@ public class Chat {
                 }
 
                 if (unformattedMessage.contains(messageToHide)) {
+                    Debug.print("Message canceled: " + messageToHide);
                     return false;
                 }
             }
@@ -44,6 +48,8 @@ public class Chat {
             //White Chat Messages
             //White Private Messages
             if (LegacySkyblockConfig.whitePrivateMessagesEnabled && HypixelPackets.onHypixel && (message.getString().startsWith("From ") || message.getString().startsWith("To "))) {
+                Debug.print("White Private Message detected: " + message.getString());
+
                 MutableText newMessage = message.copyContentOnly().formatted(Formatting.LIGHT_PURPLE);
                 int n = message.getSiblings().size();
                 if (n < 1) {
@@ -79,6 +85,8 @@ public class Chat {
 
             //White No Rank Messages
             if (LegacySkyblockConfig.whiteNoRankMessagesEnabled && HypixelPackets.onHypixel && message.getString().contains("§7: ")) {
+                Debug.print("White No Rank Message detected: " + message.getString());
+
                 return Text.of(message.getString().replace("§7: ", "§f: "));
             }
 

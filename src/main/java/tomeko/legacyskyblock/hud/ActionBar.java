@@ -3,10 +3,13 @@ package tomeko.legacyskyblock.hud;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.text.Text;
 import tomeko.legacyskyblock.config.LegacySkyblockConfig;
+import tomeko.legacyskyblock.utils.Debug;
 import tomeko.legacyskyblock.utils.HypixelPackets;
 
 public class ActionBar {
+    //Hide Action Bar
     public static void register() {
+        Debug.print("Hide Action Bar registered");
         ClientReceiveMessageEvents.MODIFY_GAME.register((message, fromActionBar) -> {
             if (!fromActionBar || message == null || !HypixelPackets.inSkyblock) {
                 return message;

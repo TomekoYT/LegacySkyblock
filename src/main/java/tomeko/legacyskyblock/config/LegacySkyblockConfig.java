@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
+import tomeko.legacyskyblock.utils.Debug;
 import tomeko.legacyskyblock.utils.SkyblockItem;
 
 import java.awt.Color;
@@ -126,6 +127,10 @@ public class LegacySkyblockConfig {
     public static float toggleSprintTextWidthPercentage = 10F;
     @SerialEntry
     public static float toggleSprintTextHeightPercentage = 10F;
+
+    //Debug
+    @SerialEntry
+    public static boolean debugModeEnabled = false;
 
     public static Screen configScreen(Screen parent) {
         return YetAnotherConfigLib.create(CONFIG, ((defaults, config, builder) -> builder
@@ -411,11 +416,26 @@ public class LegacySkyblockConfig {
                                         .build())
                                 .build())
                         .build())
+
+                .category(ConfigCategory.createBuilder()
+                        .name(Text.literal("Debug"))
+
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("Debug Mode"))
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Enabled"))
+                                        .description(OptionDescription.of(Text.literal("Debug Mode will send debug messages to your logs in ./minecraft/logs folder")))
+                                        .binding(defaults.debugModeEnabled, () -> config.debugModeEnabled, newVal -> config.debugModeEnabled = newVal)
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+                                .build())
+                        .build())
         )).generateScreen(parent);
     }
 
     public static void register() {
         LegacySkyblockConfig.CONFIG.load();
+        Debug.print("Config loaded");
 
         for (SkyblockItem refillItem : refillItems) {
             if (!refillEnabled.containsKey(refillItem.id)) {
@@ -433,5 +453,6 @@ public class LegacySkyblockConfig {
 
         shouldOpenConfig = false;
         client.setScreen(configScreen(client.currentScreen));
+        Debug.print("Config opened");
     }
 }

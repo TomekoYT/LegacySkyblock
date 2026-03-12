@@ -32,5 +32,7 @@ public class LegacySkyblock implements ClientModInitializer {
         ToggleSprint.register();
 
         HypixelPackets.register();
+
+        Debug.print("Mod initialized");
     }
 }

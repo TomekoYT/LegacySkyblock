@@ -5,11 +5,13 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import tomeko.legacyskyblock.config.LegacySkyblockConfig;
+import tomeko.legacyskyblock.utils.Debug;
 import tomeko.legacyskyblock.utils.HypixelPackets;
 
 public class HealthVignette {
     public static void register() {
         HudRenderCallback.EVENT.register(HealthVignette::render);
+        Debug.print("HudRenderCallback registered");
     }
 
     private static void render(DrawContext context, RenderTickCounter tickDelta) {
