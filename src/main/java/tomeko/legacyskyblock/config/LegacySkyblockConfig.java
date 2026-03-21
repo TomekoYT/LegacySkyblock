@@ -27,21 +27,6 @@ public class LegacySkyblockConfig {
 
     public static boolean shouldOpenConfig = false;
 
-    //Auto Refill
-    public static final SkyblockItem[] refillItems = {new SkyblockItem("Ender Pearl", "ENDER_PEARL", 16), new SkyblockItem("Spirit Leap", "SPIRIT_LEAP", 16), new SkyblockItem("Superboom TNT", "SUPERBOOM_TNT", 64), new SkyblockItem("Decoy", "DUNGEON_DECOY", 64), new SkyblockItem("Inflatable Jerry", "INFLATABLE_JERRY", 64)};
-    private static final String[] refillOptionNames = new String[refillItems.length];
-    private static final String[] refillOptionDescriptions = new String[refillItems.length];
-
-    static {
-        for (int i = 0; i < refillItems.length; i++) {
-            refillOptionNames[i] = refillItems[i].name + " Refill";
-            refillOptionDescriptions[i] = "Enable " + refillOptionNames[i] + " from sacks when dungeon starts";
-        }
-    }
-
-    @SerialEntry
-    public static HashMap<String, Boolean> refillEnabled = new HashMap<>();
-
     //Hide Damage Splash
     @SerialEntry
     public static boolean hideDamageSplashEnabled = false;
@@ -138,41 +123,6 @@ public class LegacySkyblockConfig {
 
                 .category(ConfigCategory.createBuilder()
                         .name(Text.literal("Dungeons"))
-
-                        .group(OptionGroup.createBuilder()
-                                .name(Text.literal("Auto Refill Items on Dungeon Start"))
-                                .description(OptionDescription.of(Text.literal("Auto refill certain items from sacks when dungeon starts")))
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal(refillOptionNames[0]))
-                                        .description(OptionDescription.of(Text.literal(refillOptionDescriptions[0])))
-                                        .binding(defaults.refillEnabled.get(refillItems[0].id), () -> config.refillEnabled.get(refillItems[0].id), newVal -> config.refillEnabled.put(refillItems[0].id, newVal))
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal(refillOptionNames[1]))
-                                        .description(OptionDescription.of(Text.literal(refillOptionDescriptions[1])))
-                                        .binding(defaults.refillEnabled.get(refillItems[1].id), () -> config.refillEnabled.get(refillItems[1].id), newVal -> config.refillEnabled.put(refillItems[1].id, newVal))
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal(refillOptionNames[2]))
-                                        .description(OptionDescription.of(Text.literal(refillOptionDescriptions[2])))
-                                        .binding(defaults.refillEnabled.get(refillItems[2].id), () -> config.refillEnabled.get(refillItems[2].id), newVal -> config.refillEnabled.put(refillItems[2].id, newVal))
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal(refillOptionNames[3]))
-                                        .description(OptionDescription.of(Text.literal(refillOptionDescriptions[3])))
-                                        .binding(defaults.refillEnabled.get(refillItems[3].id), () -> config.refillEnabled.get(refillItems[3].id), newVal -> config.refillEnabled.put(refillItems[3].id, newVal))
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal(refillOptionNames[4]))
-                                        .description(OptionDescription.of(Text.literal(refillOptionDescriptions[4])))
-                                        .binding(defaults.refillEnabled.get(refillItems[4].id), () -> config.refillEnabled.get(refillItems[4].id), newVal -> config.refillEnabled.put(refillItems[4].id, newVal))
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .build())
 
                         .group(OptionGroup.createBuilder()
                                 .name(Text.literal("Hide Damage Splash"))
@@ -436,14 +386,6 @@ public class LegacySkyblockConfig {
     public static void register() {
         LegacySkyblockConfig.CONFIG.load();
         Debug.print("Config loaded");
-
-        for (SkyblockItem refillItem : refillItems) {
-            if (!refillEnabled.containsKey(refillItem.id)) {
-                refillEnabled.put(refillItem.id, false);
-            }
-        }
-
-        LegacySkyblockConfig.CONFIG.save();
 
         ClientTickEvents.END_CLIENT_TICK.register(LegacySkyblockConfig::openConfigOnTick);
     }

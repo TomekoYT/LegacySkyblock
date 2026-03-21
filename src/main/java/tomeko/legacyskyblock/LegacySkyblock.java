@@ -19,7 +19,6 @@ public class LegacySkyblock implements ClientModInitializer {
 
         LegacySkyblockConfig.register();
 
-        AutoRefill.register();
         HideDamageSplash.register();
 
         ActionBar.register();
