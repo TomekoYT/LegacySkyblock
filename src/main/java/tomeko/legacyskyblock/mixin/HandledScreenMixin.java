@@ -9,7 +9,6 @@ import net.minecraft.screen.slot.SlotActionType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import tomeko.legacyskyblock.config.LegacySkyblockConfig;
-import tomeko.legacyskyblock.utils.Debug;
 import tomeko.legacyskyblock.utils.HypixelPackets;
 
 @Mixin(HandledScreen.class)
@@ -50,7 +49,6 @@ public abstract class HandledScreenMixin {
             }
         }
 
-        Debug.print("Middle Click GUI Items enabled in: " + instance.getTitle().getString());
         original.call(instance, slot, slotId, 2, SlotActionType.CLONE);
     }
 }
