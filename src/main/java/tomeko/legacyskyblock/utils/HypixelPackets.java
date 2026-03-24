@@ -12,7 +12,6 @@ public class HypixelPackets {
     public static void register() {
         HypixelModAPI.getInstance().createHandler(ClientboundLocationPacket.class, HypixelPackets::onLocationPacket);
         HypixelModAPI.getInstance().subscribeToEventPacket(ClientboundLocationPacket.class);
-        Debug.print("HypixelPackets registered");
     }
 
     private static void onLocationPacket(ClientboundLocationPacket packet) {

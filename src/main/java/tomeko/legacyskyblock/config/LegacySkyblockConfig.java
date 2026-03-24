@@ -10,13 +10,6 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
-import tomeko.legacyskyblock.utils.Debug;
-import tomeko.legacyskyblock.utils.SkyblockItem;
-
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class LegacySkyblockConfig {
     public static final ConfigClassHandler<LegacySkyblockConfig> CONFIG = ConfigClassHandler.createBuilder(LegacySkyblockConfig.class)
@@ -40,13 +33,9 @@ public class LegacySkyblockConfig {
     @SerialEntry
     public static boolean whitePrivateMessagesEnabled = true;
 
-    //Hide Chat Messages
+    //Hide Guild MOTD
     @SerialEntry
     public static boolean hideGuildMOTDEnabled = false;
-
-    //Hide Custom Chat Messages
-    @SerialEntry
-    public static List<String> customChatMessagesToHide = new ArrayList<>();
 
     //Actionbar
     @SerialEntry
@@ -56,16 +45,6 @@ public class LegacySkyblockConfig {
     @SerialEntry
     public static boolean hideFloridZombieSwordsCharges = false;
 
-    //Health Vignette
-    @SerialEntry
-    public static boolean healthVignetteEnabled = true;
-    @SerialEntry
-    public static float healthVignetteOpacityPercentage = 25F;
-    @SerialEntry
-    public static float healthVignetteHealthPercentage = 20F;
-    @SerialEntry
-    public static boolean healthVignetteWorkOutsideSkyblock = false;
-
     //Middle Click GUI Items
     @SerialEntry
     public static boolean middleClickGUIEnabled = true;
@@ -73,109 +52,9 @@ public class LegacySkyblockConfig {
     public static boolean middleClickGUIWorkOutsideSkyblock = false;
     private static final String MIDDLE_CLICK_GUI_WORK_OUTSIDE_SKYBLOCK_WARNING = "\n\n§cEXPECT BUGS WITH THIS OPTION ENABLED!\n§7Report issues here: §3https://github.com/TomekoYT/LegacySkyblock/issues";
 
-    //Modify Screenshot Message
-    @SerialEntry
-    public static boolean modifyScreenshotMessageEnabled = true;
-    @SerialEntry
-    public static boolean modifyScreenshotMessageAddName = false;
-    @SerialEntry
-    public static boolean modifyScreenshotMessageAddCopy = true;
-    @SerialEntry
-    public static boolean modifyScreenshotMessageAddOpen = true;
-    @SerialEntry
-    public static boolean modifyScreenshotMessageAddOpenFolder = true;
-    @SerialEntry
-    public static boolean modifyScreenshotMessageAddDelete = true;
-
-    //Auto Copy Screenshot
-    @SerialEntry
-    public static boolean autoCopyScreenshotEnabled = false;
-
-    //AutoTip
-    @SerialEntry
-    public static boolean autoTipEnabled = true;
-    @SerialEntry
-    public static int autoTipInterval = 5;
-    @SerialEntry
-    public static boolean hideAutoTipMessagesEnabled = true;
-
-    //Toggle Sprint
-    @SerialEntry
-    public static boolean toggleSprintEnabled = false;
-    @SerialEntry
-    public static String toggleSprintText = "Sprint Toggled";
-    @SerialEntry
-    public static Color toggleSprintTextColor = Color.WHITE;
-    @SerialEntry
-    public static boolean toggleSprintTextShadowEnabled = false;
-    @SerialEntry
-    public static float toggleSprintTextWidthPercentage = 10F;
-    @SerialEntry
-    public static float toggleSprintTextHeightPercentage = 10F;
-
-    //Debug
-    @SerialEntry
-    public static boolean debugModeEnabled = false;
-
     public static Screen configScreen(Screen parent) {
         return YetAnotherConfigLib.create(CONFIG, ((defaults, config, builder) -> builder
                 .title(Text.literal("LegacySkyblock"))
-
-                .category(ConfigCategory.createBuilder()
-                        .name(Text.literal("Dungeons"))
-
-                        .group(OptionGroup.createBuilder()
-                                .name(Text.literal("Hide Damage Splash"))
-                                .description(OptionDescription.of(Text.literal("Hide damage splash on mobs while in dungeons")))
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Enabled"))
-                                        .binding(defaults.hideDamageSplashEnabled, () -> config.hideDamageSplashEnabled, newVal -> config.hideDamageSplashEnabled = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Work outside Dungeons"))
-                                        .binding(defaults.hideDamageSplashWorkOutsideDungeons, () -> config.hideDamageSplashWorkOutsideDungeons, newVal -> config.hideDamageSplashWorkOutsideDungeons = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .build())
-                        .build())
-
-                .category(ConfigCategory.createBuilder()
-                        .name(Text.literal("Chat"))
-
-                        .group(OptionGroup.createBuilder()
-                                .name(Text.literal("Modify Chat Messages"))
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Color no rank messages"))
-                                        .description(OptionDescription.of(Text.literal("§fMake messages of players without a rank white" + SKYHANNI_CHAT_FORMATTING_WARNING)))
-                                        .binding(defaults.whiteNoRankMessagesEnabled, () -> config.whiteNoRankMessagesEnabled, newVal -> config.whiteNoRankMessagesEnabled = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Color private messages"))
-                                        .description(OptionDescription.of(Text.literal("§fMake private messages white" + SKYHANNI_CHAT_FORMATTING_WARNING)))
-                                        .binding(defaults.whitePrivateMessagesEnabled, () -> config.whitePrivateMessagesEnabled, newVal -> config.whitePrivateMessagesEnabled = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .build())
-
-                        .group(OptionGroup.createBuilder()
-                                .name(Text.literal("Hide Chat Messages"))
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Hide guild MOTD"))
-                                        .description(OptionDescription.of(Text.literal("Hide guild's message of the day")))
-                                        .binding(defaults.hideGuildMOTDEnabled, () -> config.hideGuildMOTDEnabled, newVal -> config.hideGuildMOTDEnabled = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .build())
-
-                        .group(ListOption.<String>createBuilder()
-                                .name(Text.literal("Hide Custom Chat Messages"))
-                                .binding(defaults.customChatMessagesToHide, () -> config.customChatMessagesToHide, newVal -> config.customChatMessagesToHide = newVal)
-                                .controller(StringControllerBuilder::create)
-                                .initial("")
-                                .build())
-                        .build())
 
                 .category(ConfigCategory.createBuilder()
                         .name(Text.literal("GUI & HUD"))
@@ -203,40 +82,6 @@ public class LegacySkyblockConfig {
                                 .build())
 
                         .group(OptionGroup.createBuilder()
-                                .name(Text.literal("Health Vignette"))
-                                .description(OptionDescription.of(Text.literal("Turn screen red when below % of health")))
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Enabled"))
-                                        .binding(defaults.healthVignetteEnabled, () -> config.healthVignetteEnabled, newVal -> config.healthVignetteEnabled = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .option(Option.<Float>createBuilder()
-                                        .name(Text.literal("Set Opacity Percentage"))
-                                        .description(OptionDescription.of(Text.literal("Set Health Vignette's opacity")))
-                                        .binding(defaults.healthVignetteOpacityPercentage, () -> config.healthVignetteOpacityPercentage, newVal -> config.healthVignetteOpacityPercentage = newVal)
-                                        .controller(opt -> FloatSliderControllerBuilder.create(opt)
-                                                .formatValue(value -> Text.literal(String.format("%,.0f", value) + "%"))
-                                                .range(0F, 100F)
-                                                .step(1F))
-                                        .build())
-                                .option(Option.<Float>createBuilder()
-                                        .name(Text.literal("Set Health Percentage"))
-                                        .description(OptionDescription.of(Text.literal("Set % of health for which Health Vignette will be shown")))
-                                        .binding(defaults.healthVignetteHealthPercentage, () -> config.healthVignetteHealthPercentage, newVal -> config.healthVignetteHealthPercentage = newVal)
-                                        .controller(opt -> FloatSliderControllerBuilder.create(opt)
-                                                .formatValue(value -> Text.literal(String.format("%,.0f", value) + "%"))
-                                                .range(0F, 100F)
-                                                .step(1F))
-                                        .build())
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Work outside Skyblock"))
-                                        .description(OptionDescription.of(Text.literal("Make Health Vignette work outside Hypixel Skyblock")))
-                                        .binding(defaults.healthVignetteWorkOutsideSkyblock, () -> config.healthVignetteWorkOutsideSkyblock, newVal -> config.healthVignetteWorkOutsideSkyblock = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .build())
-
-                        .group(OptionGroup.createBuilder()
                                 .name(Text.literal("Middle Click GUI Items"))
                                 .description(OptionDescription.of(Text.literal("Use middle click instead of left click in GUIs")))
                                 .option(Option.<Boolean>createBuilder()
@@ -254,128 +99,49 @@ public class LegacySkyblockConfig {
                         .build())
 
                 .category(ConfigCategory.createBuilder()
-                        .name(Text.literal("Screenshots"))
+                        .name(Text.literal("Chat"))
 
                         .group(OptionGroup.createBuilder()
-                                .name(Text.literal("Modify Screenshot Message"))
-                                .description(OptionDescription.of(Text.literal("Modify message sent after taking a screenshot")))
+                                .name(Text.literal("Modify Chat Messages"))
                                 .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Enabled"))
-                                        .binding(defaults.modifyScreenshotMessageEnabled, () -> config.modifyScreenshotMessageEnabled, newVal -> config.modifyScreenshotMessageEnabled = newVal)
+                                        .name(Text.literal("Color no rank messages"))
+                                        .description(OptionDescription.of(Text.literal("§fMake messages of players without a rank white" + SKYHANNI_CHAT_FORMATTING_WARNING)))
+                                        .binding(defaults.whiteNoRankMessagesEnabled, () -> config.whiteNoRankMessagesEnabled, newVal -> config.whiteNoRankMessagesEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Add Screenshot Name"))
-                                        .binding(defaults.modifyScreenshotMessageAddName, () -> config.modifyScreenshotMessageAddName, newVal -> config.modifyScreenshotMessageAddName = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Add [COPY] Button"))
-                                        .binding(defaults.modifyScreenshotMessageAddCopy, () -> config.modifyScreenshotMessageAddCopy, newVal -> config.modifyScreenshotMessageAddCopy = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Add [OPEN] Button"))
-                                        .binding(defaults.modifyScreenshotMessageAddOpen, () -> config.modifyScreenshotMessageAddOpen, newVal -> config.modifyScreenshotMessageAddOpen = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Add [OPEN FOLDER] Button"))
-                                        .binding(defaults.modifyScreenshotMessageAddOpenFolder, () -> config.modifyScreenshotMessageAddOpenFolder, newVal -> config.modifyScreenshotMessageAddOpenFolder = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Add [DELETE] Button"))
-                                        .binding(defaults.modifyScreenshotMessageAddDelete, () -> config.modifyScreenshotMessageAddDelete, newVal -> config.modifyScreenshotMessageAddDelete = newVal)
+                                        .name(Text.literal("Color private messages"))
+                                        .description(OptionDescription.of(Text.literal("§fMake private messages white" + SKYHANNI_CHAT_FORMATTING_WARNING)))
+                                        .binding(defaults.whitePrivateMessagesEnabled, () -> config.whitePrivateMessagesEnabled, newVal -> config.whitePrivateMessagesEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .build())
 
                         .group(OptionGroup.createBuilder()
-                                .name(Text.literal("Auto Copy Screenshot"))
-                                .description(OptionDescription.of(Text.literal("Automatically copy the screenshot image after pressing F2")))
+                                .name(Text.literal("Hide Guild MOTD"))
+                                .description(OptionDescription.of(Text.literal("Hide guild's message of the day")))
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.literal("Enabled"))
-                                        .binding(defaults.autoCopyScreenshotEnabled, () -> config.autoCopyScreenshotEnabled, newVal -> config.autoCopyScreenshotEnabled = newVal)
+                                        .binding(defaults.hideGuildMOTDEnabled, () -> config.hideGuildMOTDEnabled, newVal -> config.hideGuildMOTDEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .build())
                         .build())
 
                 .category(ConfigCategory.createBuilder()
-                        .name(Text.literal("Misc"))
+                        .name(Text.literal("Dungeons"))
 
                         .group(OptionGroup.createBuilder()
-                                .name(Text.literal("AutoTip"))
-                                .description(OptionDescription.of(Text.literal("Send /tip all command every 5 minutes while on Hypixel")))
+                                .name(Text.literal("Hide Damage Splash"))
+                                .description(OptionDescription.of(Text.literal("Hide damage splash on mobs while in dungeons")))
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.literal("Enabled"))
-                                        .binding(defaults.autoTipEnabled, () -> config.autoTipEnabled, newVal -> config.autoTipEnabled = newVal)
+                                        .binding(defaults.hideDamageSplashEnabled, () -> config.hideDamageSplashEnabled, newVal -> config.hideDamageSplashEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
-                                .option(Option.<Integer>createBuilder()
-                                        .name(Text.literal("Set Interval"))
-                                        .description(OptionDescription.of(Text.literal("Set /tip all sending interval")))
-                                        .binding(defaults.autoTipInterval, () -> config.autoTipInterval, newVal -> config.autoTipInterval = newVal)
-                                        .controller(opt -> IntegerSliderControllerBuilder.create(opt)
-                                                .formatValue(value -> Text.literal(value + (value > 1 ? " minutes" : " minute")))
-                                                .range(1, 15)
-                                                .step(1))
-                                        .build())
                                 .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Hide AutoTip Messages"))
-                                        .description(OptionDescription.of(Text.literal("Hide messages sent by Hypixel after doing /tip all")))
-                                        .binding(defaults.hideAutoTipMessagesEnabled, () -> config.hideAutoTipMessagesEnabled, newVal -> config.hideAutoTipMessagesEnabled = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .build())
-
-                        .group(OptionGroup.createBuilder()
-                                .name(Text.literal("Toggle Sprint (KeyBind)"))
-                                .description(OptionDescription.of(Text.literal("Use a KeyBind to toggle sprint")))
-                                .option(Option.<String>createBuilder()
-                                        .name(Text.literal("Text"))
-                                        .binding(defaults.toggleSprintText, () -> config.toggleSprintText, newVal -> config.toggleSprintText = newVal)
-                                        .controller(opt -> StringControllerBuilder.create(opt))
-                                        .build())
-                                .option(Option.<Color>createBuilder()
-                                        .name(Text.literal("Color"))
-                                        .binding(defaults.toggleSprintTextColor, () -> config.toggleSprintTextColor, newVal -> config.toggleSprintTextColor = newVal)
-                                        .controller(opt -> ColorControllerBuilder.create(opt))
-                                        .build())
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Text Shadow"))
-                                        .binding(defaults.toggleSprintTextShadowEnabled, () -> config.toggleSprintTextShadowEnabled, newVal -> config.toggleSprintTextShadowEnabled = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .option(Option.<Float>createBuilder()
-                                        .name(Text.literal("Position X"))
-                                        .binding(defaults.toggleSprintTextWidthPercentage, () -> config.toggleSprintTextWidthPercentage, newVal -> config.toggleSprintTextWidthPercentage = newVal)
-                                        .controller(opt -> FloatSliderControllerBuilder.create(opt)
-                                                .formatValue(value -> Text.literal(String.format("%,.0f", value) + "%"))
-                                                .range(0F, 100F)
-                                                .step(1F))
-                                        .build())
-                                .option(Option.<Float>createBuilder()
-                                        .name(Text.literal("Position Y"))
-                                        .binding(defaults.toggleSprintTextHeightPercentage, () -> config.toggleSprintTextHeightPercentage, newVal -> config.toggleSprintTextHeightPercentage = newVal)
-                                        .controller(opt -> FloatSliderControllerBuilder.create(opt)
-                                                .formatValue(value -> Text.literal(String.format("%,.0f", value) + "%"))
-                                                .range(0F, 100F)
-                                                .step(1F))
-                                        .build())
-                                .build())
-                        .build())
-
-                .category(ConfigCategory.createBuilder()
-                        .name(Text.literal("Debug"))
-
-                        .group(OptionGroup.createBuilder()
-                                .name(Text.literal("Debug Mode"))
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Enabled"))
-                                        .description(OptionDescription.of(Text.literal("Debug Mode will send debug messages to your logs in ./minecraft/logs folder")))
-                                        .binding(defaults.debugModeEnabled, () -> config.debugModeEnabled, newVal -> config.debugModeEnabled = newVal)
+                                        .name(Text.literal("Work outside Dungeons"))
+                                        .binding(defaults.hideDamageSplashWorkOutsideDungeons, () -> config.hideDamageSplashWorkOutsideDungeons, newVal -> config.hideDamageSplashWorkOutsideDungeons = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .build())
@@ -385,7 +151,6 @@ public class LegacySkyblockConfig {
 
     public static void register() {
         LegacySkyblockConfig.CONFIG.load();
-        Debug.print("Config loaded");
 
         ClientTickEvents.END_CLIENT_TICK.register(LegacySkyblockConfig::openConfigOnTick);
     }
@@ -395,6 +160,5 @@ public class LegacySkyblockConfig {
 
         shouldOpenConfig = false;
         client.setScreen(configScreen(client.currentScreen));
-        Debug.print("Config opened");
     }
 }
