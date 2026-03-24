@@ -16,18 +16,16 @@ Modern Hypixel Skyblock mod aimed to port features from 1.8.9 mods
 ## Features
 
 
-### Dungeons
+### GUI & HUD
 
-#### Auto Refill Items on Dungeon Start
-- Refill Ender Pearls
-- Refill Spirit Leaps
-- Refill Superboom TNTs
-- Refill Decoys
-- Refill Inflatable Jerrys
+#### Action Bar
+- Hide Defense
+- Hide True Defense
+- Hide Florid Zombie Sword's charges
 
-#### Hide Damage Splash
-- Hide damage splash on mobs while in dungeons
-- Work outside Dungeons
+#### Middle Click GUI Items
+- Use middle click instead of left click in GUIs
+- Work outside Skyblock
 
 
 ### Chat
@@ -36,44 +34,12 @@ Modern Hypixel Skyblock mod aimed to port features from 1.8.9 mods
 - Color no rank messages
 - Color private messages
 
-#### Hide Chat Messages
-- Hide guild MOTD
-- Hide custom chat messages
+#### Hide Guild MOTD
+- Hide guild message of the day
 
 
-### GUI & HUD
+### Dungeons
 
-#### Action Bar
-- Hide Defense
-- Hide True Defense
-- Hide Florid Zombie Sword's charges
-
-#### Health Vignette
-- Set Opacity Percentage
-- Set Health Percentage
-- Work outside Skyblock
-
-#### Middle Click GUI Items
-- Use middle click instead of left click in GUIs
-- Work outside Skyblock
-
-
-### Screenshots
-
-#### Modify Screenshot Message
-- Add screenshot name
-- Add COPY, OPEN, OPEN FOLDER, DELETE buttons
-
-#### Auto Copy Screenshot
-- Automatically copy the screenshot image after pressing F2
-
-
-### Misc
-
-#### AutoTip
-- Set interval
-- Hide AutoTip messages
-
-#### Toggle Sprint
-- Use a KeyBind to toggle sprint
-- Customize Text, Color, Text Shadow, Position
+#### Hide Damage Splash
+- Hide damage splash on mobs while in dungeons
+- Work outside Dungeons
