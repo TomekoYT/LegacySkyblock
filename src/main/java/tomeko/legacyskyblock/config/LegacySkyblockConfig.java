@@ -10,11 +10,12 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
+import tomeko.legacyskyblock.utils.Constants;
 
 public class LegacySkyblockConfig {
     public static final ConfigClassHandler<LegacySkyblockConfig> CONFIG = ConfigClassHandler.createBuilder(LegacySkyblockConfig.class)
             .serializer(config -> GsonConfigSerializerBuilder.create(config)
-                    .setPath(YACLPlatform.getConfigDir().resolve("legacyskyblock.json"))
+                    .setPath(YACLPlatform.getConfigDir().resolve(Constants.MOD_ID + ".json"))
                     .build())
             .build();
 
@@ -54,7 +55,7 @@ public class LegacySkyblockConfig {
 
     public static Screen configScreen(Screen parent) {
         return YetAnotherConfigLib.create(CONFIG, ((defaults, config, builder) -> builder
-                .title(Text.literal("LegacySkyblock"))
+                .title(Text.literal(Constants.MOD_NAME))
 
                 .category(ConfigCategory.createBuilder()
                         .name(Text.literal("GUI & HUD"))

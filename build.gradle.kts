@@ -2,6 +2,7 @@ val mod_name = property("mod_name")
 val mod_id = property("mod_id")
 val mod_version = property("mod_version")
 val mod_description = property("mod_description")
+val mod_archives_name = property("mod_archives_name")
 
 val minecraft_version = property("minecraft_version")
 val yarn_mappings_version = property("yarn_mappings_version")
@@ -19,7 +20,7 @@ plugins {
 }
 
 base {
-    archivesName.set("$mod_name-$mod_version+$minecraft_version-fabric")
+    archivesName.set("$mod_archives_name-$mod_version+$minecraft_version-fabric")
 }
 
 repositories {

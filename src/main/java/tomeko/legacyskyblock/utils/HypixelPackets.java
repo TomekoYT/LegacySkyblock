@@ -7,7 +7,6 @@ public class HypixelPackets {
     public static boolean onHypixel = false;
     public static boolean inSkyblock = false;
     public static boolean inDungeons = false;
-    public static String currentServerName = "";
 
     public static void register() {
         HypixelModAPI.getInstance().createHandler(ClientboundLocationPacket.class, HypixelPackets::onLocationPacket);
@@ -21,7 +20,6 @@ public class HypixelPackets {
         }
         onHypixel = true;
 
-        currentServerName = packet.getServerName();
 
         if (!packet.getServerType().get().getName().equalsIgnoreCase("skyblock")) {
             disableSkyblock();
