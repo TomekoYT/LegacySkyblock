@@ -11,7 +11,6 @@ public class LegacySkyblock implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         LegacySkyblockCommand.register();
-        LSBCommand.register();
 
         LegacySkyblockConfig.register();
 

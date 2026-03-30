@@ -16,6 +16,15 @@ public class LegacySkyblockCommand {
                         })
                 )
         );
+
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
+                dispatcher.register(literal(Constants.MOD_ABBREVIATION)
+                        .executes(ctx -> {
+                            manageCommand();
+                            return 1;
+                        })
+                )
+        );
     }
 
     public static void manageCommand() {
