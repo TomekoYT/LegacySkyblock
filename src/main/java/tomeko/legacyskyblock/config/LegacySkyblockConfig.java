@@ -21,23 +21,6 @@ public class LegacySkyblockConfig {
 
     public static boolean shouldOpenConfig = false;
 
-    //Hide Damage Splash
-    @SerialEntry
-    public static boolean hideDamageSplashEnabled = false;
-    @SerialEntry
-    public static boolean hideDamageSplashWorkOutsideDungeons = false;
-
-    //White Chat Messages
-    private static final String SKYHANNI_CHAT_FORMATTING_WARNING = "\n\n§cDoesn't work with SkyHanni's Chat Formatting enabled!";
-    @SerialEntry
-    public static boolean whiteNoRankMessagesEnabled = true;
-    @SerialEntry
-    public static boolean whitePrivateMessagesEnabled = true;
-
-    //Hide Guild MOTD
-    @SerialEntry
-    public static boolean hideGuildMOTDEnabled = false;
-
     //Actionbar
     @SerialEntry
     public static boolean hideDefense = false;
@@ -52,6 +35,23 @@ public class LegacySkyblockConfig {
     @SerialEntry
     public static boolean middleClickGUIWorkOutsideSkyblock = false;
     private static final String MIDDLE_CLICK_GUI_WORK_OUTSIDE_SKYBLOCK_WARNING = "\n\n§cEXPECT BUGS WITH THIS OPTION ENABLED!\n§7Report issues here: §3https://github.com/TomekoYT/LegacySkyblock/issues";
+
+    //White Chat Messages
+    private static final String SKYHANNI_CHAT_FORMATTING_WARNING = "\n\n§cDoesn't work with SkyHanni's Chat Formatting enabled!";
+    @SerialEntry
+    public static boolean whiteNoRankMessagesEnabled = true;
+    @SerialEntry
+    public static boolean whitePrivateMessagesEnabled = true;
+
+    //Hide Guild MOTD
+    @SerialEntry
+    public static boolean hideGuildMOTDEnabled = false;
+
+    //Hide Damage Splash
+    @SerialEntry
+    public static boolean hideDamageSplashEnabled = false;
+    @SerialEntry
+    public static boolean hideDamageSplashWorkOutsideDungeons = false;
 
     public static Screen configScreen(Screen parent) {
         return YetAnotherConfigLib.create(CONFIG, ((defaults, config, builder) -> builder
