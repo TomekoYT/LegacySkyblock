@@ -7,9 +7,9 @@ import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import dev.isxander.yacl3.platform.YACLPlatform;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import tomeko.legacyskyblock.utils.Constants;
 
 public class LegacySkyblockConfig {
@@ -55,44 +55,44 @@ public class LegacySkyblockConfig {
 
     public static Screen configScreen(Screen parent) {
         return YetAnotherConfigLib.create(CONFIG, ((defaults, config, builder) -> builder
-                .title(Text.literal(Constants.MOD_NAME))
+                .title(Component.literal(Constants.MOD_NAME))
 
                 .category(ConfigCategory.createBuilder()
-                        .name(Text.literal("GUI & HUD"))
+                        .name(Component.literal("GUI & HUD"))
 
                         .group(OptionGroup.createBuilder()
-                                .name(Text.literal("Action Bar"))
+                                .name(Component.literal("Action Bar"))
                                 .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Hide Defense"))
-                                        .description(OptionDescription.of(Text.literal("Hide Defense in action bar")))
+                                        .name(Component.literal("Hide Defense"))
+                                        .description(OptionDescription.of(Component.literal("Hide Defense in action bar")))
                                         .binding(defaults.hideDefense, () -> config.hideDefense, newVal -> config.hideDefense = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Hide True Defense"))
-                                        .description(OptionDescription.of(Text.literal("Hide True Defense in action bar")))
+                                        .name(Component.literal("Hide True Defense"))
+                                        .description(OptionDescription.of(Component.literal("Hide True Defense in action bar")))
                                         .binding(defaults.hideTrueDefense, () -> config.hideTrueDefense, newVal -> config.hideTrueDefense = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Hide Florid Zombie Sword's charges"))
-                                        .description(OptionDescription.of(Text.literal("Hide Florid Zombie Sword's charges in action bar")))
+                                        .name(Component.literal("Hide Florid Zombie Sword's charges"))
+                                        .description(OptionDescription.of(Component.literal("Hide Florid Zombie Sword's charges in action bar")))
                                         .binding(defaults.hideFloridZombieSwordsCharges, () -> config.hideFloridZombieSwordsCharges, newVal -> config.hideFloridZombieSwordsCharges = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .build())
 
                         .group(OptionGroup.createBuilder()
-                                .name(Text.literal("Middle Click GUI Items"))
-                                .description(OptionDescription.of(Text.literal("Use middle click instead of left click in GUIs")))
+                                .name(Component.literal("Middle Click GUI Items"))
+                                .description(OptionDescription.of(Component.literal("Use middle click instead of left click in GUIs")))
                                 .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Enabled"))
+                                        .name(Component.literal("Enabled"))
                                         .binding(defaults.middleClickGUIEnabled, () -> config.middleClickGUIEnabled, newVal -> config.middleClickGUIEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Work outside Skyblock"))
-                                        .description(OptionDescription.of(Text.literal("Make Middle Click GUI Items work outside Hypixel Skyblock" + MIDDLE_CLICK_GUI_WORK_OUTSIDE_SKYBLOCK_WARNING)))
+                                        .name(Component.literal("Work outside Skyblock"))
+                                        .description(OptionDescription.of(Component.literal("Make Middle Click GUI Items work outside Hypixel Skyblock" + MIDDLE_CLICK_GUI_WORK_OUTSIDE_SKYBLOCK_WARNING)))
                                         .binding(defaults.middleClickGUIWorkOutsideSkyblock, () -> config.middleClickGUIWorkOutsideSkyblock, newVal -> config.middleClickGUIWorkOutsideSkyblock = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
@@ -100,29 +100,29 @@ public class LegacySkyblockConfig {
                         .build())
 
                 .category(ConfigCategory.createBuilder()
-                        .name(Text.literal("Chat"))
+                        .name(Component.literal("Chat"))
 
                         .group(OptionGroup.createBuilder()
-                                .name(Text.literal("Modify Chat Messages"))
+                                .name(Component.literal("Modify Chat Messages"))
                                 .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Color no rank messages"))
-                                        .description(OptionDescription.of(Text.literal("§fMake messages of players without a rank white" + SKYHANNI_CHAT_FORMATTING_WARNING)))
+                                        .name(Component.literal("Color no rank messages"))
+                                        .description(OptionDescription.of(Component.literal("§fMake messages of players without a rank white" + SKYHANNI_CHAT_FORMATTING_WARNING)))
                                         .binding(defaults.whiteNoRankMessagesEnabled, () -> config.whiteNoRankMessagesEnabled, newVal -> config.whiteNoRankMessagesEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Color private messages"))
-                                        .description(OptionDescription.of(Text.literal("§fMake private messages white" + SKYHANNI_CHAT_FORMATTING_WARNING)))
+                                        .name(Component.literal("Color private messages"))
+                                        .description(OptionDescription.of(Component.literal("§fMake private messages white" + SKYHANNI_CHAT_FORMATTING_WARNING)))
                                         .binding(defaults.whitePrivateMessagesEnabled, () -> config.whitePrivateMessagesEnabled, newVal -> config.whitePrivateMessagesEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .build())
 
                         .group(OptionGroup.createBuilder()
-                                .name(Text.literal("Hide Guild MOTD"))
-                                .description(OptionDescription.of(Text.literal("Hide guild's message of the day")))
+                                .name(Component.literal("Hide Guild MOTD"))
+                                .description(OptionDescription.of(Component.literal("Hide guild's message of the day")))
                                 .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Enabled"))
+                                        .name(Component.literal("Enabled"))
                                         .binding(defaults.hideGuildMOTDEnabled, () -> config.hideGuildMOTDEnabled, newVal -> config.hideGuildMOTDEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
@@ -130,18 +130,18 @@ public class LegacySkyblockConfig {
                         .build())
 
                 .category(ConfigCategory.createBuilder()
-                        .name(Text.literal("Dungeons"))
+                        .name(Component.literal("Dungeons"))
 
                         .group(OptionGroup.createBuilder()
-                                .name(Text.literal("Hide Damage Splash"))
-                                .description(OptionDescription.of(Text.literal("Hide damage splash on mobs while in dungeons")))
+                                .name(Component.literal("Hide Damage Splash"))
+                                .description(OptionDescription.of(Component.literal("Hide damage splash on mobs while in dungeons")))
                                 .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Enabled"))
+                                        .name(Component.literal("Enabled"))
                                         .binding(defaults.hideDamageSplashEnabled, () -> config.hideDamageSplashEnabled, newVal -> config.hideDamageSplashEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Work outside Dungeons"))
+                                        .name(Component.literal("Work outside Dungeons"))
                                         .binding(defaults.hideDamageSplashWorkOutsideDungeons, () -> config.hideDamageSplashWorkOutsideDungeons, newVal -> config.hideDamageSplashWorkOutsideDungeons = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
@@ -156,10 +156,10 @@ public class LegacySkyblockConfig {
         ClientTickEvents.END_CLIENT_TICK.register(LegacySkyblockConfig::openConfigOnTick);
     }
 
-    private static void openConfigOnTick(MinecraftClient client) {
+    private static void openConfigOnTick(Minecraft client) {
         if (!shouldOpenConfig) return;
 
         shouldOpenConfig = false;
-        client.setScreen(configScreen(client.currentScreen));
+        client.setScreen(configScreen(client.screen));
     }
 }

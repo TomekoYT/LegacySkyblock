@@ -12,13 +12,14 @@ pluginManagement {
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version "0.8.3"
+    id("dev.kikugie.stonecutter") version providers.gradleProperty("stonecutter_version")
 }
 
 stonecutter {
     create(rootProject) {
         versions("1.21.10", "1.21.11")
-        vcsVersion = "1.21.10"
+        version("26.1").buildscript("unobfuscated.gradle.kts")
+        vcsVersion = providers.gradleProperty("stonecutter_minecraft_version")
     }
 }
 

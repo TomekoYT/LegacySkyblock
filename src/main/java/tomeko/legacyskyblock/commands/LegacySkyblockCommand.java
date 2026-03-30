@@ -4,7 +4,11 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import tomeko.legacyskyblock.config.LegacySkyblockConfig;
 import tomeko.legacyskyblock.utils.Constants;
 
+//? if >= 26.1 {
+/*import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
+*///?} else {
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+//?}
 
 public class LegacySkyblockCommand {
     public static void register() {

@@ -14,7 +14,7 @@ val yacl_version: String by project
 val mod_menu_version: String by project
 
 plugins {
-    id("net.fabricmc.fabric-loom-remap") version "1.15-SNAPSHOT"
+    id("net.fabricmc.fabric-loom") version "1.15-SNAPSHOT"
 }
 
 base {
@@ -37,13 +37,12 @@ loom {
 
 dependencies {
     minecraft("com.mojang:minecraft:$minecraft_version")
-    mappings(loom.officialMojangMappings())
-    modImplementation("net.fabricmc:fabric-loader:$fabric_loader_version")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabric_api_version")
+    implementation("net.fabricmc:fabric-loader:$fabric_loader_version")
+    implementation("net.fabricmc.fabric-api:fabric-api:$fabric_api_version")
 
-    modImplementation("net.hypixel:mod-api:$hypixel_mod_api_version")
-    modImplementation("dev.isxander:yet-another-config-lib:$yacl_version")
-    modImplementation("com.terraformersmc:modmenu:$mod_menu_version")
+    implementation("net.hypixel:mod-api:$hypixel_mod_api_version")
+    implementation("dev.isxander:yet-another-config-lib:$yacl_version")
+    implementation("com.terraformersmc:modmenu:$mod_menu_version")
 }
 
 tasks.processResources {

@@ -1,7 +1,7 @@
 package tomeko.legacyskyblock.hud;
 
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 import tomeko.legacyskyblock.config.LegacySkyblockConfig;
 import tomeko.legacyskyblock.utils.HypixelPackets;
 
@@ -36,11 +36,11 @@ public class ActionBar {
         });
     }
 
-    private static Text replaceActionBar(Text message, String replace) {
+    private static Component replaceActionBar(Component message, String replace) {
         String blank = " {5}";
-        message = Text.of(message.getString().replaceAll(replace + blank, ""));
-        message = Text.of(message.getString().replaceAll(blank + replace, ""));
-        message = Text.of(message.getString().replaceAll(replace, ""));
+        message = Component.nullToEmpty(message.getString().replaceAll(replace + blank, ""));
+        message = Component.nullToEmpty(message.getString().replaceAll(blank + replace, ""));
+        message = Component.nullToEmpty(message.getString().replaceAll(replace, ""));
         return message;
     }
 }
