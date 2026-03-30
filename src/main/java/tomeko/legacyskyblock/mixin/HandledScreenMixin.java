@@ -6,7 +6,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.ChestMenu;
 //? if >= 26.1 {
 /*import net.minecraft.world.inventory.ContainerInput;
-*///?} else {
+ *///?} else {
 import net.minecraft.world.inventory.ClickType;
 //?}
 import net.minecraft.world.inventory.Slot;
@@ -23,24 +23,24 @@ public abstract class HandledScreenMixin {
     private static final String[] EXCLUDE_GUIS_CONTAINS = {"Backpack", "Minion", "Sack", "iphone", "Trap"};
 
     //? if >= 26.1 {
-    
-    /*private static final ContainerInput pickup = ContainerInput.PICKUP;
+    /*
+    private static final ContainerInput pickup = ContainerInput.PICKUP;
     private static final ContainerInput clone = ContainerInput.CLONE;
-     
-    *///?} else {
+    */
+    //?} else {
     private static final ClickType pickup = ClickType.PICKUP;
     private static final ClickType clone = ClickType.CLONE;
     //?}
 
     //? if >= 26.1 {
-    
-    /*@WrapOperation(method = "mouseClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;slotClicked(Lnet/minecraft/world/inventory/Slot;IILnet/minecraft/world/inventory/ContainerInput;)V"))
+    /*
+    @WrapOperation(method = "mouseClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;slotClicked(Lnet/minecraft/world/inventory/Slot;IILnet/minecraft/world/inventory/ContainerInput;)V"))
     private void mouseClicked(AbstractContainerScreen instance, Slot slot, int slotId, int button, ContainerInput actionType, Operation<Void> original) {
-     
-    *///?} else {
+    */
+    //?} else {
     @WrapOperation(method = "mouseClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;slotClicked(Lnet/minecraft/world/inventory/Slot;IILnet/minecraft/world/inventory/ClickType;)V"))
     private void mouseClicked(AbstractContainerScreen instance, Slot slot, int slotId, int button, ClickType actionType, Operation<Void> original) {
-    //?}
+        //?}
         if (button != 0
                 || actionType != pickup
                 || !LegacySkyblockConfig.middleClickGUIEnabled
