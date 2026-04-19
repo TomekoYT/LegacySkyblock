@@ -22,6 +22,8 @@ public abstract class HandledScreenMixin {
     private static final String[] EXCLUDE_GUIS_STARTSWITH = {"Ender Chest", "Wardrobe", "Accessory Bag (", "Museum", "Rift Storage", "Hunting Toolkit", "You ", "Hunting Box", "Personal ", "The Hex", "Auctions:", "Widgets", "Reclaim Wood Singularity", "Gemstone Grinder"};
     private static final String[] EXCLUDE_GUIS_CONTAINS = {"Backpack", "Minion", "Sack", "iphone", "Trap"};
 
+    private static final String[] EXCLUDE_GUIS_EQUALS_OUTSIDE_SKYBLOCK = {"Angel's Descent"};
+
     //? if >= 26.1 {
     /*
     private static final ContainerInput pickup = ContainerInput.PICKUP;
@@ -51,6 +53,7 @@ public abstract class HandledScreenMixin {
             original.call(instance, slot, slotId, button, actionType);
             return;
         }
+
         for (String excluded : EXCLUDE_GUIS_EQUALS) {
             if (instance.getTitle().getString().equals(excluded)) {
                 original.call(instance, slot, slotId, button, actionType);
@@ -67,6 +70,15 @@ public abstract class HandledScreenMixin {
             if (instance.getTitle().getString().contains(excluded)) {
                 original.call(instance, slot, slotId, button, actionType);
                 return;
+            }
+        }
+
+        if (LegacySkyblockConfig.middleClickGUIWorkOutsideSkyblock) {
+            for (String excluded : EXCLUDE_GUIS_EQUALS_OUTSIDE_SKYBLOCK) {
+                if (instance.getTitle().getString().equals(excluded)) {
+                    original.call(instance, slot, slotId, button, actionType);
+                    return;
+                }
             }
         }
 
