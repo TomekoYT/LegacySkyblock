@@ -22,7 +22,7 @@ public abstract class HandledScreenMixin {
     private static final String[] EXCLUDE_GUIS_STARTSWITH = {"Ender Chest", "Wardrobe", "Accessory Bag (", "Museum", "Rift Storage", "Hunting Toolkit", "You ", "Hunting Box", "Personal ", "The Hex", "Auctions:", "Widgets", "Reclaim Wood Singularity", "Gemstone Grinder"};
     private static final String[] EXCLUDE_GUIS_CONTAINS = {"Backpack", "Minion", "Sack", "iphone", "Trap"};
 
-    private static final String[] EXCLUDE_GUIS_EQUALS_OUTSIDE_SKYBLOCK = {"Angel's Descent"};
+    private static final String[] EXCLUDE_GUIS_EQUALS_OUTSIDE_SKYBLOCK = {"Angel's Descent", "Descent Into Madness"};
 
     //? if >= 26.1 {
     /*
