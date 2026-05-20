@@ -2,7 +2,9 @@ package tomeko.legacyskyblock.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.ChestMenu;
 //? if >= 26.1 {
 /*import net.minecraft.world.inventory.ContainerInput;
@@ -10,19 +12,21 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.ClickType;
 //?}
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.TooltipFlag;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import tomeko.legacyskyblock.config.LegacySkyblockConfig;
 import tomeko.legacyskyblock.utils.HypixelPackets;
 
+import java.util.List;
+
 @Mixin(AbstractContainerScreen.class)
 public abstract class HandledScreenMixin {
     //Middle Click GUI Items
-    private static final String[] EXCLUDE_GUIS_EQUALS = {"Chest", "Large Chest", "Anvil", "Storage", "Enchant Item", "Drill Anvil", "Runic Pedestal", "Reforge Anvil", "Rune Removal", "Reforge Item", "Exp Sharing", "Offer Pets", "Upgrade Item", "Convert to Dungeon Item", "Craft Item", "Fishing Bag", "Potion Bag", "Quiver", "Time Pocket", "Beacon", "Rift Transfer Chest", "Stats Tuning", "Salvage Items", "Pet Sitter", "New Year Cake Bag", "Carnival Mask Bag", "Builder's Ruler", "Builder's Wand", "Basket of Seeds", "Nether Wart Pouch", "Instasell Ignore List", "Trick or Treat Bag", "View Stash", "Island Time", "Garden Time", "Change all to same color!", "Heart of the Mountain", "Heart of the Forest"};
-    private static final String[] EXCLUDE_GUIS_STARTSWITH = {"Ender Chest", "Wardrobe", "Accessory Bag (", "Museum", "Rift Storage", "Hunting Toolkit", "You ", "Hunting Box", "Personal ", "The Hex", "Auctions:", "Widgets", "Reclaim Wood Singularity", "Gemstone Grinder"};
-    private static final String[] EXCLUDE_GUIS_CONTAINS = {"Backpack", "Minion", "Sack", "iphone", "Trap"};
-
-    private static final String[] EXCLUDE_GUIS_EQUALS_OUTSIDE_SKYBLOCK = {"Angel's Descent", "Descent Into Madness"};
+    private static final String[] EXCLUDE_GUIS_EQUALS = {"Chest", "Large Chest", "Anvil", "Storage", "Enchant Item", "Drill Anvil", "Runic Pedestal", "Reforge Anvil", "Rune Removal", "Reforge Item", "Exp Sharing", "Offer Pets", "Upgrade Item", "Convert to Dungeon Item", "Craft Item", "Fishing Bag", "Potion Bag", "Quiver", "Time Pocket", "Beacon", "Rift Transfer Chest", "Salvage Items", "Pet Sitter", "New Year Cake Bag", "Carnival Mask Bag", "Builder's Ruler", "Builder's Wand", "Basket of Seeds", "Nether Wart Pouch", "Trick or Treat Bag", "View Stash", "Change all to same color!"};
+    private static final String[] EXCLUDE_GUIS_STARTSWITH = {"Ender Chest", "Wardrobe", "Accessory Bag (", "Rift Storage", "You ", "Personal ", "The Hex", "Auctions:", "Reclaim Wood Singularity", "Gemstone Grinder"};
+    private static final String[] EXCLUDE_GUIS_CONTAINS = {"Backpack", "Minion", "Sack", "Trap"};
 
     //? if >= 26.1 {
     /*
@@ -54,6 +58,14 @@ public abstract class HandledScreenMixin {
             return;
         }
 
+        List<Component> tooltip = slot.getItem().getTooltipLines(Item.TooltipContext.EMPTY, Minecraft.getInstance().player, TooltipFlag.NORMAL);
+        for (Component line : tooltip) {
+            if (shouldReturn(line)) {
+                original.call(instance, slot, slotId, button, actionType);
+                return;
+            }
+        }
+
         for (String excluded : EXCLUDE_GUIS_EQUALS) {
             if (instance.getTitle().getString().equals(excluded)) {
                 original.call(instance, slot, slotId, button, actionType);
@@ -73,15 +85,11 @@ public abstract class HandledScreenMixin {
             }
         }
 
-        if (LegacySkyblockConfig.middleClickGUIWorkOutsideSkyblock) {
-            for (String excluded : EXCLUDE_GUIS_EQUALS_OUTSIDE_SKYBLOCK) {
-                if (instance.getTitle().getString().equals(excluded)) {
-                    original.call(instance, slot, slotId, button, actionType);
-                    return;
-                }
-            }
-        }
 
         original.call(instance, slot, slotId, 2, clone);
+    }
+
+    private static boolean shouldReturn(Component text) {
+        return text.getString().toLowerCase().contains("right-click") || text.getString().toLowerCase().contains("right click") || text.getString().toLowerCase().contains("left-click") || text.getString().toLowerCase().contains("left click");
     }
 }

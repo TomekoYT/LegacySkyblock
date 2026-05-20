@@ -34,7 +34,6 @@ public class LegacySkyblockConfig {
     public static boolean middleClickGUIEnabled = true;
     @SerialEntry
     public static boolean middleClickGUIWorkOutsideSkyblock = false;
-    private static final String MIDDLE_CLICK_GUI_WORK_OUTSIDE_SKYBLOCK_WARNING = "\n\n§cEXPECT BUGS WITH THIS OPTION ENABLED!\n§7Report issues here: §3https://github.com/TomekoYT/LegacySkyblock/issues";
 
     //White Chat Messages
     private static final String SKYHANNI_CHAT_FORMATTING_WARNING = "\n\n§cDoesn't work with SkyHanni's Chat Formatting enabled!";
@@ -92,7 +91,7 @@ public class LegacySkyblockConfig {
                                         .build())
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Component.literal("Work outside Skyblock"))
-                                        .description(OptionDescription.of(Component.literal("Make Middle Click GUI Items work outside Hypixel Skyblock" + MIDDLE_CLICK_GUI_WORK_OUTSIDE_SKYBLOCK_WARNING)))
+                                        .description(OptionDescription.of(Component.literal("Make Middle Click GUI Items work outside Hypixel Skyblock")))
                                         .binding(defaults.middleClickGUIWorkOutsideSkyblock, () -> config.middleClickGUIWorkOutsideSkyblock, newVal -> config.middleClickGUIWorkOutsideSkyblock = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
