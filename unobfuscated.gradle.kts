@@ -15,6 +15,7 @@ val mod_menu_version: String by project
 
 plugins {
     id("net.fabricmc.fabric-loom") version "1.15-SNAPSHOT"
+    id("dev.deftu.gradle.bloom") version "0.2.0"
 }
 
 base {
@@ -78,6 +79,11 @@ tasks.processResources {
     filesMatching("$mod_id.mixins.json") {
         expand(mixinProps)
     }
+}
+
+bloom {
+    replacement("@MOD_NAME@", mod_name)
+    replacement("@MOD_ID@", mod_id)
 }
 
 tasks.withType<JavaCompile>().configureEach {
