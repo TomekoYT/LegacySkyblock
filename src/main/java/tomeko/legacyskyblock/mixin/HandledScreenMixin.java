@@ -24,9 +24,9 @@ import java.util.List;
 @Mixin(AbstractContainerScreen.class)
 public abstract class HandledScreenMixin {
     //Middle Click GUI Items
-    private static final String[] EXCLUDE_GUIS_EQUALS = {"Chest", "Large Chest", "Anvil", "Storage", "Enchant Item", "Drill Anvil", "Runic Pedestal", "Reforge Anvil", "Rune Removal", "Reforge Item", "Exp Sharing", "Offer Pets", "Upgrade Item", "Convert to Dungeon Item", "Craft Item", "Fishing Bag", "Potion Bag", "Quiver", "Time Pocket", "Beacon", "Rift Transfer Chest", "Salvage Items", "Pet Sitter", "New Year Cake Bag", "Carnival Mask Bag", "Builder's Ruler", "Builder's Wand", "Basket of Seeds", "Nether Wart Pouch", "Trick or Treat Bag", "View Stash", "Change all to same color!"};
-    private static final String[] EXCLUDE_GUIS_STARTSWITH = {"Ender Chest", "Wardrobe", "Accessory Bag (", "Rift Storage", "You ", "Personal ", "The Hex", "Auctions:", "Reclaim Wood Singularity", "Gemstone Grinder"};
-    private static final String[] EXCLUDE_GUIS_CONTAINS = {"Backpack", "Minion", "Sack", "Trap"};
+    private static final String[] EXCLUDE_GUIS_EQUALS = {"Anvil", "Storage", "Enchant Item", "Drill Anvil", "Runic Pedestal", "Reforge Anvil", "Rune Removal", "Reforge Item", "Exp Sharing", "Offer Pets", "Upgrade Item", "Convert to Dungeon Item", "Craft Item", "Fishing Bag", "Potion Bag", "Quiver", "Time Pocket", "Beacon", "Rift Transfer Chest", "Salvage Items", "Pet Sitter", "New Year Cake Bag", "Carnival Mask Bag", "Builder's Ruler", "Builder's Wand", "Basket of Seeds", "Nether Wart Pouch", "Trick or Treat Bag", "View Stash", "Change all to same color!"};
+    private static final String[] EXCLUDE_GUIS_STARTSWITH = {"Wardrobe", "Accessory Bag (", "Rift Storage", "You ", "Personal ", "The Hex", "Auctions:", "Reclaim Wood Singularity", "Gemstone Grinder"};
+    private static final String[] EXCLUDE_GUIS_CONTAINS = {"Chest", "Backpack", "Minion", "Sack", "Trap"};
 
     //? if >= 26.1 {
     /*
