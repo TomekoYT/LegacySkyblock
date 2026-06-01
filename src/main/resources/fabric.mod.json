@@ -8,23 +8,23 @@
     "Tomeko"
   ],
   "contact": {
-    "homepage": "https://modrinth.com/mod/legacyskyblock",
-    "sources": "https://github.com/TomekoYT/LegacySkyblock",
-    "issues": "https://github.com/TomekoYT/LegacySkyblock/issues"
+    "homepage": "https://modrinth.com/mod/${mod_id}",
+    "sources": "https://github.com/TomekoYT/${mod_name}",
+    "issues": "https://github.com/TomekoYT/${mod_name}/issues"
   },
   "license": "GPL-3.0",
-  "icon": "assets/legacyskyblock/icon.png",
+  "icon": "assets/${mod_id}/icon.png",
   "environment": "client",
   "entrypoints": {
     "client": [
-      "tomeko.legacyskyblock.LegacySkyblock"
+      "${base_group}.${mod_name}"
     ],
     "modmenu": [
-      "tomeko.legacyskyblock.config.ModMenuIntegration"
+      "${base_group}.config.ModMenuIntegration"
     ]
   },
   "mixins": [
-    "legacyskyblock.mixins.json"
+    "mixins.${mod_id}.json"
   ],
   "depends": {
     "java": ">=${java_version}",
@@ -32,18 +32,16 @@
     "fabricloader": ">=${fabric_loader_version}",
     "fabric-api": ">=${fabric_api_version}",
 
-    "hypixel-mod-api": ">=${hypixel_mod_api_version}",
-    "yet_another_config_lib_v3": ">=${yacl_version}"
-  },
-  "suggests": {
-    "modmenu": ">=${mod_menu_version}"
+    "yet_another_config_lib_v3": ">=${yacl_version}",
+    "modmenu": ">=${mod_menu_version}",
+    "hypixel-mod-api": ">=${hypixel_mod_api_version}"
   },
   "custom": {
     "youtube": "https://www.youtube.com/@TomekoYT",
     "modmenu": {
       "links": {
         "modmenu.discord": "https://discord.com/invite/FfzrbycDws",
-        "modmenu.modrinth": "https://modrinth.com/mod/legacyskyblock"
+        "modmenu.modrinth": "https://modrinth.com/mod/${mod_id}"
       },
       "update_checker": true
     }

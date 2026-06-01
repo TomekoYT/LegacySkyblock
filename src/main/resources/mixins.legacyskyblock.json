@@ -1,0 +1,8 @@
+{
+  "plugin": "${base_group}.utils.MixinPlugin",
+  "package": "${base_group}.mixins",
+  "compatibilityLevel": "JAVA_${java_version}",
+  "overwrites": {
+    "requireAnnotations": false
+  }
+}
