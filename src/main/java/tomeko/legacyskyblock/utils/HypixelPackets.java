@@ -30,7 +30,13 @@ public class HypixelPackets {
         }
 
         inSkyblock = true;
-        inDungeons = packet.getMode().orElse(null).equalsIgnoreCase("dungeon");
+
+        if (packet.getMode().isEmpty()) {
+            inDungeons = false;
+            return;
+        }
+
+        inDungeons = packet.getMode().get().equalsIgnoreCase("dungeon");
     }
 
     private static void disableSkyblock() {
