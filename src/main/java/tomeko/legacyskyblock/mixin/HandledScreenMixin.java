@@ -24,71 +24,108 @@ import java.util.List;
 @Mixin(AbstractContainerScreen.class)
 public abstract class HandledScreenMixin {
     //Middle Click GUI Items
-    private static final String[] EXCLUDE_GUIS_EQUALS = {"Anvil", "Storage", "Enchant Item", "Drill Anvil", "Runic Pedestal", "Reforge Anvil", "Rune Removal", "Reforge Item", "Exp Sharing", "Offer Pets", "Upgrade Item", "Convert to Dungeon Item", "Craft Item", "Fishing Bag", "Potion Bag", "Quiver", "Time Pocket", "Beacon", "Rift Transfer Chest", "Salvage Items", "Pet Sitter", "New Year Cake Bag", "Carnival Mask Bag", "Builder's Ruler", "Builder's Wand", "Basket of Seeds", "Nether Wart Pouch", "Trick or Treat Bag", "View Stash", "Change all to same color!"};
-    private static final String[] EXCLUDE_GUIS_STARTSWITH = {"Wardrobe", "Accessory Bag (", "Rift Storage", "You ", "Personal ", "The Hex", "Auctions:", "Reclaim Wood Singularity", "Gemstone Grinder"};
-    private static final String[] EXCLUDE_GUIS_CONTAINS = {"Chest", "Backpack", "Minion", "Sack", "Trap"};
+    private static final String[] EXCLUDE_GUIS_EQUALS = {"Runic Pedestal", "Rune Removal", "Exp Sharing", "Offer Pets", "Quiver", "Time Pocket", "Beacon", "Pet Sitter", "Builder's Ruler", "Builder's Wand", "Basket of Seeds", "Nether Wart Pouch", "View Stash", "Change all to same color!", "Fishing Rod Parts"};
+    private static final String[] EXCLUDE_GUIS_STARTSWITH = {"Wardrobe", "Accessory Bag (", "You ", "Personal ", "The Hex", "Auctions:", "Reclaim Wood Singularity", "Gemstone Grinder"};
+    private static final String[] EXCLUDE_GUIS_CONTAINS = {"Chest", "Storage", "Backpack", "Anvil", "Minion", "Bag", "Sack", "Trap", "Item"};
 
-    //? if >= 26.1 {
-    /*
-    private static final ContainerInput pickup = ContainerInput.PICKUP;
-    private static final ContainerInput clone = ContainerInput.CLONE;
-    */
-    //?} else {
-    private static final ClickType pickup = ClickType.PICKUP;
-    private static final ClickType clone = ClickType.CLONE;
-    //?}
-
-    //? if >= 26.1 {
-    /*
-    @WrapOperation(method = "mouseClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;slotClicked(Lnet/minecraft/world/inventory/Slot;IILnet/minecraft/world/inventory/ContainerInput;)V"))
-    private void mouseClicked(AbstractContainerScreen instance, Slot slot, int slotId, int button, ContainerInput actionType, Operation<Void> original) {
-    */
-    //?} else {
-    @WrapOperation(method = "mouseClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;slotClicked(Lnet/minecraft/world/inventory/Slot;IILnet/minecraft/world/inventory/ClickType;)V"))
-    private void mouseClicked(AbstractContainerScreen instance, Slot slot, int slotId, int button, ClickType actionType, Operation<Void> original) {
+    @WrapOperation(
+            method = "mouseClicked",
+            at = @At(
+                    value = "INVOKE",
+                    target =
+                            //? if >= 26.1 {
+                            /*"Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;slotClicked(Lnet/minecraft/world/inventory/Slot;IILnet/minecraft/world/inventory/ContainerInput;)V"
+                             *///?} else {
+                            "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;slotClicked(Lnet/minecraft/world/inventory/Slot;IILnet/minecraft/world/inventory/ClickType;)V"
+                    //?}
+            )
+    )
+    private void useMiddleClick(
+            AbstractContainerScreen instance,
+            Slot slotIn,
+            int slotId,
+            int button,
+            //? if >= 26.1 {
+            //ContainerInput clickType,
+            //?} else {
+            ClickType clickType,
+            //?}
+            Operation<Void> original
+    ) {
         //?}
-        if (button != 0
-                || actionType != pickup
-                || !LegacySkyblockConfig.middleClickGUIEnabled
-                || !(instance.getMenu() instanceof ChestMenu)
-                || !HypixelPackets.inSkyblock
-        ) {
-            original.call(instance, slot, slotId, button, actionType);
+        if (shouldCallOriginal(instance, slotIn, button, clickType)) {
+            original.call(instance, slotIn, slotId, button, clickType);
             return;
         }
 
-        List<Component> tooltip = slot.getItem().getTooltipLines(Item.TooltipContext.EMPTY, Minecraft.getInstance().player, TooltipFlag.NORMAL);
+        original.call(
+                instance,
+                slotIn,
+                slotId,
+                2,
+                //? if >= 26.1 {
+                //ContainerInput.CLONE
+                //?} else {
+                ClickType.CLONE
+                //?}
+        );
+    }
+
+    private static boolean shouldCallOriginal(
+            AbstractContainerScreen instance,
+            Slot slotIn,
+            int clickedButton,
+            //? if >= 26.1 {
+            /*ContainerInput clickType
+             *///?} else {
+            ClickType clickType
+            //?}
+    ) {
+        if (
+                clickedButton != 0
+                        //? if >= 26.1 {
+                        /*|| clickType != ContainerInput.PICKUP
+                         *///?} else {
+                        || clickType != ClickType.PICKUP
+                        //?}
+                        || !LegacySkyblockConfig.middleClickGUIEnabled
+                        || !(instance.getMenu() instanceof ChestMenu)
+                        || !HypixelPackets.inSkyblock
+                        || slotIn == null
+        ) return true;
+
+        List<Component> tooltip = slotIn.getItem().getTooltipLines(Item.TooltipContext.EMPTY, Minecraft.getInstance().player, TooltipFlag.NORMAL);
         for (Component line : tooltip) {
-            if (shouldReturn(line)) {
-                original.call(instance, slot, slotId, button, actionType);
-                return;
+            if (moreThanOneButton(line.getString())) {
+                return true;
             }
         }
 
         for (String excluded : EXCLUDE_GUIS_EQUALS) {
             if (instance.getTitle().getString().equals(excluded)) {
-                original.call(instance, slot, slotId, button, actionType);
-                return;
+                return true;
             }
         }
         for (String excluded : EXCLUDE_GUIS_STARTSWITH) {
             if (instance.getTitle().getString().startsWith(excluded)) {
-                original.call(instance, slot, slotId, button, actionType);
-                return;
+                return true;
             }
         }
         for (String excluded : EXCLUDE_GUIS_CONTAINS) {
             if (instance.getTitle().getString().contains(excluded)) {
-                original.call(instance, slot, slotId, button, actionType);
-                return;
+                return true;
             }
         }
 
-
-        original.call(instance, slot, slotId, 2, clone);
+        return false;
     }
 
-    private static boolean shouldReturn(Component text) {
-        return text.getString().toLowerCase().contains("right-click") || text.getString().toLowerCase().contains("right click") || text.getString().toLowerCase().contains("left-click") || text.getString().toLowerCase().contains("left click");
+    private static boolean moreThanOneButton(String text) {
+        text = text.toLowerCase();
+
+        return text.contains("right-click")
+                || text.contains("right click")
+                || text.contains("left-click")
+                || text.contains("left click");
     }
 }
