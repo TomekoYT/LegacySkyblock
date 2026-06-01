@@ -46,13 +46,12 @@ public abstract class MiddleClickGUIItemsMixin {
             int slotId,
             int button,
             //? if >= 26.1 {
-            //ContainerInput clickType,
-            //?} else {
+            /*ContainerInput clickType,
+            *///?} else {
             ClickType clickType,
             //?}
             Operation<Void> original
     ) {
-        //?}
         if (shouldCallOriginal(instance, slotIn, button, clickType)) {
             original.call(instance, slotIn, slotId, button, clickType);
             return;
@@ -64,8 +63,8 @@ public abstract class MiddleClickGUIItemsMixin {
                 slotId,
                 2,
                 //? if >= 26.1 {
-                //ContainerInput.CLONE
-                //?} else {
+                /*ContainerInput.CLONE
+                *///?} else {
                 ClickType.CLONE
                 //?}
         );
