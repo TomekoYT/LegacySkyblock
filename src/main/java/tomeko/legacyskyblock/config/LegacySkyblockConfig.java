@@ -6,8 +6,6 @@ import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import dev.isxander.yacl3.platform.YACLPlatform;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import tomeko.legacyskyblock.utils.Constants;
@@ -18,8 +16,6 @@ public class LegacySkyblockConfig {
                     .setPath(YACLPlatform.getConfigDir().resolve(Constants.MOD_ID + ".json"))
                     .build())
             .build();
-
-    public static boolean shouldOpenConfig = false;
 
     //Actionbar
     @SerialEntry
@@ -102,14 +98,5 @@ public class LegacySkyblockConfig {
 
     public static void register() {
         LegacySkyblockConfig.CONFIG.load();
-
-        ClientTickEvents.END_CLIENT_TICK.register(LegacySkyblockConfig::openConfigOnTick);
-    }
-
-    private static void openConfigOnTick(Minecraft client) {
-        if (!shouldOpenConfig) return;
-
-        shouldOpenConfig = false;
-        client.setScreen(configScreen(client.screen));
     }
 }
