@@ -51,8 +51,7 @@ public abstract class HandledScreenMixin {
                 || actionType != pickup
                 || !LegacySkyblockConfig.middleClickGUIEnabled
                 || !(instance.getMenu() instanceof ChestMenu)
-                || !HypixelPackets.onHypixel
-                || (!LegacySkyblockConfig.middleClickGUIWorkOutsideSkyblock && !HypixelPackets.inSkyblock)
+                || !HypixelPackets.inSkyblock
         ) {
             original.call(instance, slot, slotId, button, actionType);
             return;

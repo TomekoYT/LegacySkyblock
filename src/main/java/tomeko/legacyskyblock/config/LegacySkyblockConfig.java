@@ -32,8 +32,6 @@ public class LegacySkyblockConfig {
     //Middle Click GUI Items
     @SerialEntry
     public static boolean middleClickGUIEnabled = true;
-    @SerialEntry
-    public static boolean middleClickGUIWorkOutsideSkyblock = false;
 
     //Hide Damage Splash
     @SerialEntry
@@ -76,12 +74,6 @@ public class LegacySkyblockConfig {
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Component.literal("Enabled"))
                                         .binding(defaults.middleClickGUIEnabled, () -> config.middleClickGUIEnabled, newVal -> config.middleClickGUIEnabled = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Component.literal("Work outside Skyblock"))
-                                        .description(OptionDescription.of(Component.literal("Make Middle Click GUI Items work outside Hypixel Skyblock")))
-                                        .binding(defaults.middleClickGUIWorkOutsideSkyblock, () -> config.middleClickGUIWorkOutsideSkyblock, newVal -> config.middleClickGUIWorkOutsideSkyblock = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .build())
