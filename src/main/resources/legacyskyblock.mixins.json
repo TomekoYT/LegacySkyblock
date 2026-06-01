@@ -3,7 +3,7 @@
   "package": "tomeko.legacyskyblock.mixin",
   "compatibilityLevel": "JAVA_${java_version}",
   "mixins": [
-    "HandledScreenMixin"
+    "MiddleClickGUIItemsMixin"
   ],
   "injectors": {
     "defaultRequire": 1
