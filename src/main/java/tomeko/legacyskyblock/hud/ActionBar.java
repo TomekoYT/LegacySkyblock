@@ -9,7 +9,7 @@ public class ActionBar {
     //Hide Action Bar
     public static void register() {
         ClientReceiveMessageEvents.MODIFY_GAME.register((message, fromActionBar) -> {
-            if (!fromActionBar || message == null || !HypixelPackets.inSkyblock) {
+            if (!fromActionBar || !HypixelPackets.inSkyblock) {
                 return message;
             }
 
