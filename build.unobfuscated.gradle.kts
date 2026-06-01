@@ -14,7 +14,7 @@ val yacl_version: String by project
 val mod_menu_version: String by project
 
 plugins {
-    id("net.fabricmc.fabric-loom") version "1.15-SNAPSHOT"
+    id("net.fabricmc.fabric-loom") version "1.16-SNAPSHOT"
     id("dev.deftu.gradle.bloom") version "0.2.0"
 }
 

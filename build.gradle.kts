@@ -14,12 +14,12 @@ val yacl_version: String by project
 val mod_menu_version: String by project
 
 plugins {
-    id("net.fabricmc.fabric-loom-remap") version "1.15-SNAPSHOT"
+    id("net.fabricmc.fabric-loom-remap") version "1.16-SNAPSHOT"
     id("dev.deftu.gradle.bloom") version "0.2.0"
 }
 
 base {
-    archivesName.set("$mod_archives_name-$mod_version-$minecraft_version+_fabric")
+    archivesName.set("$mod_archives_name-$mod_version-${minecraft_version}_fabric")
 }
 
 repositories {
