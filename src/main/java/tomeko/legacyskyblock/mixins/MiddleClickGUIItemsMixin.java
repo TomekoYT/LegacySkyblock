@@ -1,4 +1,4 @@
-package tomeko.legacyskyblock.mixin;
+package tomeko.legacyskyblock.mixins;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
