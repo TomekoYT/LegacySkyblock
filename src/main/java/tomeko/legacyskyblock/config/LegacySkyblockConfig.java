@@ -35,17 +35,6 @@ public class LegacySkyblockConfig {
     @SerialEntry
     public static boolean middleClickGUIWorkOutsideSkyblock = false;
 
-    //White Chat Messages
-    private static final String SKYHANNI_CHAT_FORMATTING_WARNING = "\n\n§cDoesn't work with SkyHanni's Chat Formatting enabled!";
-    @SerialEntry
-    public static boolean whiteNoRankMessagesEnabled = true;
-    @SerialEntry
-    public static boolean whitePrivateMessagesEnabled = true;
-
-    //Hide Guild MOTD
-    @SerialEntry
-    public static boolean hideGuildMOTDEnabled = false;
-
     //Hide Damage Splash
     @SerialEntry
     public static boolean hideDamageSplashEnabled = false;
@@ -93,36 +82,6 @@ public class LegacySkyblockConfig {
                                         .name(Component.literal("Work outside Skyblock"))
                                         .description(OptionDescription.of(Component.literal("Make Middle Click GUI Items work outside Hypixel Skyblock")))
                                         .binding(defaults.middleClickGUIWorkOutsideSkyblock, () -> config.middleClickGUIWorkOutsideSkyblock, newVal -> config.middleClickGUIWorkOutsideSkyblock = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .build())
-                        .build())
-
-                .category(ConfigCategory.createBuilder()
-                        .name(Component.literal("Chat"))
-
-                        .group(OptionGroup.createBuilder()
-                                .name(Component.literal("Modify Chat Messages"))
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Component.literal("Color no rank messages"))
-                                        .description(OptionDescription.of(Component.literal("§fMake messages of players without a rank white" + SKYHANNI_CHAT_FORMATTING_WARNING)))
-                                        .binding(defaults.whiteNoRankMessagesEnabled, () -> config.whiteNoRankMessagesEnabled, newVal -> config.whiteNoRankMessagesEnabled = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Component.literal("Color private messages"))
-                                        .description(OptionDescription.of(Component.literal("§fMake private messages white" + SKYHANNI_CHAT_FORMATTING_WARNING)))
-                                        .binding(defaults.whitePrivateMessagesEnabled, () -> config.whitePrivateMessagesEnabled, newVal -> config.whitePrivateMessagesEnabled = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .build())
-
-                        .group(OptionGroup.createBuilder()
-                                .name(Component.literal("Hide Guild MOTD"))
-                                .description(OptionDescription.of(Component.literal("Hide guild's message of the day")))
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Component.literal("Enabled"))
-                                        .binding(defaults.hideGuildMOTDEnabled, () -> config.hideGuildMOTDEnabled, newVal -> config.hideGuildMOTDEnabled = newVal)
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
                                 .build())

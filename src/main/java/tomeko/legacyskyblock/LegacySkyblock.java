@@ -17,7 +17,6 @@ public class LegacySkyblock implements ClientModInitializer {
         HideDamageSplash.register();
 
         ActionBar.register();
-        Chat.register();
 
         HypixelPackets.register();
     }
