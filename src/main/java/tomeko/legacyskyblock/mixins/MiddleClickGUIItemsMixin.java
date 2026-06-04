@@ -25,7 +25,7 @@ import java.util.List;
 public abstract class MiddleClickGUIItemsMixin {
     //Middle Click GUI Items
     private static final String[] EXCLUDE_GUIS_EQUALS = {"Runic Pedestal", "Rune Removal", "Exp Sharing", "Offer Pets", "Quiver", "Time Pocket", "Beacon", "Pet Sitter", "Builder's Ruler", "Builder's Wand", "Basket of Seeds", "Nether Wart Pouch", "View Stash", "Change all to same color!", "Fishing Rod Parts"};
-    private static final String[] EXCLUDE_GUIS_STARTSWITH = {"Wardrobe", "Accessory Bag (", "You ", "Personal ", "The Hex", "Auctions:", "Reclaim Wood Singularity", "Gemstone Grinder"};
+    private static final String[] EXCLUDE_GUIS_STARTSWITH = {"Wardrobe", "You ", "Personal ", "The Hex", "Auctions:", "Reclaim Wood Singularity", "Gemstone Grinder"};
     private static final String[] EXCLUDE_GUIS_CONTAINS = {"Chest", "Storage", "Backpack", "Anvil", "Minion", "Bag", "Sack", "Trap", "Item"};
 
     @WrapOperation(
