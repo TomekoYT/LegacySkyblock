@@ -19,28 +19,40 @@ public class HypixelPackets {
     private static void checkHypixel(Minecraft mc) {
         ServerData server = mc.getCurrentServer();
         if (server == null || !server.ip.contains("hypixel")) {
-            disableSkyblock();
+            disableAll();
         }
     }
 
     private static void onLocationPacket(ClientboundLocationPacket packet) {
-        if (packet.getServerType().isEmpty() || !packet.getServerType().get().getName().equalsIgnoreCase("skyblock")) {
-            disableSkyblock();
+        if (packet.getServerType().isEmpty()) {
+            disableAll();
             return;
         }
 
-        inSkyblock = true;
+        String serverTypeName = packet.getServerType().get().getName();
+
+        inSkyblock = serverTypeName.equals("SkyBlock");
 
         if (packet.getMode().isEmpty()) {
-            inDungeons = false;
+            disableModes();
             return;
         }
 
-        inDungeons = packet.getMode().get().equalsIgnoreCase("dungeon");
+        String modeName = packet.getMode().get();
+
+        inDungeons = inSkyblock && modeName.equals("dungeon");
     }
 
-    private static void disableSkyblock() {
+    private static void disableAll() {
+        disableServerTypes();
+        disableModes();
+    }
+
+    private static void disableServerTypes() {
         inSkyblock = false;
+    }
+
+    private static void disableModes() {
         inDungeons = false;
     }
 }
