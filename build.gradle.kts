@@ -53,7 +53,7 @@ dependencies {
 
     val oneconfigModules = arrayOf("commands", "config-impl", "events", "hud", "internal", "ui", "utils")
     for (module in oneconfigModules) {
-        implementation("org.polyfrost.oneconfig:${module}:${oneconfig_version}")
+        modImplementation("org.polyfrost.oneconfig:${module}:${oneconfig_version}")
     }
     modImplementation("org.polyfrost.oneconfig:$minecraft_version-fabric:$oneconfig_version")
 

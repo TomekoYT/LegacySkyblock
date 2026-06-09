@@ -87,7 +87,7 @@ public abstract class MiddleClickGUIItemsMixin {
                          *///?} else {
                         || clickType != ClickType.PICKUP
                         //?}
-                        || !LegacySkyblockConfig.INSTANCE.middleClickGUIEnabled
+                        || !LegacySkyblockConfig.middleClickGUIItemsEnabled
                         || !(instance.getMenu() instanceof ChestMenu)
                         || !HypixelPackets.inSkyblock
                         || slotIn == null
