@@ -4,18 +4,35 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import org.polyfrost.oneconfig.api.config.v1.annotations.Switch;
 import tomeko.legacyskyblock.config.LegacySkyblockConfig;
 import tomeko.legacyskyblock.utils.HypixelPackets;
 
 public class HideDamageSplash {
-    public static void register() {
-        ClientTickEvents.END_CLIENT_TICK.register(HideDamageSplash::hideSplash);
+    private static final String SUBCATEGORY_HIDE_DAMAGE_SPLASH = "Hide Damage Splash";
+
+    @Switch(
+            title = "Enabled",
+            category = LegacySkyblockConfig.CATEGORY_DUNGEONS,
+            subcategory = SUBCATEGORY_HIDE_DAMAGE_SPLASH
+    )
+    public boolean enabled = false;
+
+    @Switch(
+            title = "Work Outside Dungeons",
+            category = LegacySkyblockConfig.CATEGORY_DUNGEONS,
+            subcategory = SUBCATEGORY_HIDE_DAMAGE_SPLASH
+    )
+    public boolean workOutsideDungeons = false;
+
+    public HideDamageSplash() {
+        ClientTickEvents.END_CLIENT_TICK.register(this::hideSplash);
     }
 
-    private static void hideSplash(Minecraft client) {
-        if (!LegacySkyblockConfig.hideDamageSplashEnabled
+    private void hideSplash(Minecraft client) {
+        if (!enabled
                 || !HypixelPackets.inSkyblock
-                || (!HypixelPackets.inDungeons && !LegacySkyblockConfig.hideDamageSplashWorkOutsideDungeons)
+                || (!HypixelPackets.inDungeons && !workOutsideDungeons)
                 || client.isPaused()
                 || client.level == null
         ) return;

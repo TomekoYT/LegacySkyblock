@@ -9,6 +9,6 @@ import net.fabricmc.api.Environment;
 public class ModMenuIntegration implements ModMenuApi {
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return LegacySkyblockConfig::configScreen;
+        return LegacySkyblockConfig.INSTANCE::openScreen;
     }
 }
