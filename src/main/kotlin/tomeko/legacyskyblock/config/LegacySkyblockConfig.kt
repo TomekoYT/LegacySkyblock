@@ -14,35 +14,36 @@ object LegacySkyblockConfig : Config(
         save()
     }
 
-    private const val CATEGORY_SCREEN: String = "Screen"
+    private const val CATEGORY_HUD: String = "HUD"
     private const val SUBCATEGORY_ACTION_BAR: String = "Action Bar"
 
     @Switch(
         title = "Hide Defense",
-        category = CATEGORY_SCREEN,
+        category = CATEGORY_HUD,
         subcategory = SUBCATEGORY_ACTION_BAR
     )
     var actionBarHideDefense = false
 
     @Switch(
         title = "Hide True Defense",
-        category = CATEGORY_SCREEN,
+        category = CATEGORY_HUD,
         subcategory = SUBCATEGORY_ACTION_BAR
     )
     var actionBarHideTrueDefense = false
 
     @Switch(
         title = "Hide Florid Zombie Sword's Charges",
-        category = CATEGORY_SCREEN,
+        category = CATEGORY_HUD,
         subcategory = SUBCATEGORY_ACTION_BAR
     )
     var actionBarHideFloridZombieSwordsCharges = false
 
 
+    private const val CATEGORY_GUI: String = "GUI"
     private const val SUBCATEGORY_MIDDLE_CLICK_GUI_ITEMS: String = "Middle Click GUI Items"
 
     @JvmField
-    @Switch(title = "Enabled", category = CATEGORY_SCREEN, subcategory = SUBCATEGORY_MIDDLE_CLICK_GUI_ITEMS)
+    @Switch(title = "Enabled", category = CATEGORY_GUI, subcategory = SUBCATEGORY_MIDDLE_CLICK_GUI_ITEMS)
     var middleClickGUIItemsEnabled: Boolean = true
 
 
