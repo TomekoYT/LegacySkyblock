@@ -24,8 +24,9 @@ import java.util.List;
 @Mixin(AbstractContainerScreen.class)
 public abstract class MiddleClickGUIItemsMixin {
     //Middle Click GUI Items
-    private static final String[] EXCLUDE_GUIS_EQUALS = {"Runic Pedestal", "Rune Removal", "Exp Sharing", "Offer Pets", "Quiver", "Time Pocket", "Beacon", "Pet Sitter", "Builder's Ruler", "Builder's Wand", "Basket of Seeds", "Nether Wart Pouch", "View Stash", "Change all to same color!", "Fishing Rod Parts"};
+    private static final String[] EXCLUDE_GUIS_EQUALS = {"Runic Pedestal", "Rune Removal", "Exp Sharing", "Offer Pets", "Quiver", "Time Pocket", "Beacon", "Pet Sitter", "Builder's Ruler", "Builder's Wand", "Basket of Seeds", "Nether Wart Pouch", "View Stash", "Change all to same color!", "Fishing Rod Parts", "Fast Travel"};
     private static final String[] EXCLUDE_GUIS_STARTSWITH = {"Wardrobe", "You ", "Personal ", "The Hex", "Auctions:", "Reclaim Wood Singularity", "Gemstone Grinder"};
+    private static final String[] EXCLUDE_GUIS_ENDSWITH = {"Warps"};
     private static final String[] EXCLUDE_GUIS_CONTAINS = {"Chest", "Storage", "Backpack", "Anvil", "Minion", "Bag", "Sack", "Trap", "Item"};
 
     @WrapOperation(
@@ -47,7 +48,7 @@ public abstract class MiddleClickGUIItemsMixin {
             int button,
             //? if >= 26.1 {
             /*ContainerInput clickType,
-            *///?} else {
+             *///?} else {
             ClickType clickType,
             //?}
             Operation<Void> original
@@ -64,7 +65,7 @@ public abstract class MiddleClickGUIItemsMixin {
                 2,
                 //? if >= 26.1 {
                 /*ContainerInput.CLONE
-                *///?} else {
+                 *///?} else {
                 ClickType.CLONE
                 //?}
         );
@@ -107,6 +108,11 @@ public abstract class MiddleClickGUIItemsMixin {
         }
         for (String excluded : EXCLUDE_GUIS_STARTSWITH) {
             if (instance.getTitle().getString().startsWith(excluded)) {
+                return true;
+            }
+        }
+        for (String excluded : EXCLUDE_GUIS_ENDSWITH) {
+            if (instance.getTitle().getString().endsWith(excluded)) {
                 return true;
             }
         }
