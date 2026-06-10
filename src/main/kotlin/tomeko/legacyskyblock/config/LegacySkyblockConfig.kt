@@ -63,4 +63,13 @@ object LegacySkyblockConfig : Config(
         subcategory = SUBCATEGORY_HIDE_DAMAGE_SPLASH
     )
     var hideDamageSplashWorkOutsideDungeons: Boolean = false
+
+
+    private const val CATEGORY_DEBUG = "Debug"
+
+    @Switch(
+        title = "Debug Mode Enabled",
+        category = CATEGORY_DEBUG
+    )
+    var debugModeEnabled: Boolean = false
 }
