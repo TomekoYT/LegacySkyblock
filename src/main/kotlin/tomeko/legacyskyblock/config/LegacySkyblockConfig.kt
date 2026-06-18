@@ -12,7 +12,7 @@ object LegacySkyblockConfig : Config(
     Category.HYPIXEL
 ) {
     fun register() {
-        save()
+        preload()
     }
 
     private const val CATEGORY_HUD: String = "HUD"
