@@ -8,7 +8,8 @@ import net.minecraft.client.Minecraft
 object HypixelPackets {
     @JvmField
     var inSkyblock: Boolean = false
-    var inDungeons: Boolean = false
+
+    var currentIsland: SkyblockIslands? = null
 
     fun register() {
         ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick { mc: Minecraft -> checkHypixel(mc) })
@@ -34,7 +35,9 @@ object HypixelPackets {
 
         val serverTypeName = packet.serverType.get().name
 
-        inSkyblock = serverTypeName == "SkyBlock"
+        Debug.println("Server Type: $serverTypeName")
+
+        inSkyblock = (serverTypeName == "SkyBlock")
 
         if (packet.mode.isEmpty) {
             disableModes()
@@ -43,7 +46,11 @@ object HypixelPackets {
 
         val modeName = packet.mode.get()
 
-        inDungeons = inSkyblock && modeName == "dungeon"
+        Debug.println("Mode: $modeName")
+
+        if (!inSkyblock) return
+
+        currentIsland = SkyblockIslands.fromId(modeName)
     }
 
     private fun disableAll() {
@@ -56,6 +63,6 @@ object HypixelPackets {
     }
 
     private fun disableModes() {
-        inDungeons = false
+        currentIsland = null
     }
 }

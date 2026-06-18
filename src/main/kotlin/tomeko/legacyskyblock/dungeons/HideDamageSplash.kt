@@ -14,12 +14,13 @@ object HideDamageSplash {
 
     private fun hideSplash(mc: Minecraft) {
         if (
-            !LegacySkyblockConfig.hideDamageSplashEnabled
-            || !HypixelPackets.inSkyblock
-            || (!HypixelPackets.inDungeons && !LegacySkyblockConfig.hideDamageSplashWorkOutsideDungeons)
+            !HypixelPackets.inSkyblock
             || mc.isPaused
             || mc.level == null
+            || HypixelPackets.currentIsland == null
+            || !LegacySkyblockConfig.hideDamageSplashEnabledIslands[HypixelPackets.currentIsland!!.ordinal]
         ) return
+
 
         val entities: Iterable<Entity?> = mc.level!!.entitiesForRendering()
         for (entity in entities) {

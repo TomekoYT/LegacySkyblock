@@ -1,6 +1,7 @@
 package tomeko.legacyskyblock.config
 
 import org.polyfrost.oneconfig.api.config.v1.Config
+import org.polyfrost.oneconfig.api.config.v1.annotations.MultiSelectDropdown
 import org.polyfrost.oneconfig.api.config.v1.annotations.Switch
 import tomeko.legacyskyblock.utils.Constants
 
@@ -47,22 +48,38 @@ object LegacySkyblockConfig : Config(
     var middleClickGUIItemsEnabled: Boolean = true
 
 
-    private const val CATEGORY_DUNGEONS: String = "Dungeons"
+    private const val CATEGORY_MISC: String = "Misc"
     private const val SUBCATEGORY_HIDE_DAMAGE_SPLASH = "Hide Damage Splash"
 
-    @Switch(
-        title = "Enabled",
-        category = CATEGORY_DUNGEONS,
-        subcategory = SUBCATEGORY_HIDE_DAMAGE_SPLASH
+    @MultiSelectDropdown(
+        title = "Hide Damage Splash",
+        checkable = true,
+        category = CATEGORY_MISC,
+        subcategory = SUBCATEGORY_HIDE_DAMAGE_SPLASH,
+        options = [
+            "Private Island",
+            "SkyBlock Hub",
+            "Dungeon Hub",
+            "Catacombs",
+            "The Barn",
+            "The Park",
+            "Galatea",
+            "Gold Mine",
+            "Deep Caverns",
+            "Dwarven Mines",
+            "Crystal Hollows",
+            "Spider's Den",
+            "The End",
+            "Crimson Isle",
+            "Kuudra",
+            "The Garden",
+            "The Rift",
+            "Backwater Bayou",
+            "Lotus Atoll",
+            "Jerry's Workshop"
+        ]
     )
-    var hideDamageSplashEnabled: Boolean = false
-
-    @Switch(
-        title = "Work Outside Dungeons",
-        category = CATEGORY_DUNGEONS,
-        subcategory = SUBCATEGORY_HIDE_DAMAGE_SPLASH
-    )
-    var hideDamageSplashWorkOutsideDungeons: Boolean = false
+    var hideDamageSplashEnabledIslands: BooleanArray = BooleanArray(20) { false }
 
 
     private const val CATEGORY_DEBUG = "Debug"
