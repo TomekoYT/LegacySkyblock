@@ -11,16 +11,23 @@ object LegacySkyblockConfig : Config(
     Constants.MOD_NAME,
     Category.HYPIXEL
 ) {
-    val petDisplayDependencies: List<String> = listOf(
-        "petDisplayShowItem",
-        "petDisplayShowXP",
-        "petDisplayShowIcon"
+    val DEPENDENCIES: List<Pair<String, List<String>>> = listOf(
+        Pair(
+            "petDisplayEnabled",
+            listOf(
+                "petDisplayShowItem",
+                "petDisplayShowXP",
+                "petDisplayShowIcon"
+            )
+        )
     )
 
     fun register() {
         preload()
-        for (dependency in petDisplayDependencies) {
-            addDependency(dependency, "petDisplayEnabled")
+        for ((condition, dependencies) in DEPENDENCIES) {
+            for (dependency in dependencies) {
+                addDependency(dependency, condition)
+            }
         }
     }
 
@@ -55,6 +62,7 @@ object LegacySkyblockConfig : Config(
         subcategory = SUBCATEGORY_PET_DISPLAY
     )
     var petDisplayShowIcon = true
+
 
     private const val SUBCATEGORY_ACTION_BAR: String = "Action Bar"
 
