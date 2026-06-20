@@ -55,20 +55,20 @@ public abstract class MiddleClickGUIItemsMixin {
 
     private static boolean shouldCallOriginal(
             AbstractContainerScreen instance,
-            Slot slotIn,
-            int clickedButton,
-            ContainerInput clickType
+            Slot slot,
+            int buttonNum,
+            ContainerInput containerInput
     ) {
         if (
-                clickedButton != 0
-                        || clickType != ContainerInput.PICKUP
+                buttonNum != 0
+                        || containerInput != ContainerInput.PICKUP
                         || !LegacySkyblockConfig.middleClickGUIItemsEnabled
                         || !(instance.getMenu() instanceof ChestMenu)
                         || !HypixelPackets.inSkyblock
-                        || slotIn == null
+                        || slot == null
         ) return true;
 
-        List<Component> tooltip = slotIn.getItem().getTooltipLines(Item.TooltipContext.EMPTY, Minecraft.getInstance().player, TooltipFlag.NORMAL);
+        List<Component> tooltip = slot.getItem().getTooltipLines(Item.TooltipContext.EMPTY, Minecraft.getInstance().player, TooltipFlag.NORMAL);
         for (Component line : tooltip) {
             if (moreThanOneButton(line.getString())) {
                 return true;
