@@ -1,6 +1,7 @@
 package tomeko.legacyskyblock.hud
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.multiplayer.PlayerInfo
@@ -21,18 +22,26 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         var petLevel: Int? = null
         var petItem: String? = null
 
-        var formattedPetNameLine: Component? = null
-        var formattedPetItemLine: Component? = null
-        var formattedPetXPLine: Component? = null
+        var petNameLine: Component? = null
+        var petItemLine: Component? = null
+        var petXPLine: Component? = null
+
+        private var tickCooldown = 0
 
         fun register() {
             HudManager.register(PetDisplay(), Constants.MOD_ID)
             ClientTickEvents.END_CLIENT_TICK.register(PetDisplay::searchTab)
+            ClientReceiveMessageEvents.GAME.register(PetDisplay::onAutoPetMessage)
         }
 
         private fun searchTab(mc: Minecraft) {
             if (!HypixelPackets.inSkyblock) {
                 resetAll()
+                return
+            }
+
+            if (tickCooldown > 0) {
+                tickCooldown--
                 return
             }
 
@@ -51,7 +60,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
                 val fallbackName = player.profile.name ?: ""
                 var component = player.tabListDisplayName ?: Component.literal(fallbackName)
 
-                val plainText = StringFormatting.removeFormatting(component.string).trim()
+                var plainText = StringFormatting.removeFormatting(component.string).trim()
 
                 if (plainText.isEmpty()) continue
 
@@ -64,7 +73,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
 
                 if (!parsedName) {
                     if (plainText.endsWith(" ✦")) {
-                        plainText.dropLast(2)
+                        removeSkinStar(plainText)
                         if (!component.siblings.isEmpty()) {
                             val copy: MutableComponent = component.copy()
                             copy.siblings.removeLast()
@@ -76,7 +85,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
                     if (match != null) {
                         petLevel = match.groupValues[1].toIntOrNull()
                         petName = match.groupValues[2]
-                        formattedPetNameLine = component
+                        petNameLine = component
                         parsedName = true
                         continue
                     } else {
@@ -88,7 +97,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
                 if (!parsedItemOrXp) {
                     if (isXpLine(plainText)) {
                         resetItem()
-                        formattedPetXPLine = component
+                        petXPLine = component
                         break
                     } else {
                         if (plainText == "MAX LEVEL") {
@@ -98,14 +107,14 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
                         }
 
                         petItem = plainText
-                        formattedPetItemLine = component
+                        petItemLine = component
                         parsedItemOrXp = true
                         continue
                     }
                 }
 
                 if (isXpLine(plainText)) {
-                    formattedPetXPLine = component
+                    petXPLine = component
                     break
                 }
 
@@ -114,33 +123,60 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             }
         }
 
+        private fun onAutoPetMessage(message: Component, fromActionBar: Boolean) {
+            if (fromActionBar) return
+
+            val match = Regex(
+                "^§cAutopet §eequipped your (§7\\[Lvl (\\d+)\\] (§.)((?:[^§]|§.)+?))(?:§d ✦)?§e! §a§lVIEW RULE\$"
+            ).find(
+                message.string
+            ) ?: return
+
+            setTickCooldown()
+            petNameLine = Component.literal(match.groupValues[1])
+            petLevel = match.groupValues[2].toIntOrNull()
+            petName = match.groupValues[4]
+
+            resetItem()
+            resetXP()
+        }
+
         private fun shouldShowPetItem(): Boolean {
-            return LegacySkyblockConfig.petDisplayShowItem && formattedPetItemLine != null
+            return LegacySkyblockConfig.petDisplayShowItem && petItemLine != null
         }
 
         private fun shouldShowPetXP(): Boolean {
-            return LegacySkyblockConfig.petDisplayShowXP && formattedPetXPLine != null
-        }
-
-        private fun isXpLine(text: String): Boolean {
-            return text.firstOrNull()?.isDigit() == true || text.firstOrNull() == '+'
+            return LegacySkyblockConfig.petDisplayShowXP && petXPLine != null
         }
 
         fun resetAll() {
             petName = null
             petLevel = null
-            formattedPetNameLine = null
+            petNameLine = null
             resetItem()
             resetXP()
         }
 
         fun resetItem() {
             petItem = null
-            formattedPetItemLine = null
+            petItemLine = null
         }
 
         fun resetXP() {
-            formattedPetXPLine = null
+            petXPLine = null
+        }
+
+        private fun isXpLine(text: String): Boolean {
+            return text.firstOrNull()?.isDigit() == true || text.firstOrNull() == '+'
+        }
+
+        private fun removeSkinStar(name: String): String {
+            if (name.endsWith(" ✦")) return name.dropLast(2)
+            return name
+        }
+
+        fun setTickCooldown() {
+            tickCooldown = 67
         }
     }
 
@@ -158,19 +194,19 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
     override fun render(mcCtx: GuiGraphicsExtractor) {
         if (!HypixelPackets.inSkyblock || !LegacySkyblockConfig.petDisplayEnabled) return
 
-        if (formattedPetNameLine == null) return
+        if (petNameLine == null) return
 
         val mc = Minecraft.getInstance()
 
-        actualWidth = mc.font.width(formattedPetNameLine!!.string).toFloat()
+        actualWidth = mc.font.width(petNameLine!!.string).toFloat()
 
         var size = 1
         if (shouldShowPetItem()) {
-            actualWidth = max(actualWidth, mc.font.width(formattedPetItemLine!!.string).toFloat())
+            actualWidth = max(actualWidth, mc.font.width(petItemLine!!.string).toFloat())
             size++
         }
         if (shouldShowPetXP()) {
-            actualWidth = max(actualWidth, mc.font.width(formattedPetXPLine!!.string).toFloat())
+            actualWidth = max(actualWidth, mc.font.width(petXPLine!!.string).toFloat())
             size++
         }
 
@@ -189,16 +225,16 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         }
 
         var textY = 0f
-        renderComponent(mcCtx, formattedPetNameLine!!, textY)
+        renderComponent(mcCtx, petNameLine!!, textY)
         textY += (mc.font.lineHeight + textPadding)
 
         if (shouldShowPetItem()) {
-            renderComponent(mcCtx, formattedPetItemLine!!, textY)
+            renderComponent(mcCtx, petItemLine!!, textY)
             textY += (mc.font.lineHeight + textPadding)
         }
 
         if (shouldShowPetXP()) {
-            renderComponent(mcCtx, formattedPetXPLine!!, textY)
+            renderComponent(mcCtx, petXPLine!!, textY)
         }
 
         mcCtx.pose().popMatrix()

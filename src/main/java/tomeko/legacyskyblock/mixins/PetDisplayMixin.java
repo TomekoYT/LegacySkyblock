@@ -44,6 +44,7 @@ public abstract class PetDisplayMixin {
         }
 
         if (canDespawn && !isTogglingFavorite(buttonNum, containerInput)) {
+            PetDisplay.Companion.setTickCooldown();
             PetDisplay.Companion.resetAll();
             return;
         }
@@ -53,7 +54,8 @@ public abstract class PetDisplayMixin {
         int level = Integer.parseInt(nameLineMatcher.group(1));
         String name = nameLineMatcher.group(2);
 
-        PetDisplay.Companion.setFormattedPetNameLine(component);
+        PetDisplay.Companion.setTickCooldown();
+        PetDisplay.Companion.setPetNameLine(component);
         PetDisplay.Companion.setPetName(name);
         PetDisplay.Companion.setPetLevel(level);
 
@@ -68,7 +70,7 @@ public abstract class PetDisplayMixin {
             if (matcher.find()) {
                 MutableComponent copy = line.copy();
                 copy.getSiblings().removeFirst();
-                PetDisplay.Companion.setFormattedPetItemLine(copy);
+                PetDisplay.Companion.setPetItemLine(copy);
                 PetDisplay.Companion.setPetItem(matcher.group(1));
                 return;
             }
@@ -86,7 +88,7 @@ public abstract class PetDisplayMixin {
                 for (int i = 0; i < 4; i++) {
                     copy.getSiblings().removeFirst();
                 }
-                PetDisplay.Companion.setFormattedPetXPLine(copy);
+                PetDisplay.Companion.setPetXPLine(copy);
                 return;
             }
         }
