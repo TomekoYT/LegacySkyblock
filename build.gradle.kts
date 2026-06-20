@@ -17,6 +17,8 @@ val oneconfig_version: String by project
 val mod_menu_version: String by project
 val hypixel_mod_api_version: String by project
 
+val skyblock_api_version: String by project
+
 plugins {
     id("org.jetbrains.kotlin.jvm") version "2.4.0"
     id("org.jetbrains.kotlin.plugin.compose") version "2.4.0"
@@ -31,6 +33,7 @@ base {
 repositories {
     google()
     mavenCentral()
+    maven("https://api.modrinth.com/maven")
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.stellardrift.ca/repository/maven-snapshots/")
 
@@ -38,6 +41,8 @@ repositories {
     maven("https://repo.polyfrost.org/snapshots")
     maven("https://maven.terraformersmc.com/")
     maven("https://repo.hypixel.net/repository/Hypixel/")
+
+    maven("https://maven.teamresourceful.com/repository/maven-public/")
 }
 
 loom {
@@ -62,6 +67,13 @@ dependencies {
 
     implementation("com.terraformersmc:modmenu:$mod_menu_version")
     implementation("net.hypixel:mod-api:$hypixel_mod_api_version")
+
+    api("tech.thatgravyboat:skyblock-api:$skyblock_api_version") {
+        capabilities { requireCapability("tech.thatgravyboat:skyblock-api-$minecraft_version") }
+    }
+    include("tech.thatgravyboat:skyblock-api:$skyblock_api_version") {
+        capabilities { requireCapability("tech.thatgravyboat:skyblock-api-$minecraft_version") }
+    }
 }
 
 bloom {
