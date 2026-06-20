@@ -7,6 +7,7 @@ import tomeko.legacyskyblock.config.LegacySkyblockConfig
 object Debug {
     private val LOGGER: Logger = LoggerFactory.getLogger(Constants.MOD_ID)
 
+    @JvmStatic
     fun println(message: String) {
         if (!LegacySkyblockConfig.debugModeEnabled) return
 

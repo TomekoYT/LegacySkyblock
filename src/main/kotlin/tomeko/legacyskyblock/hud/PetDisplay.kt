@@ -5,12 +5,12 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.multiplayer.PlayerInfo
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.MutableComponent
 import org.polyfrost.oneconfig.api.config.v1.annotations.Slider
 import org.polyfrost.oneconfig.api.hud.v1.HudManager
 import org.polyfrost.oneconfig.api.hud.v1.LegacyHud
 import tomeko.legacyskyblock.config.LegacySkyblockConfig
 import tomeko.legacyskyblock.utils.Constants
-import tomeko.legacyskyblock.utils.Debug
 import tomeko.legacyskyblock.utils.HypixelPackets
 import tomeko.legacyskyblock.utils.StringFormatting
 import kotlin.math.max
@@ -20,7 +20,6 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         var petName: String? = null
         var petLevel: Int? = null
         var petItem: String? = null
-        var petXP: String? = null
 
         var formattedPetNameLine: Component? = null
         var formattedPetItemLine: Component? = null
@@ -50,7 +49,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
 
             for (player in sortedPlayers) {
                 val fallbackName = player.profile.name ?: ""
-                val component = player.tabListDisplayName ?: Component.literal(fallbackName)
+                var component = player.tabListDisplayName ?: Component.literal(fallbackName)
 
                 val plainText = StringFormatting.removeFormatting(component.string).trim()
 
@@ -64,6 +63,15 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
                 }
 
                 if (!parsedName) {
+                    if (plainText.endsWith(" ✦")) {
+                        plainText.dropLast(2)
+                        if (!component.siblings.isEmpty()) {
+                            val copy: MutableComponent = component.copy()
+                            copy.siblings.removeLast()
+                            component = copy
+                        }
+                    }
+
                     val match = Regex("^\\[Lvl (\\d+)] (.*)$").find(plainText)
                     if (match != null) {
                         petLevel = match.groupValues[1].toIntOrNull()
@@ -72,7 +80,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
                         parsedName = true
                         continue
                     } else {
-                        resetAll()
+                        if (plainText == "No pet selected") resetAll()
                         break
                     }
                 }
@@ -80,7 +88,6 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
                 if (!parsedItemOrXp) {
                     if (isXpLine(plainText)) {
                         resetItem()
-                        petXP = plainText
                         formattedPetXPLine = component
                         break
                     } else {
@@ -98,7 +105,6 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
                 }
 
                 if (isXpLine(plainText)) {
-                    petXP = plainText
                     formattedPetXPLine = component
                     break
                 }
@@ -106,10 +112,6 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
                 resetXP()
                 break
             }
-
-            Debug.println("Pet Name in Tab: " + (formattedPetNameLine?.string ?: "None"))
-            Debug.println("Pet Item in Tab: " + (formattedPetItemLine?.string ?: "None"))
-            Debug.println("Pet XP in Tab: " + (formattedPetXPLine?.string ?: "None"))
         }
 
         private fun shouldShowPetItem(): Boolean {
@@ -124,7 +126,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             return text.firstOrNull()?.isDigit() == true || text.firstOrNull() == '+'
         }
 
-        private fun resetAll() {
+        fun resetAll() {
             petName = null
             petLevel = null
             formattedPetNameLine = null
@@ -132,13 +134,12 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             resetXP()
         }
 
-        private fun resetItem() {
+        fun resetItem() {
             petItem = null
             formattedPetItemLine = null
         }
 
-        private fun resetXP() {
-            petXP = null
+        fun resetXP() {
             formattedPetXPLine = null
         }
     }
