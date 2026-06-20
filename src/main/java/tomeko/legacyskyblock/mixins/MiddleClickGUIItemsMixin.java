@@ -33,20 +33,20 @@ public abstract class MiddleClickGUIItemsMixin {
     )
     private void useMiddleClick(
             AbstractContainerScreen instance,
-            Slot slotIn,
+            Slot slot,
             int slotId,
-            int button,
-            ContainerInput clickType,
+            int buttonNum,
+            ContainerInput containerInput,
             Operation<Void> original
     ) {
-        if (shouldCallOriginal(instance, slotIn, button, clickType)) {
-            original.call(instance, slotIn, slotId, button, clickType);
+        if (shouldCallOriginal(instance, slot, buttonNum, containerInput)) {
+            original.call(instance, slot, slotId, buttonNum, containerInput);
             return;
         }
 
         original.call(
                 instance,
-                slotIn,
+                slot,
                 slotId,
                 2,
                 ContainerInput.CLONE
