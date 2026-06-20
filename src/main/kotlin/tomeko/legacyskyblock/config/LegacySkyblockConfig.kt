@@ -11,8 +11,17 @@ object LegacySkyblockConfig : Config(
     Constants.MOD_NAME,
     Category.HYPIXEL
 ) {
+    val petDisplayDependencies: List<String> = listOf(
+        "petDisplayShowItem",
+        "petDisplayShowXP",
+        "petDisplayShowIcon"
+    )
+
     fun register() {
         preload()
+        for (dependency in petDisplayDependencies) {
+            addDependency(dependency, "petDisplayEnabled")
+        }
     }
 
     private const val CATEGORY_HUD: String = "HUD"
@@ -22,24 +31,30 @@ object LegacySkyblockConfig : Config(
         title = "Enabled",
         description = "Enable Pet Widget by doing /widgets",
         category = CATEGORY_HUD,
-        subcategory = SUBCATEGORY_PET_DISPLAY,
+        subcategory = SUBCATEGORY_PET_DISPLAY
     )
     var petDisplayEnabled = true
 
     @Switch(
         title = "Show Pet Item",
         category = CATEGORY_HUD,
-        subcategory = SUBCATEGORY_PET_DISPLAY,
+        subcategory = SUBCATEGORY_PET_DISPLAY
     )
     var petDisplayShowItem = true
 
     @Switch(
         title = "Show Pet XP",
         category = CATEGORY_HUD,
-        subcategory = SUBCATEGORY_PET_DISPLAY,
+        subcategory = SUBCATEGORY_PET_DISPLAY
     )
     var petDisplayShowXP = true
 
+    @Switch(
+        title = "Show Pet Icon",
+        category = CATEGORY_HUD,
+        subcategory = SUBCATEGORY_PET_DISPLAY
+    )
+    var petDisplayShowIcon = true
 
     private const val SUBCATEGORY_ACTION_BAR: String = "Action Bar"
 

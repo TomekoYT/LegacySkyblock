@@ -7,11 +7,15 @@ import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.multiplayer.PlayerInfo
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
+import net.minecraft.world.item.ItemStack
 import org.polyfrost.oneconfig.api.config.v1.annotations.Slider
 import org.polyfrost.oneconfig.api.hud.v1.HudManager
 import org.polyfrost.oneconfig.api.hud.v1.LegacyHud
+import tech.thatgravyboat.skyblockapi.api.remote.api.SimpleItemAPI
+import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
 import tomeko.legacyskyblock.config.LegacySkyblockConfig
 import tomeko.legacyskyblock.utils.Constants
+import tomeko.legacyskyblock.utils.Debug
 import tomeko.legacyskyblock.utils.HypixelPackets
 import tomeko.legacyskyblock.utils.StringFormatting
 import kotlin.math.max
@@ -23,7 +27,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         var petXPLine: Component? = null
 
         var petName: String? = null
-        var petLevel: Int? = null
+        var petRarity: String? = null
         var petItem: String? = null
 
         private var tickCooldown = 0
@@ -83,8 +87,8 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
                     if (match != null) {
                         component = removeBlankSpaceAtBeginning(component)
                         petNameLine = component
-                        petLevel = match.groupValues[1].toIntOrNull()
                         petName = match.groupValues[2]
+                        petRarity = getRarityFromColor(component.siblings[1].style.color!!.value)
                         parsedName = true
                         continue
                     } else {
@@ -136,11 +140,31 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
 
             setTickCooldown()
             petNameLine = Component.literal(match.groupValues[1])
-            petLevel = match.groupValues[2].toIntOrNull()
+            petRarity = getRarityFromColor(match.groupValues[3])
             petName = match.groupValues[4]
 
             resetItem()
             resetXP()
+        }
+
+        fun getRarityFromColor(color: Int): String? = when (color) {
+            16777215 -> "COMMON"
+            5635925 -> "UNCOMMON"
+            5592575 -> "RARE"
+            11141290 -> "EPIC"
+            16755200 -> "LEGENDARY"
+            16733695 -> "MYTHIC"
+            else -> null
+        }
+
+        fun getRarityFromColor(color: String): String? = when (color) {
+            "§f" -> "COMMON"
+            "§a" -> "UNCOMMON"
+            "§9" -> "RARE"
+            "§5" -> "EPIC"
+            "§6" -> "LEGENDARY"
+            "§d" -> "MYTHIC"
+            else -> null
         }
 
         private fun shouldShowPetItem(): Boolean {
@@ -154,7 +178,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         fun resetAll() {
             petNameLine = null
             petName = null
-            petLevel = null
+            petRarity = null
             resetItem()
             resetXP()
         }
@@ -189,36 +213,69 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
     }
 
     @Slider(
-        title = "Text Padding",
+        title = "Icon Size",
+        min = 0f,
+        max = 64f,
+        step = 1f
+    )
+    var iconSize = 16f
+
+    @Slider(
+        title = "Icon Padding",
         min = 0f,
         max = 10f,
         step = 0.1f
     )
-    var textPadding = 5f
+    var iconPadding = 3f
+
+    @Slider(
+        title = "Lines Padding",
+        min = 0f,
+        max = 10f,
+        step = 0.1f
+    )
+    var linesPadding = 3f
 
     private var actualWidth = 0f
     private var actualHeight = 0f
 
     override fun render(mcCtx: GuiGraphicsExtractor) {
-        if (!HypixelPackets.inSkyblock || !LegacySkyblockConfig.petDisplayEnabled) return
-
-        if (petNameLine == null) return
+        if (!HypixelPackets.inSkyblock
+            || !LegacySkyblockConfig.petDisplayEnabled
+            || petNameLine == null
+            || petName == null
+            || petRarity == null
+        ) return
 
         val mc = Minecraft.getInstance()
 
-        actualWidth = mc.font.width(petNameLine!!.string).toFloat()
+        val icon: ItemStack? = SimpleItemAPI.getPetByIdOrNull(
+            SkyBlockId.pet(
+                petName!!.uppercase().replace(" ", "_"),
+                petRarity!!
+            )
+        )
 
-        var size = 1
+        var maxTextWidth = mc.font.width(petNameLine!!.string).toFloat()
+        var textLines = 1
+
         if (shouldShowPetItem()) {
-            actualWidth = max(actualWidth, mc.font.width(petItemLine!!.string).toFloat())
-            size++
+            maxTextWidth = max(maxTextWidth, mc.font.width(petItemLine!!.string).toFloat())
+            textLines++
         }
         if (shouldShowPetXP()) {
-            actualWidth = max(actualWidth, mc.font.width(petXPLine!!.string).toFloat())
-            size++
+            maxTextWidth = max(maxTextWidth, mc.font.width(petXPLine!!.string).toFloat())
+            textLines++
         }
 
-        actualHeight = size * (mc.font.lineHeight + textPadding) - textPadding
+        val textHeight = textLines * mc.font.lineHeight + max(0, textLines - 1) * linesPadding
+
+        val hasIcon = (LegacySkyblockConfig.petDisplayShowIcon && icon != null)
+        val actualIconSize = if (hasIcon) iconSize else 0f
+        val actualIconPadding = if (hasIcon) iconPadding else 0f
+
+        actualWidth = actualIconSize + actualIconPadding + maxTextWidth
+        actualHeight = max(actualIconSize, textHeight)
 
         mcCtx.pose().pushMatrix()
 
@@ -232,35 +289,45 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             )
         }
 
-        var textY = 0f
-        renderComponent(mcCtx, petNameLine!!, textY)
-        textY += (mc.font.lineHeight + textPadding)
+        if (hasIcon) {
+            val itemY = (actualHeight - actualIconSize) / 2f
+            val scale = actualIconSize / 16f
+
+            mcCtx.pose().pushMatrix()
+            mcCtx.pose().translate(0f, itemY)
+            mcCtx.pose().scale(scale, scale)
+
+            mcCtx.item(icon, 0, 0)
+
+            mcCtx.pose().popMatrix()
+        }
+
+        val textStartX = actualIconSize + actualIconPadding
+        var textY = (actualHeight - textHeight) / 2f
+
+        renderComponent(mcCtx, petNameLine!!, textStartX, textY)
+        textY += (mc.font.lineHeight + linesPadding)
 
         if (shouldShowPetItem()) {
-            renderComponent(mcCtx, petItemLine!!, textY)
-            textY += (mc.font.lineHeight + textPadding)
+            renderComponent(mcCtx, petItemLine!!, textStartX, textY)
+            textY += (mc.font.lineHeight + linesPadding)
         }
 
         if (shouldShowPetXP()) {
-            renderComponent(mcCtx, petXPLine!!, textY)
+            renderComponent(mcCtx, petXPLine!!, textStartX, textY)
         }
 
         mcCtx.pose().popMatrix()
     }
 
-    override val height: Float = actualHeight
-    override val width: Float = actualWidth
-    override fun update(): Boolean = true
-    override fun multipleInstancesAllowed(): Boolean = false
-
-    private fun renderComponent(mcCtx: GuiGraphicsExtractor, component: Component, textY: Float) {
+    private fun renderComponent(mcCtx: GuiGraphicsExtractor, component: Component, textX: Float, textY: Float) {
         val mc = Minecraft.getInstance()
 
         if (showShadow) {
             mcCtx.text(
                 mc.font,
                 component.string,
-                1,
+                textX.toInt() + 1,
                 textY.toInt() + 1,
                 shadowColor,
                 false
@@ -270,10 +337,15 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         mcCtx.text(
             mc.font,
             component,
-            0,
+            textX.toInt(),
             textY.toInt(),
             0xFFFFFFFF.toInt(),
             false
         )
     }
+
+    override val height: Float = actualHeight
+    override val width: Float = actualWidth
+    override fun update(): Boolean = true
+    override fun multipleInstancesAllowed(): Boolean = false
 }

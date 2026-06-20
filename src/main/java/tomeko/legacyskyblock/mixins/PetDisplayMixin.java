@@ -57,7 +57,7 @@ public abstract class PetDisplayMixin {
         PetDisplay.Companion.setTickCooldown();
         PetDisplay.Companion.setPetNameLine(component);
         PetDisplay.Companion.setPetName(name);
-        PetDisplay.Companion.setPetLevel(level);
+        PetDisplay.Companion.setPetRarity(PetDisplay.Companion.getRarityFromColor(component.getSiblings().get(1).getStyle().getColor().getValue()));
 
         searchForPetItem(tooltip);
         searchForPetXP(tooltip);
@@ -86,6 +86,8 @@ public abstract class PetDisplayMixin {
             if (matcher.find()) {
                 MutableComponent copy = line.copy();
                 for (int i = 0; i < 4; i++) {
+                    if (copy.getSiblings().getFirst().getString().equals("0")) break;
+
                     copy.getSiblings().removeFirst();
                 }
                 PetDisplay.Companion.setPetXPLine(copy);
