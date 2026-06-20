@@ -51,7 +51,6 @@ public abstract class PetDisplayMixin {
 
         if (!canSummon || buttonNum == 1 || isTogglingFavorite(buttonNum, containerInput)) return;
 
-        int level = Integer.parseInt(nameLineMatcher.group(1));
         String name = nameLineMatcher.group(2);
 
         PetDisplay.Companion.setTickCooldown();
