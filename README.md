@@ -22,6 +22,12 @@ Modern Hypixel Skyblock mod aimed to port features from 1.8.9 mods
 
 ### HUD
 
+#### Pet Display
+- Show your active pet on screen
+- Show pet item, xp, icon
+- Works with Hypixel pet widget, fallbacks to Pets menu and autopet rules when missing
+
+
 #### Action Bar
 - Hide Defense
 - Hide True Defense
@@ -34,8 +40,8 @@ Modern Hypixel Skyblock mod aimed to port features from 1.8.9 mods
 - Replace left click with middle click in GUIs
 
 
-### Dungeons
+### Misc
 
 #### Hide Damage Splash
-- Hide damage splash on mobs while in dungeons
-- Work outside Dungeons
+- Hide damage splash on mobs
+- Separate toggle for each island
