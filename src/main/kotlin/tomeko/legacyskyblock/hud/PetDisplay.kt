@@ -18,13 +18,13 @@ import kotlin.math.max
 
 class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
     companion object {
-        var petName: String? = null
-        var petLevel: Int? = null
-        var petItem: String? = null
-
         var petNameLine: Component? = null
         var petItemLine: Component? = null
         var petXPLine: Component? = null
+
+        var petName: String? = null
+        var petLevel: Int? = null
+        var petItem: String? = null
 
         private var tickCooldown = 0
 
@@ -60,9 +60,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
                 val fallbackName = player.profile.name ?: ""
                 var component = player.tabListDisplayName ?: Component.literal(fallbackName)
 
-                var plainText = StringFormatting.removeFormatting(component.string).trim()
-
-                if (plainText.isEmpty()) continue
+                val plainText = StringFormatting.removeFormatting(component.string).trim()
 
                 if (!foundHeader) {
                     if (plainText == "Pet:") {
@@ -83,9 +81,10 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
 
                     val match = Regex("^\\[Lvl (\\d+)] (.*)$").find(plainText)
                     if (match != null) {
+                        component = removeBlankSpaceAtBeginning(component)
+                        petNameLine = component
                         petLevel = match.groupValues[1].toIntOrNull()
                         petName = match.groupValues[2]
-                        petNameLine = component
                         parsedName = true
                         continue
                     } else {
@@ -96,24 +95,27 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
 
                 if (!parsedItemOrXp) {
                     if (isXpLine(plainText)) {
-                        resetItem()
+                        component = removeBlankSpaceAtBeginning(component)
                         petXPLine = component
+                        resetItem()
                         break
                     } else {
-                        if (plainText == "MAX LEVEL") {
+                        if (plainText.isEmpty() || plainText == "MAX LEVEL") {
                             resetItem()
                             resetXP()
                             break
                         }
 
-                        petItem = plainText
+                        component = removeBlankSpaceAtBeginning(component)
                         petItemLine = component
+                        petItem = plainText
                         parsedItemOrXp = true
                         continue
                     }
                 }
 
                 if (isXpLine(plainText)) {
+                    component = removeBlankSpaceAtBeginning(component)
                     petXPLine = component
                     break
                 }
@@ -150,16 +152,16 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         }
 
         fun resetAll() {
+            petNameLine = null
             petName = null
             petLevel = null
-            petNameLine = null
             resetItem()
             resetXP()
         }
 
         fun resetItem() {
-            petItem = null
             petItemLine = null
+            petItem = null
         }
 
         fun resetXP() {
@@ -173,6 +175,12 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         private fun removeSkinStar(name: String): String {
             if (name.endsWith(" ✦")) return name.dropLast(2)
             return name
+        }
+
+        private fun removeBlankSpaceAtBeginning(component: Component): Component {
+            val copy: MutableComponent = component.copy()
+            copy.siblings.removeFirst()
+            return copy
         }
 
         fun setTickCooldown() {
