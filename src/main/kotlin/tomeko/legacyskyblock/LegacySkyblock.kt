@@ -16,6 +16,7 @@ class LegacySkyblock : ClientModInitializer {
         HideDamageSplash.register()
 
         ActionBar.register()
+        PetDisplay.register()
 
         HypixelPackets.register()
 

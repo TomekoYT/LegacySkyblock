@@ -16,6 +16,31 @@ object LegacySkyblockConfig : Config(
     }
 
     private const val CATEGORY_HUD: String = "HUD"
+    private const val SUBCATEGORY_PET_DISPLAY: String = "Pet Display"
+
+    @Switch(
+        title = "Enabled",
+        description = "Enable Pet Widget by doing /widgets",
+        category = CATEGORY_HUD,
+        subcategory = SUBCATEGORY_PET_DISPLAY,
+    )
+    var petDisplayEnabled = true
+
+    @Switch(
+        title = "Show Pet Item",
+        category = CATEGORY_HUD,
+        subcategory = SUBCATEGORY_PET_DISPLAY,
+    )
+    var petDisplayShowItem = true
+
+    @Switch(
+        title = "Show Pet XP",
+        category = CATEGORY_HUD,
+        subcategory = SUBCATEGORY_PET_DISPLAY,
+    )
+    var petDisplayShowXP = true
+
+
     private const val SUBCATEGORY_ACTION_BAR: String = "Action Bar"
 
     @Switch(

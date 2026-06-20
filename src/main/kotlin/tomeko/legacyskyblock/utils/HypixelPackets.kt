@@ -48,7 +48,10 @@ object HypixelPackets {
 
         Debug.println("Mode: $modeName")
 
-        if (!inSkyblock) return
+        if (!inSkyblock) {
+            currentIsland = null
+            return
+        }
 
         currentIsland = SkyblockIslands.fromId(modeName)
     }
