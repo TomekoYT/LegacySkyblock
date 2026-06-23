@@ -21,7 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Mixin(AbstractContainerScreen.class)
-public abstract class PetDisplayMixin {
+public abstract class PetMenuMixin {
     @Inject(method = "slotClicked", at = @At("HEAD"))
     private void detectClickOnPet(Slot slot, int slotId, int buttonNum, ContainerInput containerInput, CallbackInfo ci) {
         AbstractContainerScreen<?> instance = (AbstractContainerScreen<?>) (Object) this;
