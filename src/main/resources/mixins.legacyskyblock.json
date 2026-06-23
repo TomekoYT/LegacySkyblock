@@ -1,5 +1,5 @@
 {
-  "plugin": "${base_group}.utils.MixinPlugin",
+  "plugin": "${base_group}.plugins.MixinPlugin",
   "package": "${base_group}.mixins",
   "compatibilityLevel": "JAVA_${java_version}",
   "overwrites": {
