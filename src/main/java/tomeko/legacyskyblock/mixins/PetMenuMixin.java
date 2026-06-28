@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tomeko.legacyskyblock.hud.PetDisplay;
+import tomeko.legacyskyblock.utils.Debug;
 import tomeko.legacyskyblock.utils.HypixelPackets;
 
 import java.util.List;
@@ -23,14 +24,14 @@ import java.util.regex.Pattern;
 @Mixin(AbstractContainerScreen.class)
 public abstract class PetMenuMixin {
     @Inject(method = "slotClicked", at = @At("HEAD"))
-    private void detectClickOnPet(Slot slot, int slotId, int buttonNum, ContainerInput containerInput, CallbackInfo ci) {
+    private void legacyskyblock$detectClickOnPet(Slot slot, int slotId, int buttonNum, ContainerInput containerInput, CallbackInfo ci) {
         AbstractContainerScreen<?> instance = (AbstractContainerScreen<?>) (Object) this;
         if (!HypixelPackets.inSkyblock
                 || !(instance.getMenu() instanceof ChestMenu)
                 || !instance.getTitle().getString().endsWith("Pets")
         ) return;
 
-        Component component = removeFavoriteAndSkinStars(slot.getItem().getHoverName());
+        Component component = legacyskyblock$removeFavoriteAndSkinStars(slot.getItem().getHoverName());
         Pattern nameLinePattern = Pattern.compile("^\\[Lvl (\\d+)] (.*)$");
         Matcher nameLineMatcher = nameLinePattern.matcher(component.getString());
         if (!nameLineMatcher.find()) return;
@@ -43,34 +44,33 @@ public abstract class PetMenuMixin {
             else if (line.getString().equals("Click to despawn!")) canDespawn = true;
         }
 
-        if (canDespawn && !isTogglingFavorite(buttonNum, containerInput)) {
+        if (canDespawn && !legacyskyblock$isTogglingFavorite(buttonNum, containerInput)) {
             PetDisplay.Companion.setTickCooldown();
             PetDisplay.Companion.resetAll();
             return;
         }
 
-        if (!canSummon || buttonNum == 1 || isTogglingFavorite(buttonNum, containerInput)) return;
+        if (!canSummon || buttonNum == 1 || legacyskyblock$isTogglingFavorite(buttonNum, containerInput)) return;
 
+        String level = nameLineMatcher.group(1);
         String name = nameLineMatcher.group(2);
 
         PetDisplay.Companion.setTickCooldown();
-        PetDisplay.Companion.setPetNameLine(component);
         PetDisplay.Companion.setPetName(name);
-        PetDisplay.Companion.setPetRarity(PetDisplay.Companion.getRarityFromColor(component.getSiblings().get(1).getStyle().getColor().getValue()));
+        PetDisplay.Companion.setPetLevel(level);
+        PetDisplay.Companion.setPetRarity(PetDisplay.Companion.getRarityFromComponentColor(component.getSiblings().get(1).getStyle().getColor().getValue()));
 
-        searchForPetItem(tooltip);
-        searchForPetXP(tooltip);
+        legacyskyblock$searchForPetItem(tooltip);
+        legacyskyblock$searchForPetXP(tooltip);
     }
 
-    private static void searchForPetItem(List<Component> tooltip) {
+    private static void legacyskyblock$searchForPetItem(List<Component> tooltip) {
         for (Component line : tooltip) {
             Pattern pattern = Pattern.compile("^Held Item: (.*)$");
             Matcher matcher = pattern.matcher(line.getString());
             if (matcher.find()) {
-                MutableComponent copy = line.copy();
-                copy.getSiblings().removeFirst();
-                PetDisplay.Companion.setPetItemLine(copy);
                 PetDisplay.Companion.setPetItem(matcher.group(1));
+                PetDisplay.Companion.setPetItemRarity(PetDisplay.Companion.getRarityFromComponentColor(line.getSiblings().get(1).getStyle().getColor().getValue()));
                 return;
             }
         }
@@ -78,18 +78,19 @@ public abstract class PetMenuMixin {
         PetDisplay.Companion.resetItem();
     }
 
-    private static void searchForPetXP(List<Component> tooltip) {
+    private static void legacyskyblock$searchForPetXP(List<Component> tooltip) {
         for (Component line : tooltip) {
             Pattern pattern = Pattern.compile("^ {26}(.*)$");
             Matcher matcher = pattern.matcher(line.getString());
             if (matcher.find()) {
                 MutableComponent copy = line.copy();
-                for (int i = 0; i < 4; i++) {
+                for (int i = 0; i < 3; i++) {
                     if (copy.getSiblings().getFirst().getString().equals("0")) break;
 
                     copy.getSiblings().removeFirst();
                 }
-                PetDisplay.Companion.setPetXPLine(copy);
+                PetDisplay.Companion.setPetXPLeft(copy.getSiblings().getFirst().getString());
+                PetDisplay.Companion.setPetXPRight(copy.getSiblings().get(2).getString());
                 return;
             }
         }
@@ -97,7 +98,7 @@ public abstract class PetMenuMixin {
         PetDisplay.Companion.resetXP();
     }
 
-    private static Component removeFavoriteAndSkinStars(Component name) {
+    private static Component legacyskyblock$removeFavoriteAndSkinStars(Component name) {
         if (name.getSiblings().isEmpty()) return name;
 
         MutableComponent copy = name.copy();
@@ -117,7 +118,7 @@ public abstract class PetMenuMixin {
         return copy;
     }
 
-    private static boolean isTogglingFavorite(int buttonNum, ContainerInput containerInput) {
+    private static boolean legacyskyblock$isTogglingFavorite(int buttonNum, ContainerInput containerInput) {
         return buttonNum == 0 && containerInput == ContainerInput.QUICK_MOVE;
     }
 }

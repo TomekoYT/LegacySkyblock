@@ -8,6 +8,7 @@ import net.minecraft.client.multiplayer.PlayerInfo
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.item.ItemStack
+import org.polyfrost.oneconfig.api.config.v1.annotations.Include
 import org.polyfrost.oneconfig.api.config.v1.annotations.Slider
 import org.polyfrost.oneconfig.api.hud.v1.HudManager
 import org.polyfrost.oneconfig.api.hud.v1.LegacyHud
@@ -21,13 +22,26 @@ import kotlin.math.max
 
 class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
     companion object {
-        var petNameLine: Component? = null
-        var petItemLine: Component? = null
-        var petXPLine: Component? = null
-
+        @Include
         var petName: String? = null
+
+        @Include
+        var petLevel: String? = null
+
+        @Include
         var petRarity: String? = null
+
+        @Include
         var petItem: String? = null
+
+        @Include
+        var petItemRarity: String? = null
+
+        @Include
+        var petXPLeft: String? = null
+
+        @Include
+        var petXPRight: String? = null
 
         private var tickCooldown = 0
 
@@ -38,15 +52,12 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         }
 
         private fun searchTab(mc: Minecraft) {
-            if (!HypixelPackets.inSkyblock) {
-                resetAll()
-                return
-            }
-
             if (tickCooldown > 0) {
                 tickCooldown--
                 return
             }
+
+            if (!HypixelPackets.inSkyblock) return
 
             val connection = mc.connection ?: return
 
@@ -84,10 +95,9 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
 
                     val match = Regex("^\\[Lvl (\\d+)] (.*)$").find(plainText)
                     if (match != null) {
-                        component = removeBlankSpaceAtBeginning(component)
-                        petNameLine = component
+                        petLevel = match.groupValues[1]
                         petName = match.groupValues[2]
-                        petRarity = getRarityFromColor(component.siblings[1].style.color!!.value)
+                        petRarity = getRarityFromComponentColor(component.siblings[2].style.color!!.value)
                         parsedName = true
                         continue
                     } else {
@@ -98,28 +108,25 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
 
                 if (!parsedItemOrXp) {
                     if (isXpLine(plainText)) {
-                        component = removeBlankSpaceAtBeginning(component)
-                        petXPLine = component
+                        setPetXPFromTab(component)
                         resetItem()
                         break
                     } else {
-                        if (plainText.isEmpty() || plainText == "MAX LEVEL") {
+                        if (plainText.isEmpty() || plainText == "MAX LEVEL" || plainText.firstOrNull() == '+') {
                             resetItem()
                             resetXP()
                             break
                         }
 
-                        component = removeBlankSpaceAtBeginning(component)
-                        petItemLine = component
                         petItem = plainText
+                        petItemRarity = getRarityFromComponentColor(component.siblings[1].style.color!!.value)
                         parsedItemOrXp = true
                         continue
                     }
                 }
 
                 if (isXpLine(plainText)) {
-                    component = removeBlankSpaceAtBeginning(component)
-                    petXPLine = component
+                    setPetXPFromTab(component)
                     break
                 }
 
@@ -138,15 +145,15 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             ) ?: return
 
             setTickCooldown()
-            petNameLine = Component.literal(match.groupValues[1])
-            petRarity = getRarityFromColor(match.groupValues[3])
-            petName = match.groupValues[4]
+            petLevel = match.groupValues[1]
+            petRarity = getRarityFromChatColor(match.groupValues[2])
+            petName = match.groupValues[3]
 
             resetItem()
             resetXP()
         }
 
-        fun getRarityFromColor(color: Int): String? = when (color) {
+        fun getRarityFromComponentColor(color: Int): String? = when (color) {
             16777215 -> "COMMON"
             5635925 -> "UNCOMMON"
             5592575 -> "RARE"
@@ -156,7 +163,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             else -> null
         }
 
-        fun getRarityFromColor(color: String): String? = when (color) {
+        fun getRarityFromChatColor(color: String): String? = when (color) {
             "§f" -> "COMMON"
             "§a" -> "UNCOMMON"
             "§9" -> "RARE"
@@ -166,33 +173,52 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             else -> null
         }
 
+        fun getChatColorFromRarity(rarity: String): String? = when (rarity) {
+            "COMMON" -> "§f"
+            "UNCOMMON" -> "§a"
+            "RARE" -> "§9"
+            "EPIC" -> "§5"
+            "LEGENDARY" -> "§6"
+            "MYTHIC" -> "§d"
+            else -> null
+        }
+
         private fun shouldShowPetItem(): Boolean {
-            return LegacySkyblockConfig.petDisplayShowItem && petItemLine != null
+            return LegacySkyblockConfig.petDisplayShowItem && petItem != null && petItemRarity != null
         }
 
         private fun shouldShowPetXP(): Boolean {
-            return LegacySkyblockConfig.petDisplayShowXP && petXPLine != null
+            return LegacySkyblockConfig.petDisplayShowXP && petXPLeft != null && petXPRight != null
         }
 
         fun resetAll() {
-            petNameLine = null
             petName = null
+            petLevel = null
             petRarity = null
             resetItem()
             resetXP()
         }
 
         fun resetItem() {
-            petItemLine = null
             petItem = null
+            petItemRarity = null
         }
 
         fun resetXP() {
-            petXPLine = null
+            petXPLeft = null
+            petXPRight = null
+        }
+
+        private fun setPetXPFromTab(component: Component) {
+            petXPLeft = component.siblings[1].string
+            petXPRight = component.siblings[3].string
+            if (petXPRight!!.endsWith(" XP ")) {
+                petXPRight = petXPRight!!.dropLast(4)
+            }
         }
 
         private fun isXpLine(text: String): Boolean {
-            return text.firstOrNull()?.isDigit() == true || text.firstOrNull() == '+'
+            return text.firstOrNull()?.isDigit() == true
         }
 
         private fun removeSkinStar(name: String): String {
@@ -200,14 +226,8 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             return name
         }
 
-        private fun removeBlankSpaceAtBeginning(component: Component): Component {
-            val copy: MutableComponent = component.copy()
-            copy.siblings.removeFirst()
-            return copy
-        }
-
         fun setTickCooldown() {
-            tickCooldown = 67
+            tickCooldown = 60
         }
     }
 
@@ -241,9 +261,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
     override fun render(mcCtx: GuiGraphicsExtractor) {
         if (!HypixelPackets.inSkyblock
             || !LegacySkyblockConfig.petDisplayEnabled
-            || petNameLine == null
             || petName == null
-            || petRarity == null
         ) return
 
         val mc = Minecraft.getInstance()
@@ -255,15 +273,25 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             )
         )
 
-        var maxTextWidth = mc.font.width(petNameLine!!.string).toFloat()
+        var petNameLine = ""
+        if (LegacySkyblockConfig.petDisplayShowLevel) petNameLine += "§7[Lvl $petLevel] "
+        petNameLine += "${getChatColorFromRarity(petRarity!!)}${petName}"
+
+
+        var maxTextWidth = mc.font.width(petNameLine).toFloat()
         var textLines = 1
 
+        var petItemLine = ""
         if (shouldShowPetItem()) {
-            maxTextWidth = max(maxTextWidth, mc.font.width(petItemLine!!.string).toFloat())
+            petItemLine = "${getChatColorFromRarity(petItemRarity!!)}${petItem}"
+            maxTextWidth = max(maxTextWidth, mc.font.width(petItemLine).toFloat())
             textLines++
         }
+
+        var petXPLine = ""
         if (shouldShowPetXP()) {
-            maxTextWidth = max(maxTextWidth, mc.font.width(petXPLine!!.string).toFloat())
+            petXPLine = "§e${petXPLeft!!}§6/§e${petXPRight} XP"
+            maxTextWidth = max(maxTextWidth, mc.font.width(petXPLine).toFloat())
             textLines++
         }
 
@@ -304,16 +332,16 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         val textStartX = actualIconSize + actualIconPadding
         var textY = (actualHeight - textHeight) / 2f
 
-        renderComponent(mcCtx, petNameLine!!, textStartX, textY)
+        renderComponent(mcCtx, Component.literal(petNameLine), textStartX, textY)
         textY += (mc.font.lineHeight + linesPadding)
 
         if (shouldShowPetItem()) {
-            renderComponent(mcCtx, petItemLine!!, textStartX, textY)
+            renderComponent(mcCtx, Component.literal(petItemLine), textStartX, textY)
             textY += (mc.font.lineHeight + linesPadding)
         }
 
         if (shouldShowPetXP()) {
-            renderComponent(mcCtx, petXPLine!!, textStartX, textY)
+            renderComponent(mcCtx, Component.literal(petXPLine), textStartX, textY)
         }
 
         mcCtx.pose().popMatrix()

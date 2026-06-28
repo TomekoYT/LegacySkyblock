@@ -16,8 +16,28 @@ object LegacySkyblockConfig : Config(
             "petDisplayEnabled",
             listOf(
                 "petDisplayShowItem",
-                "petDisplayShowXP",
-                "petDisplayShowIcon"
+                "petDisplayShowLevel",
+                "petDisplayShowIcon",
+                "petDisplayShowItem",
+                "petDisplayShowXP"
+            )
+        ),
+        Pair(
+            "petDisplayShowItem",
+            listOf(
+                "petDisplayShowItemIcon"
+            )
+        ),
+        Pair(
+            "petDisplayShowIcon",
+            listOf(
+                "petDisplayShowItemIcon"
+            )
+        ),
+        Pair(
+            "petDisplayShowXP",
+            listOf(
+                "petDisplayShowXPPercentage"
             )
         )
     )
@@ -43,11 +63,32 @@ object LegacySkyblockConfig : Config(
     var petDisplayEnabled = true
 
     @Switch(
+        title = "Show Pet Level",
+        category = CATEGORY_HUD,
+        subcategory = SUBCATEGORY_PET_DISPLAY
+    )
+    var petDisplayShowLevel = true
+
+    @Switch(
+        title = "Show Pet Icon",
+        category = CATEGORY_HUD,
+        subcategory = SUBCATEGORY_PET_DISPLAY
+    )
+    var petDisplayShowIcon = true
+
+    @Switch(
         title = "Show Pet Item",
         category = CATEGORY_HUD,
         subcategory = SUBCATEGORY_PET_DISPLAY
     )
     var petDisplayShowItem = true
+
+    @Switch(
+        title = "Show Pet Item Icon",
+        category = CATEGORY_HUD,
+        subcategory = SUBCATEGORY_PET_DISPLAY
+    )
+    var petDisplayShowItemIcon = true
 
     @Switch(
         title = "Show Pet XP",
@@ -57,11 +98,11 @@ object LegacySkyblockConfig : Config(
     var petDisplayShowXP = true
 
     @Switch(
-        title = "Show Pet Icon",
+        title = "Show Pet XP Percentage",
         category = CATEGORY_HUD,
         subcategory = SUBCATEGORY_PET_DISPLAY
     )
-    var petDisplayShowIcon = true
+    var petDisplayShowXPPercentage = true
 
 
     private const val SUBCATEGORY_ACTION_BAR: String = "Action Bar"
