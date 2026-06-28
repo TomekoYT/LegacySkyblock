@@ -31,7 +31,7 @@ public abstract class MiddleClickGUIItemsMixin {
                     target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;slotClicked(Lnet/minecraft/world/inventory/Slot;IILnet/minecraft/world/inventory/ContainerInput;)V"
             )
     )
-    private void useMiddleClick(
+    private void legacyskyblock$useMiddleClick(
             AbstractContainerScreen instance,
             Slot slot,
             int slotId,
@@ -39,7 +39,7 @@ public abstract class MiddleClickGUIItemsMixin {
             ContainerInput containerInput,
             Operation<Void> original
     ) {
-        if (shouldCallOriginal(instance, slot, buttonNum, containerInput)) {
+        if (legacyskyblock$shouldCallOriginal(instance, slot, buttonNum, containerInput)) {
             original.call(instance, slot, slotId, buttonNum, containerInput);
             return;
         }
@@ -53,7 +53,7 @@ public abstract class MiddleClickGUIItemsMixin {
         );
     }
 
-    private static boolean shouldCallOriginal(
+    private static boolean legacyskyblock$shouldCallOriginal(
             AbstractContainerScreen instance,
             Slot slot,
             int buttonNum,
@@ -70,7 +70,7 @@ public abstract class MiddleClickGUIItemsMixin {
 
         List<Component> tooltip = slot.getItem().getTooltipLines(Item.TooltipContext.EMPTY, Minecraft.getInstance().player, TooltipFlag.NORMAL);
         for (Component line : tooltip) {
-            if (moreThanOneButton(line.getString())) {
+            if (legacyskyblock$moreThanOneButton(line.getString())) {
                 return true;
             }
         }
@@ -99,7 +99,7 @@ public abstract class MiddleClickGUIItemsMixin {
         return false;
     }
 
-    private static boolean moreThanOneButton(String text) {
+    private static boolean legacyskyblock$moreThanOneButton(String text) {
         text = text.toLowerCase();
 
         return text.contains("right-click")
