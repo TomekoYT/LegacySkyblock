@@ -35,7 +35,7 @@ object HypixelPackets {
 
         val serverTypeName = packet.serverType.get().name
 
-        Debug.println("Server Type: $serverTypeName")
+        Debug.print("Server Type: $serverTypeName")
 
         inSkyblock = (serverTypeName == "SkyBlock")
 
@@ -46,7 +46,7 @@ object HypixelPackets {
 
         val modeName = packet.mode.get()
 
-        Debug.println("Mode: $modeName")
+        Debug.print("Mode: $modeName")
 
         if (!inSkyblock) {
             currentIsland = null

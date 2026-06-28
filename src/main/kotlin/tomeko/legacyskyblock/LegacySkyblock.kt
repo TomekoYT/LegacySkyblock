@@ -20,6 +20,6 @@ class LegacySkyblock : ClientModInitializer {
 
         HypixelPackets.register()
 
-        Debug.println("Initialized!")
+        Debug.forcePrint("Initialized!")
     }
 }
