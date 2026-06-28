@@ -16,7 +16,6 @@ val fabricLanguageKotlinVersion = project.property("fabric_language_kotlin_versi
 val oneconfigVersion = project.property("oneconfig_version") as String
 val modMenuVersion = project.property("mod_menu_version") as String
 val hypixelModApiVersion = project.property("hypixel_mod_api_version") as String
-
 val skyblockApiVersion = project.property("skyblock_api_version") as String
 
 plugins {
@@ -55,12 +54,7 @@ dependencies {
     implementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
     implementation("net.fabricmc:fabric-language-kotlin:$fabricLanguageKotlinVersion")
 
-    val oneconfigModules = arrayOf("commands", "config-impl", "events", "hud", "internal", "ui", "utils")
-    for (module in oneconfigModules) {
-        implementation("org.polyfrost.oneconfig:${module}:${oneconfigVersion}")
-    }
     implementation("org.polyfrost.oneconfig:$minecraftVersion-fabric:$oneconfigVersion")
-
     implementation("com.terraformersmc:modmenu:$modMenuVersion")
     implementation("net.hypixel:mod-api:$hypixelModApiVersion")
 
