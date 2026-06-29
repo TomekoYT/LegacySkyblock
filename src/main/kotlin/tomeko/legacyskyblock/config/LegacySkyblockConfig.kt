@@ -17,7 +17,9 @@ object LegacySkyblockConfig : Config(
             "petDisplayShowLevel",
             "petDisplayShowIcon",
             "petDisplayShowItem",
-            "petDisplayShowXP"
+            "petDisplayShowItemIcon",
+            "petDisplayShowXP",
+            "petDisplayShowXPPercentage"
         ),
         "petDisplayShowItem" to listOf(
             "petDisplayShowItemIcon"

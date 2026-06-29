@@ -16,10 +16,9 @@ import tech.thatgravyboat.skyblockapi.api.remote.api.SimpleItemAPI
 import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
 import tomeko.legacyskyblock.config.LegacySkyblockConfig
 import tomeko.legacyskyblock.utils.Constants
-import tomeko.legacyskyblock.utils.Debug
 import tomeko.legacyskyblock.utils.HypixelPackets
-import tomeko.legacyskyblock.utils.StringFormatting
-import kotlin.math.max
+import tomeko.legacyskyblock.utils.StringHelper
+import kotlin.math.*
 
 class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
     companion object {
@@ -75,7 +74,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
                 val fallbackName = player.profile.name ?: ""
                 var component = player.tabListDisplayName ?: Component.literal(fallbackName)
 
-                var plainText = StringFormatting.removeFormatting(component.string).trim()
+                var plainText = StringHelper.removeFormatting(component.string).trim()
 
                 if (!foundHeader) {
                     if (plainText == "Pet:") {
@@ -140,7 +139,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             if (fromActionBar) return
 
             val match = Regex(
-                "^§cAutopet §eequipped your §7\\[Lvl (\\d+)] (§.)((?:[^§]|§.)+?)(?:§d ✦)?§e! §a§lVIEW RULE\$"
+                "^§cAutopet §eequipped your §7\\[Lvl (\\d+)] (§.)((?:[^§]|§.)+?)(?:§d ✦)?§e! §a§lVIEW RULE$"
             ).find(
                 message.string
             ) ?: return
@@ -294,6 +293,13 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         var petXPLine = ""
         if (shouldShowPetXP()) {
             petXPLine = "§e${petXPLeft!!}§6/§e${petXPRight} XP"
+            if (LegacySkyblockConfig.petDisplayShowXPPercentage) {
+                petXPLine += " §6(${
+                    round(
+                        10 * (100 * StringHelper.parseNumber(petXPLeft)!! / StringHelper.parseNumber(petXPRight)!!)
+                    ) / 10
+                }%)"
+            }
             maxTextWidth = max(maxTextWidth, mc.font.width(petXPLine).toFloat())
             textLines++
         }
