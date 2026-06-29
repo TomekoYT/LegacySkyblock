@@ -16,6 +16,7 @@ import tech.thatgravyboat.skyblockapi.api.remote.api.SimpleItemAPI
 import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
 import tomeko.legacyskyblock.config.LegacySkyblockConfig
 import tomeko.legacyskyblock.utils.Constants
+import tomeko.legacyskyblock.utils.Debug
 import tomeko.legacyskyblock.utils.HypixelPackets
 import tomeko.legacyskyblock.utils.StringFormatting
 import kotlin.math.max
@@ -74,7 +75,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
                 val fallbackName = player.profile.name ?: ""
                 var component = player.tabListDisplayName ?: Component.literal(fallbackName)
 
-                val plainText = StringFormatting.removeFormatting(component.string).trim()
+                var plainText = StringFormatting.removeFormatting(component.string).trim()
 
                 if (!foundHeader) {
                     if (plainText == "Pet:") {
@@ -85,7 +86,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
 
                 if (!parsedName) {
                     if (plainText.endsWith(" ✦")) {
-                        removeSkinStar(plainText)
+                        plainText = removeSkinStar(plainText)
                         if (!component.siblings.isEmpty()) {
                             val copy: MutableComponent = component.copy()
                             copy.siblings.removeLast()
