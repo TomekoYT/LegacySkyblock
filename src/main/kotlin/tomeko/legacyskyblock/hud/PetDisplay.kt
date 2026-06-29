@@ -139,7 +139,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             if (fromActionBar) return
 
             val match = Regex(
-                "^§cAutopet §eequipped your (§7\\[Lvl (\\d+)] (§.)((?:[^§]|§.)+?))(?:§d ✦)?§e! §a§lVIEW RULE$"
+                "^§cAutopet §eequipped your §7\\[Lvl (\\d+)] (§.)((?:[^§]|§.)+?)(?:§d ✦)?§e! §a§lVIEW RULE\$"
             ).find(
                 message.string
             ) ?: return
