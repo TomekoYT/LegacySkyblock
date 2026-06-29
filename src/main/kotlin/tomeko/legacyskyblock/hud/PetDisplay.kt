@@ -262,6 +262,8 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         if (!HypixelPackets.inSkyblock
             || !LegacySkyblockConfig.petDisplayEnabled
             || petName == null
+            || petLevel == null
+            || petRarity == null
         ) return
 
         val mc = Minecraft.getInstance()
@@ -375,4 +377,5 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
     override val width: Float = actualWidth
     override fun update(): Boolean = true
     override fun multipleInstancesAllowed(): Boolean = false
+    override fun minimumSize() = 1f to 1f
 }

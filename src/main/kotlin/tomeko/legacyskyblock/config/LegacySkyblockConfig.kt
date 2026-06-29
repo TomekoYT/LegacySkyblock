@@ -12,33 +12,21 @@ object LegacySkyblockConfig : Config(
     Category.HYPIXEL
 ) {
     val DEPENDENCIES: List<Pair<String, List<String>>> = listOf(
-        Pair(
-            "petDisplayEnabled",
-            listOf(
-                "petDisplayShowItem",
-                "petDisplayShowLevel",
-                "petDisplayShowIcon",
-                "petDisplayShowItem",
-                "petDisplayShowXP"
-            )
-        ),
-        Pair(
+        "petDisplayEnabled" to listOf(
             "petDisplayShowItem",
-            listOf(
-                "petDisplayShowItemIcon"
-            )
-        ),
-        Pair(
+            "petDisplayShowLevel",
             "petDisplayShowIcon",
-            listOf(
-                "petDisplayShowItemIcon"
-            )
+            "petDisplayShowItem",
+            "petDisplayShowXP"
         ),
-        Pair(
-            "petDisplayShowXP",
-            listOf(
-                "petDisplayShowXPPercentage"
-            )
+        "petDisplayShowItem" to listOf(
+            "petDisplayShowItemIcon"
+        ),
+        "petDisplayShowIcon" to listOf(
+            "petDisplayShowItemIcon"
+        ),
+        "petDisplayShowXP" to listOf(
+            "petDisplayShowXPPercentage"
         )
     )
 
