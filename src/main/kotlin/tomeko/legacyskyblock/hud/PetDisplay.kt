@@ -188,6 +188,10 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             return LegacySkyblockConfig.petDisplayShowItem && petItem != null && petItemRarity != null
         }
 
+        private fun shouldShowPetItemIcon(): Boolean {
+            return LegacySkyblockConfig.petDisplayShowIcon && shouldShowPetItem() && LegacySkyblockConfig.petDisplayShowItemIcon
+        }
+
         private fun shouldShowPetXP(): Boolean {
             return LegacySkyblockConfig.petDisplayShowXP && petXPLeft != null && petXPRight != null
         }
@@ -234,11 +238,19 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
 
     @Slider(
         title = "Icon Size",
-        min = 0f,
+        min = 1f,
         max = 64f,
         step = 1f
     )
-    var iconSize = 16f
+    var iconSize = 32f
+
+    @Slider(
+        title = "Item Icon Size",
+        min = 1f,
+        max = 32f,
+        step = 1f
+    )
+    var itemIconSize = 16f
 
     @Slider(
         title = "Icon Padding",
@@ -247,6 +259,14 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         step = 0.1f
     )
     var iconPadding = 3f
+
+    @Slider(
+        title = "Item Icon Padding",
+        min = 0f,
+        max = 5f,
+        step = 0.1f
+    )
+    var itemIconPadding = 2f
 
     @Slider(
         title = "Lines Padding",
@@ -280,7 +300,6 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         if (LegacySkyblockConfig.petDisplayShowLevel) petNameLine += "§7[Lvl $petLevel] "
         petNameLine += "${getChatColorFromRarity(petRarity!!)}${petName}"
 
-
         var maxTextWidth = mc.font.width(petNameLine).toFloat()
         var textLines = 1
 
@@ -295,11 +314,11 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         if (shouldShowPetXP()) {
             petXPLine = "§e${petXPLeft!!}§6/§e${petXPRight} XP"
             if (LegacySkyblockConfig.petDisplayShowXPPercentage) {
-                petXPLine += " §6(${
-                    round(
-                        10 * (100 * petXPLeft.parseNumber()!! / petXPRight.parseNumber()!!)
-                    ) / 10
-                }%)"
+                val leftNum = petXPLeft!!.parseNumber() ?: 0.0
+                val rightNum = petXPRight!!.parseNumber() ?: 1.0
+                val percentage = if (rightNum > 0) (leftNum / rightNum) * 100 else 0.0
+
+                petXPLine += " §6(${round(percentage * 10) / 10}%)"
             }
             maxTextWidth = max(maxTextWidth, mc.font.width(petXPLine).toFloat())
             textLines++
@@ -308,11 +327,23 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         val textHeight = textLines * mc.font.lineHeight + max(0, textLines - 1) * linesPadding
 
         val hasIcon = (LegacySkyblockConfig.petDisplayShowIcon && icon != null)
+        val hasItemIcon = hasIcon && shouldShowPetItemIcon() && petItem != null
+
         val actualIconSize = if (hasIcon) iconSize else 0f
         val actualIconPadding = if (hasIcon) iconPadding else 0f
 
-        actualWidth = actualIconSize + actualIconPadding + maxTextWidth
-        actualHeight = max(actualIconSize, textHeight)
+        val effectiveItemIconPadding = itemIconPadding - 3f
+        val actualItemIconPadding = if (hasItemIcon) max(0f, (itemIconSize / 2f) + effectiveItemIconPadding) else 0f
+
+        val coreHeight = max(actualIconSize, textHeight)
+        val itemY = (coreHeight - actualIconSize) / 2f
+        var textY = (coreHeight - textHeight) / 2f
+
+        val textStartX = actualIconSize + actualItemIconPadding + actualIconPadding
+        actualWidth = textStartX + maxTextWidth
+
+        val badgeBottomY = itemY + actualIconSize + actualItemIconPadding
+        actualHeight = max(coreHeight, badgeBottomY)
 
         mcCtx.pose().pushMatrix()
 
@@ -327,20 +358,38 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         }
 
         if (hasIcon) {
-            val itemY = (actualHeight - actualIconSize) / 2f
             val scale = actualIconSize / 16f
 
             mcCtx.pose().pushMatrix()
             mcCtx.pose().translate(0f, itemY)
             mcCtx.pose().scale(scale, scale)
-
             mcCtx.item(icon, 0, 0)
-
             mcCtx.pose().popMatrix()
-        }
 
-        val textStartX = actualIconSize + actualIconPadding
-        var textY = (actualHeight - textHeight) / 2f
+            if (hasItemIcon) {
+                val itemIconID =
+                    if (petItem!!.endsWith("Boost"))
+                        "PET_ITEM_${petItem!!.substringBefore(" ").uppercase()}_SKILL_BOOST_${petItemRarity}"
+                    else
+                        petItem!!.uppercase().replace(" ", "_")
+                var itemIcon: ItemStack? = SimpleItemAPI.getItemByIdOrNull(SkyBlockId.item(itemIconID))
+                if (itemIcon == null) itemIcon = SimpleItemAPI.getPetByIdOrNull(SkyBlockId.item("PET_ITEM_$itemIconID"))
+
+                if (itemIcon != null) {
+                    val badgeX = actualIconSize - (itemIconSize / 2f) + effectiveItemIconPadding
+                    val badgeY = (itemY + actualIconSize) - (itemIconSize / 2f) + effectiveItemIconPadding
+
+                    val badgeScale = itemIconSize / 16f
+
+                    mcCtx.pose().pushMatrix()
+                    mcCtx.pose().translate(badgeX, badgeY)
+                    mcCtx.pose().scale(badgeScale, badgeScale)
+
+                    mcCtx.item(itemIcon, 0, 0)
+                    mcCtx.pose().popMatrix()
+                }
+            }
+        }
 
         renderComponent(mcCtx, Component.literal(petNameLine), textStartX, textY)
         textY += (mc.font.lineHeight + linesPadding)
@@ -363,7 +412,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         if (showShadow) {
             mcCtx.text(
                 mc.font,
-                component.string,
+                component.string.removeFormatting(),
                 textX.toInt() + 1,
                 textY.toInt() + 1,
                 shadowColor,
