@@ -17,7 +17,8 @@ import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
 import tomeko.legacyskyblock.config.LegacySkyblockConfig
 import tomeko.legacyskyblock.utils.Constants
 import tomeko.legacyskyblock.utils.HypixelPackets
-import tomeko.legacyskyblock.utils.StringHelper
+import tomeko.legacyskyblock.utils.parseNumber
+import tomeko.legacyskyblock.utils.removeFormatting
 import kotlin.math.*
 
 class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
@@ -74,7 +75,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
                 val fallbackName = player.profile.name ?: ""
                 var component = player.tabListDisplayName ?: Component.literal(fallbackName)
 
-                var plainText = StringHelper.removeFormatting(component.string).trim()
+                var plainText = component.string.removeFormatting().trim()
 
                 if (!foundHeader) {
                     if (plainText == "Pet:") {
@@ -296,7 +297,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             if (LegacySkyblockConfig.petDisplayShowXPPercentage) {
                 petXPLine += " §6(${
                     round(
-                        10 * (100 * StringHelper.parseNumber(petXPLeft)!! / StringHelper.parseNumber(petXPRight)!!)
+                        10 * (100 * petXPLeft.parseNumber()!! / petXPRight.parseNumber()!!)
                     ) / 10
                 }%)"
             }

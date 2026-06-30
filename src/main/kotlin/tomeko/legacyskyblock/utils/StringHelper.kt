@@ -1,20 +1,18 @@
 package tomeko.legacyskyblock.utils
 
-object StringHelper {
-    fun removeFormatting(string: String): String {
-        return string.replace(Regex("§[0-9a-fk-or]"), "")
+fun String.removeFormatting(): String = replace(Regex("§[0-9A-FK-OR]", RegexOption.IGNORE_CASE), "")
+
+fun String?.parseNumber(): Double? {
+    val value = this?.replace(",", "") ?: return null
+
+    val multiplier: Long = when (value.lastOrNull()?.lowercaseChar()) {
+        'k' -> 1_000
+        'm' -> 1_000_000
+        'b' -> 1_000_000_000
+        't' -> 1_000_000_000_000
+        else -> 1
     }
 
-    fun parseNumber(string: String?): Double? {
-        val value = string?.replace(",", "") ?: return null
-        return when {
-            value.endsWith("k", ignoreCase = true) ->
-                value.dropLast(1).toDoubleOrNull()?.times(1_000)
-
-            value.endsWith("m", ignoreCase = true) ->
-                value.dropLast(1).toDoubleOrNull()?.times(1_000_000)
-
-            else -> value.toDoubleOrNull()
-        }
-    }
+    val number = if (multiplier == 1L) value else value.dropLast(1)
+    return number.toDoubleOrNull()?.times(multiplier)
 }
