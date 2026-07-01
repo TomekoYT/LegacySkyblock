@@ -4,10 +4,13 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
+import net.minecraft.client.gui.screens.inventory.ContainerScreen
 import net.minecraft.client.multiplayer.PlayerInfo
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
+import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.TooltipFlag
 import org.polyfrost.oneconfig.api.config.v1.annotations.Include
 import org.polyfrost.oneconfig.api.config.v1.annotations.Slider
 import org.polyfrost.oneconfig.api.hud.v1.HudManager
@@ -19,7 +22,9 @@ import tomeko.legacyskyblock.utils.Constants
 import tomeko.legacyskyblock.utils.HypixelPackets
 import tomeko.legacyskyblock.utils.parseNumber
 import tomeko.legacyskyblock.utils.removeFormatting
-import kotlin.math.*
+import java.util.regex.Pattern
+import kotlin.math.max
+import kotlin.math.round
 
 class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
     companion object {
@@ -50,6 +55,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             HudManager.register(PetDisplay(), Constants.MOD_ID)
             ClientTickEvents.END_CLIENT_TICK.register(PetDisplay::searchTab)
             ClientReceiveMessageEvents.GAME.register(PetDisplay::onAutoPetMessage)
+            ClientTickEvents.END_CLIENT_TICK.register(PetDisplay::scanLoadoutsMenu)
         }
 
         private fun searchTab(mc: Minecraft) {
@@ -154,6 +160,41 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             resetXP()
         }
 
+        private fun scanLoadoutsMenu(mc: Minecraft) {
+            if (!HypixelPackets.inSkyblock) return
+
+            val screen =
+            //? if >= 26.2 {
+                    /*mc.gui.screen()
+                    *///?} else {
+                mc.screen
+            //?}
+            if (screen !is ContainerScreen || !screen.title.string.endsWith("Loadouts")) return
+
+            val item = screen.menu.container.getItem(21)
+            val component = removeFavoriteAndSkinStar(item.hoverName)
+            val match = Regex("^\\[Lvl (\\d+)] (.*)$").find(component.string)
+
+            if (match == null) {
+                resetAll()
+                return
+            }
+
+            val level = match.groupValues[1]
+            val name = match.groupValues[2]
+
+            setTickCooldown()
+            petName = name
+            petLevel = level
+            petRarity = getRarityFromComponentColor(component.siblings[1].style.color!!.value)
+
+            val tooltip: MutableList<Component> =
+                item.getTooltipLines(Item.TooltipContext.EMPTY, mc.player, TooltipFlag.NORMAL)
+
+            searchForPetItemInTooltip(tooltip)
+            searchForPetXPInTooltip(tooltip)
+        }
+
         fun getRarityFromComponentColor(color: Int): String? = when (color) {
             16777215 -> "COMMON"
             5635925 -> "UNCOMMON"
@@ -233,6 +274,60 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
 
         fun setTickCooldown() {
             tickCooldown = 60
+        }
+
+        fun searchForPetItemInTooltip(tooltip: MutableList<Component>) {
+            for (line in tooltip) {
+                val pattern = Pattern.compile("^Held Item: (.*)$")
+                val matcher = pattern.matcher(line.string)
+                if (matcher.find()) {
+                    petItem = matcher.group(1)
+                    petItemRarity = getRarityFromComponentColor(line.siblings[1].style.color!!.value)
+                    return
+                }
+            }
+
+            resetItem()
+        }
+
+        fun searchForPetXPInTooltip(tooltip: MutableList<Component>) {
+            for (line in tooltip) {
+                val pattern = Pattern.compile("^ {26}(.*)$")
+                val matcher = pattern.matcher(line.string)
+                if (matcher.find()) {
+                    val copy = line.copy()
+                    for (i in 0..3) {
+                        if (copy.siblings.first().string.trim().parseNumber() != null) break
+
+                        copy.siblings.removeFirst()
+                    }
+                    petXPLeft = copy.siblings.first().string
+                    petXPRight = copy.siblings[2].string
+                    return
+                }
+            }
+
+            resetXP()
+        }
+
+        fun removeFavoriteAndSkinStar(name: Component): Component {
+            if (name.siblings.isEmpty()) return name
+
+            val copy = name.copy()
+
+            val first: Component = copy.siblings.first()
+            if (first.string.startsWith("⭐ ")) {
+                copy.siblings.removeFirst()
+            }
+
+            if (copy.siblings.isEmpty()) return copy
+
+            val last: Component = copy.siblings.last()
+            if (last.string.endsWith(" ✦")) {
+                copy.siblings.removeLast()
+            }
+
+            return copy
         }
     }
 
