@@ -55,6 +55,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             HudManager.register(PetDisplay(), Constants.MOD_ID)
             ClientTickEvents.END_CLIENT_TICK.register(PetDisplay::searchTab)
             ClientReceiveMessageEvents.GAME.register(PetDisplay::onAutoPetMessage)
+            ClientReceiveMessageEvents.GAME.register(PetDisplay::onLevelUpMessage)
             ClientTickEvents.END_CLIENT_TICK.register(PetDisplay::scanLoadoutsMenu)
         }
 
@@ -143,7 +144,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         }
 
         private fun onAutoPetMessage(message: Component, fromActionBar: Boolean) {
-            if (fromActionBar) return
+            if (!HypixelPackets.inSkyblock || fromActionBar) return
 
             val match = Regex(
                 "^§cAutopet §eequipped your §7\\[Lvl (\\d+)] (§.)((?:[^§]|§.)+?)(?:§d ✦)?§e! §a§lVIEW RULE$"
@@ -157,6 +158,28 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             petName = match.groupValues[3]
 
             resetItem()
+            resetXP()
+        }
+
+        private fun onLevelUpMessage(message: Component, fromActionBar: Boolean) {
+            if (!HypixelPackets.inSkyblock || fromActionBar) return
+
+            val match = Regex(
+                "^Your\\s+(.+?)\\s+leveled up to level\\s+(\\d+)!$"
+            ).find(
+                message.string
+            ) ?: return
+
+            val name = match.groupValues[1]
+            val level = match.groupValues[2]
+
+            if (name != petName
+                || getRarityFromComponentColor(message.siblings[1].style.color!!.value) != petRarity
+                || (petLevel != null && level <= petLevel!!)
+            ) return
+
+            setTickCooldown()
+            petLevel = level
             resetXP()
         }
 
