@@ -15,13 +15,10 @@ object LegacySkyblockConfig : Config(
             "petDisplayShowName",
             "petDisplayShowLevel",
             "petDisplayShowIcon",
-            "petDisplayShowItem",
+            "petDisplayShowItemName",
             "petDisplayShowItemIcon",
             "petDisplayShowXP",
             "petDisplayShowXPPercentage"
-        ),
-        "petDisplayShowIcon" to listOf(
-            "petDisplayShowItemIcon"
         ),
         "petDisplayShowXP" to listOf(
             "petDisplayShowXPPercentage"
@@ -76,11 +73,11 @@ object LegacySkyblockConfig : Config(
     var petDisplayShowIcon = true
 
     @Switch(
-        title = "Show Pet Item",
+        title = "Show Pet Item Name",
         category = CATEGORY_HUD,
         subcategory = SUBCATEGORY_PET_DISPLAY
     )
-    var petDisplayShowItem = true
+    var petDisplayShowItemName = true
 
     @Switch(
         title = "Show Pet Item Icon",

@@ -225,12 +225,24 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             else -> null
         }
 
+        private fun getPetItemIcon(): ItemStack? {
+            val itemIconID =
+                if (petItem!!.endsWith("Boost"))
+                    "PET_ITEM_${petItem!!.substringBefore(" ").uppercase()}_SKILL_BOOST_${petItemRarity}"
+                else
+                    petItem!!.uppercase().replace(" ", "_")
+
+            var itemIcon: ItemStack? = SimpleItemAPI.getItemByIdOrNull(SkyBlockId.item(itemIconID))
+            if (itemIcon == null) itemIcon = SimpleItemAPI.getPetByIdOrNull(SkyBlockId.item("PET_ITEM_$itemIconID"))
+            return itemIcon
+        }
+
         private fun shouldShowPetItem(): Boolean {
-            return LegacySkyblockConfig.petDisplayShowItem && petItem != null && petItemRarity != null
+            return LegacySkyblockConfig.petDisplayShowItemName && petItem != null && petItemRarity != null
         }
 
         private fun shouldShowPetItemIcon(): Boolean {
-            return LegacySkyblockConfig.petDisplayShowIcon && LegacySkyblockConfig.petDisplayShowItemIcon && petItem != null && petItemRarity != null
+            return LegacySkyblockConfig.petDisplayShowItemIcon && petItem != null && petItemRarity != null
         }
 
         private fun shouldShowPetXP(): Boolean {
@@ -384,13 +396,6 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
 
         val mc = Minecraft.getInstance()
 
-        val icon: ItemStack? = SimpleItemAPI.getPetByIdOrNull(
-            SkyBlockId.pet(
-                petName!!.uppercase().replace(" ", "_"),
-                petRarity!!
-            )
-        )
-
         var petNameLine = ""
         if (LegacySkyblockConfig.petDisplayShowLevel) petNameLine += "§7[Lvl $petLevel] "
         if (LegacySkyblockConfig.petDisplayShowName) petNameLine += "${getChatColorFromRarity(petRarity!!)}${petName}"
@@ -421,14 +426,26 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
 
         val textHeight = textLines * mc.font.lineHeight + max(0, textLines - 1) * linesPadding
 
-        val hasIcon = (LegacySkyblockConfig.petDisplayShowIcon && icon != null)
-        val hasItemIcon = hasIcon && shouldShowPetItemIcon() && petItem != null
+        val icon: ItemStack? =
+            if (LegacySkyblockConfig.petDisplayShowIcon)
+                SimpleItemAPI.getPetByIdOrNull(
+                    SkyBlockId.pet(
+                        petName!!.uppercase().replace(" ", "_"),
+                        petRarity!!
+                    )
+                )
+            else if (shouldShowPetItemIcon())
+                getPetItemIcon()
+            else
+                null
 
-        val actualIconSize = if (hasIcon) iconSize else 0f
-        val actualIconPadding = if (hasIcon) iconPadding else 0f
+        val hasBothIcons = icon != null && LegacySkyblockConfig.petDisplayShowIcon && shouldShowPetItemIcon()
+
+        val actualIconSize = if (icon != null) iconSize else 0f
+        val actualIconPadding = if (icon != null) iconPadding else 0f
 
         val effectiveItemIconPadding = itemIconPadding - 3f
-        val actualItemIconPadding = if (hasItemIcon) max(0f, (itemIconSize / 2f) + effectiveItemIconPadding) else 0f
+        val actualItemIconPadding = if (hasBothIcons) max(0f, (itemIconSize / 2f) + effectiveItemIconPadding) else 0f
 
         val coreHeight = max(actualIconSize, textHeight)
         val itemY = (coreHeight - actualIconSize) / 2f
@@ -452,7 +469,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             )
         }
 
-        if (hasIcon) {
+        if (icon != null) {
             val scale = actualIconSize / 16f
 
             mcCtx.pose().pushMatrix()
@@ -461,14 +478,8 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             mcCtx.item(icon, 0, 0)
             mcCtx.pose().popMatrix()
 
-            if (hasItemIcon) {
-                val itemIconID =
-                    if (petItem!!.endsWith("Boost"))
-                        "PET_ITEM_${petItem!!.substringBefore(" ").uppercase()}_SKILL_BOOST_${petItemRarity}"
-                    else
-                        petItem!!.uppercase().replace(" ", "_")
-                var itemIcon: ItemStack? = SimpleItemAPI.getItemByIdOrNull(SkyBlockId.item(itemIconID))
-                if (itemIcon == null) itemIcon = SimpleItemAPI.getPetByIdOrNull(SkyBlockId.item("PET_ITEM_$itemIconID"))
+            if (hasBothIcons) {
+                val itemIcon = getPetItemIcon()
 
                 if (itemIcon != null) {
                     val badgeX = actualIconSize - (itemIconSize / 2f) + effectiveItemIconPadding
@@ -487,29 +498,29 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         }
 
         if (LegacySkyblockConfig.petDisplayShowName || LegacySkyblockConfig.petDisplayShowLevel) {
-            renderComponent(mcCtx, Component.literal(petNameLine), textStartX, textY)
+            renderText(mcCtx, petNameLine, textStartX, textY)
             textY += (mc.font.lineHeight + linesPadding)
         }
 
         if (shouldShowPetItem()) {
-            renderComponent(mcCtx, Component.literal(petItemLine), textStartX, textY)
+            renderText(mcCtx, petItemLine, textStartX, textY)
             textY += (mc.font.lineHeight + linesPadding)
         }
 
         if (shouldShowPetXP()) {
-            renderComponent(mcCtx, Component.literal(petXPLine), textStartX, textY)
+            renderText(mcCtx, petXPLine, textStartX, textY)
         }
 
         mcCtx.pose().popMatrix()
     }
 
-    private fun renderComponent(mcCtx: GuiGraphicsExtractor, component: Component, textX: Float, textY: Float) {
+    private fun renderText(mcCtx: GuiGraphicsExtractor, text: String, textX: Float, textY: Float) {
         val mc = Minecraft.getInstance()
 
         if (showShadow) {
             mcCtx.text(
                 mc.font,
-                component.string.removeFormatting(),
+                text.removeFormatting(),
                 textX.toInt() + 1,
                 textY.toInt() + 1,
                 shadowColor,
@@ -519,7 +530,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
 
         mcCtx.text(
             mc.font,
-            component,
+            text,
             textX.toInt(),
             textY.toInt(),
             0xFFFFFFFF.toInt(),
