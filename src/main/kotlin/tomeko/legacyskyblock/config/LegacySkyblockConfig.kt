@@ -1,8 +1,7 @@
 package tomeko.legacyskyblock.config
 
 import org.polyfrost.oneconfig.api.config.v1.Config
-import org.polyfrost.oneconfig.api.config.v1.annotations.MultiSelectDropdown
-import org.polyfrost.oneconfig.api.config.v1.annotations.Switch
+import org.polyfrost.oneconfig.api.config.v1.annotations.*
 import tomeko.legacyskyblock.utils.Constants
 
 object LegacySkyblockConfig : Config(
@@ -13,16 +12,13 @@ object LegacySkyblockConfig : Config(
 ) {
     val DEPENDENCIES: List<Pair<String, List<String>>> = listOf(
         "petDisplayEnabled" to listOf(
-            "petDisplayShowItem",
+            "petDisplayShowName",
             "petDisplayShowLevel",
             "petDisplayShowIcon",
             "petDisplayShowItem",
             "petDisplayShowItemIcon",
             "petDisplayShowXP",
             "petDisplayShowXPPercentage"
-        ),
-        "petDisplayShowItem" to listOf(
-            "petDisplayShowItemIcon"
         ),
         "petDisplayShowIcon" to listOf(
             "petDisplayShowItemIcon"
@@ -44,13 +40,26 @@ object LegacySkyblockConfig : Config(
     private const val CATEGORY_HUD: String = "HUD"
     private const val SUBCATEGORY_PET_DISPLAY: String = "Pet Display"
 
+    @Info(
+        description = "Works best with pet widget enabled in /widgets",
+        category = CATEGORY_HUD,
+        subcategory = SUBCATEGORY_PET_DISPLAY
+    )
+    var petDisplayInfo: Nothing? = null
+
     @Switch(
         title = "Enabled",
-        description = "Enable Pet Widget by doing /widgets",
         category = CATEGORY_HUD,
         subcategory = SUBCATEGORY_PET_DISPLAY
     )
     var petDisplayEnabled = true
+
+    @Switch(
+        title = "Show Pet Name",
+        category = CATEGORY_HUD,
+        subcategory = SUBCATEGORY_PET_DISPLAY
+    )
+    var petDisplayShowName = true
 
     @Switch(
         title = "Show Pet Level",

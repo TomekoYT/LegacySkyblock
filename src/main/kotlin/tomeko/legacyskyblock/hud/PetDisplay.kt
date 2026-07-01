@@ -230,7 +230,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         }
 
         private fun shouldShowPetItemIcon(): Boolean {
-            return LegacySkyblockConfig.petDisplayShowIcon && shouldShowPetItem() && LegacySkyblockConfig.petDisplayShowItemIcon
+            return LegacySkyblockConfig.petDisplayShowIcon && LegacySkyblockConfig.petDisplayShowItemIcon && petItem != null && petItemRarity != null
         }
 
         private fun shouldShowPetXP(): Boolean {
@@ -393,7 +393,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
 
         var petNameLine = ""
         if (LegacySkyblockConfig.petDisplayShowLevel) petNameLine += "§7[Lvl $petLevel] "
-        petNameLine += "${getChatColorFromRarity(petRarity!!)}${petName}"
+        if (LegacySkyblockConfig.petDisplayShowName) petNameLine += "${getChatColorFromRarity(petRarity!!)}${petName}"
 
         var maxTextWidth = mc.font.width(petNameLine).toFloat()
         var textLines = 1
@@ -486,8 +486,10 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             }
         }
 
-        renderComponent(mcCtx, Component.literal(petNameLine), textStartX, textY)
-        textY += (mc.font.lineHeight + linesPadding)
+        if (LegacySkyblockConfig.petDisplayShowName || LegacySkyblockConfig.petDisplayShowLevel) {
+            renderComponent(mcCtx, Component.literal(petNameLine), textStartX, textY)
+            textY += (mc.font.lineHeight + linesPadding)
+        }
 
         if (shouldShowPetItem()) {
             renderComponent(mcCtx, Component.literal(petItemLine), textStartX, textY)
