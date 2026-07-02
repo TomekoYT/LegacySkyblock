@@ -17,11 +17,7 @@ object LegacySkyblockConfig : Config(
             "petDisplayShowIcon",
             "petDisplayShowItemName",
             "petDisplayShowItemIcon",
-            "petDisplayShowXP",
-            "petDisplayShowXPPercentage"
-        ),
-        "petDisplayShowXP" to listOf(
-            "petDisplayShowXPPercentage"
+            "petDisplayShowXP"
         )
     )
 
@@ -92,13 +88,6 @@ object LegacySkyblockConfig : Config(
         subcategory = SUBCATEGORY_PET_DISPLAY
     )
     var petDisplayShowXP = true
-
-    @Switch(
-        title = "Show Pet XP Percentage",
-        category = CATEGORY_HUD,
-        subcategory = SUBCATEGORY_PET_DISPLAY
-    )
-    var petDisplayShowXPPercentage = true
 
 
     private const val SUBCATEGORY_ACTION_BAR: String = "Action Bar"

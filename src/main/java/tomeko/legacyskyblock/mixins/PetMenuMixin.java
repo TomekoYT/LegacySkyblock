@@ -59,7 +59,7 @@ public abstract class PetMenuMixin {
         PetDisplay.Companion.setPetRarity(PetDisplay.Companion.getRarityFromComponentColor(component.getSiblings().get(1).getStyle().getColor().getValue()));
 
         PetDisplay.Companion.searchForPetItemInTooltip(tooltip);
-        PetDisplay.Companion.searchForPetXPInTooltip(tooltip);
+        PetDisplay.Companion.resetXP();
     }
 
     private static boolean legacyskyblock$isTogglingFavorite(int buttonNum, ContainerInput containerInput) {

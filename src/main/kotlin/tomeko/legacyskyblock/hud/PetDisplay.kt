@@ -20,11 +20,9 @@ import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
 import tomeko.legacyskyblock.config.LegacySkyblockConfig
 import tomeko.legacyskyblock.utils.Constants
 import tomeko.legacyskyblock.utils.HypixelPackets
-import tomeko.legacyskyblock.utils.parseNumber
 import tomeko.legacyskyblock.utils.removeFormatting
 import java.util.regex.Pattern
-import kotlin.math.max
-import kotlin.math.round
+import kotlin.math.*
 
 class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
     companion object {
@@ -43,11 +41,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         @Include
         var petItemRarity: String? = null
 
-        @Include
-        var petXPLeft: String? = null
-
-        @Include
-        var petXPRight: String? = null
+        var petXPLine: Component? = null
 
         private var tickCooldown = 0
 
@@ -79,9 +73,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             var parsedItemOrXp = false
 
             for (player in sortedPlayers) {
-                val fallbackName = player.profile.name ?: ""
-                var component = player.tabListDisplayName ?: Component.literal(fallbackName)
-
+                var component = player.tabListDisplayName ?: Component.literal("")
                 var plainText = component.string.removeFormatting().trim()
 
                 if (!foundHeader) {
@@ -215,7 +207,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
                 item.getTooltipLines(Item.TooltipContext.EMPTY, mc.player, TooltipFlag.NORMAL)
 
             searchForPetItemInTooltip(tooltip)
-            searchForPetXPInTooltip(tooltip)
+            resetXP()
         }
 
         fun getRarityFromComponentColor(color: Int): String? = when (color) {
@@ -269,7 +261,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         }
 
         private fun shouldShowPetXP(): Boolean {
-            return LegacySkyblockConfig.petDisplayShowXP && petXPLeft != null && petXPRight != null
+            return LegacySkyblockConfig.petDisplayShowXP && petXPLine != null
         }
 
         fun resetAll() {
@@ -286,16 +278,13 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         }
 
         fun resetXP() {
-            petXPLeft = null
-            petXPRight = null
+            petXPLine = null
         }
 
         private fun setPetXPFromTab(component: Component) {
-            petXPLeft = component.siblings[1].string
-            petXPRight = component.siblings[3].string
-            if (petXPRight!!.endsWith(" XP ")) {
-                petXPRight = petXPRight!!.dropLast(4)
-            }
+            val copy: MutableComponent = component.copy()
+            copy.siblings.removeFirst()
+            petXPLine = copy
         }
 
         private fun isXpLine(text: String): Boolean {
@@ -323,26 +312,6 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             }
 
             resetItem()
-        }
-
-        fun searchForPetXPInTooltip(tooltip: MutableList<Component>) {
-            for (line in tooltip) {
-                val pattern = Pattern.compile("^ {26}(.*)$")
-                val matcher = pattern.matcher(line.string)
-                if (matcher.find()) {
-                    val copy = line.copy()
-                    for (i in 0..3) {
-                        if (copy.siblings.first().string.trim().parseNumber() != null) break
-
-                        copy.siblings.removeFirst()
-                    }
-                    petXPLeft = copy.siblings.first().string
-                    petXPRight = copy.siblings[2].string
-                    return
-                }
-            }
-
-            resetXP()
         }
 
         fun removeFavoriteAndSkinStar(name: Component): Component {
@@ -433,17 +402,8 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             textLines++
         }
 
-        var petXPLine = ""
         if (shouldShowPetXP()) {
-            petXPLine = "§e${petXPLeft!!}§6/§e${petXPRight} XP"
-            if (LegacySkyblockConfig.petDisplayShowXPPercentage) {
-                val leftNum = petXPLeft!!.parseNumber() ?: 0.0
-                val rightNum = petXPRight!!.parseNumber() ?: 1.0
-                val percentage = if (rightNum > 0) (leftNum / rightNum) * 100 else 0.0
-
-                petXPLine += " §6(${round(percentage * 10) / 10}%)"
-            }
-            maxTextWidth = max(maxTextWidth, mc.font.width(petXPLine).toFloat())
+            maxTextWidth = max(maxTextWidth, mc.font.width(petXPLine!!).toFloat())
             textLines++
         }
 
@@ -521,29 +481,29 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         }
 
         if (LegacySkyblockConfig.petDisplayShowName || LegacySkyblockConfig.petDisplayShowLevel) {
-            renderText(mcCtx, petNameLine, textStartX, textY)
+            renderComponent(mcCtx, Component.literal(petNameLine), textStartX, textY)
             textY += (mc.font.lineHeight + linesPadding)
         }
 
         if (shouldShowPetItem()) {
-            renderText(mcCtx, petItemLine, textStartX, textY)
+            renderComponent(mcCtx, Component.literal(petItemLine), textStartX, textY)
             textY += (mc.font.lineHeight + linesPadding)
         }
 
         if (shouldShowPetXP()) {
-            renderText(mcCtx, petXPLine, textStartX, textY)
+            renderComponent(mcCtx, petXPLine!!, textStartX, textY)
         }
 
         mcCtx.pose().popMatrix()
     }
 
-    private fun renderText(mcCtx: GuiGraphicsExtractor, text: String, textX: Float, textY: Float) {
+    private fun renderComponent(mcCtx: GuiGraphicsExtractor, component: Component, textX: Float, textY: Float) {
         val mc = Minecraft.getInstance()
 
         if (showShadow) {
             mcCtx.text(
                 mc.font,
-                text.removeFormatting(),
+                component.string.removeFormatting(),
                 textX.toInt() + 1,
                 textY.toInt() + 1,
                 shadowColor,
@@ -553,7 +513,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
 
         mcCtx.text(
             mc.font,
-            text,
+            component,
             textX.toInt(),
             textY.toInt(),
             0xFFFFFFFF.toInt(),
