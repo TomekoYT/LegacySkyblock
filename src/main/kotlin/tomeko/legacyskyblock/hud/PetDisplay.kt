@@ -19,6 +19,7 @@ import tech.thatgravyboat.skyblockapi.api.remote.api.SimpleItemAPI
 import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
 import tomeko.legacyskyblock.config.LegacySkyblockConfig
 import tomeko.legacyskyblock.utils.Constants
+import tomeko.legacyskyblock.utils.Debug
 import tomeko.legacyskyblock.utils.HypixelPackets
 import tomeko.legacyskyblock.utils.removeFormatting
 import java.util.regex.Pattern
@@ -48,8 +49,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         fun register() {
             HudManager.register(PetDisplay(), Constants.MOD_ID)
             ClientTickEvents.END_CLIENT_TICK.register(PetDisplay::searchTab)
-            ClientReceiveMessageEvents.GAME.register(PetDisplay::onAutoPetMessage)
-            ClientReceiveMessageEvents.GAME.register(PetDisplay::onLevelUpMessage)
+            ClientReceiveMessageEvents.GAME.register(PetDisplay::onChatMessage)
             ClientTickEvents.END_CLIENT_TICK.register(PetDisplay::scanLoadoutsMenu)
         }
 
@@ -135,44 +135,66 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             }
         }
 
-        private fun onAutoPetMessage(message: Component, fromActionBar: Boolean) {
+        private fun onChatMessage(message: Component, fromActionBar: Boolean) {
             if (!HypixelPackets.inSkyblock || fromActionBar) return
 
-            val match = Regex(
+            val autoPetMatch = Regex(
                 "^§cAutopet §eequipped your §7\\[Lvl (\\d+)] (§.)((?:[^§]|§.)+?)(?:§d ✦)?§e! §a§lVIEW RULE$"
-            ).find(
-                message.string
-            ) ?: return
+            ).find(message.string)
 
-            setTickCooldown()
-            petLevel = match.groupValues[1]
-            petRarity = getRarityFromChatColor(match.groupValues[2])
-            petName = match.groupValues[3]
+            if (autoPetMatch != null) {
+                setTickCooldown()
+                petLevel = autoPetMatch.groupValues[1]
+                petRarity = getRarityFromChatColor(autoPetMatch.groupValues[2])
+                petName = autoPetMatch.groupValues[3]
 
-            resetItem()
-            resetXP()
-        }
+                resetItem()
+                resetXP()
+                return
+            }
 
-        private fun onLevelUpMessage(message: Component, fromActionBar: Boolean) {
-            if (!HypixelPackets.inSkyblock || fromActionBar) return
 
-            val match = Regex(
+            val levelUpMatch = Regex(
                 "^Your\\s+(.+?)\\s+leveled up to level\\s+(\\d+)!$"
-            ).find(
-                message.string
-            ) ?: return
+            ).find(message.string)
 
-            val name = match.groupValues[1]
-            val level = match.groupValues[2]
+            if (levelUpMatch != null) {
+                val name = levelUpMatch.groupValues[1]
+                val level = levelUpMatch.groupValues[2]
 
-            if (name != petName
-                || getRarityFromComponentColor(message.siblings[1].style.color!!.value) != petRarity
-                || (petLevel != null && level <= petLevel!!)
-            ) return
+                if (name != petName
+                    || getRarityFromComponentColor(message.siblings[1].style.color!!.value) != petRarity
+                    || (petLevel != null && level <= petLevel!!)
+                ) return
 
-            setTickCooldown()
-            petLevel = level
-            resetXP()
+                setTickCooldown()
+                petLevel = level
+                resetXP()
+                return
+            }
+
+            val holdingPetItemMatch = Regex(
+                "^Your pet is now holding (.+)\\.$"
+            ).find(message.string)
+
+            if (holdingPetItemMatch != null) {
+                val sibling = message.siblings[1]
+
+                setTickCooldown()
+                petItem = sibling.string
+                petItemRarity = getRarityFromComponentColor(sibling.style.color!!.value)
+                return
+            }
+
+            val removedPetItemMatch = Regex(
+                "^You removed (.+) from your pet!$"
+            ).find(message.string)
+
+            if (removedPetItemMatch != null) {
+                setTickCooldown()
+                resetItem()
+                return
+            }
         }
 
         private fun scanLoadoutsMenu(mc: Minecraft) {
