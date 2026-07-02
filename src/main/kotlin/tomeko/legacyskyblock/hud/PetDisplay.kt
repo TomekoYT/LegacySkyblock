@@ -19,7 +19,6 @@ import tech.thatgravyboat.skyblockapi.api.remote.api.SimpleItemAPI
 import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
 import tomeko.legacyskyblock.config.LegacySkyblockConfig
 import tomeko.legacyskyblock.utils.Constants
-import tomeko.legacyskyblock.utils.Debug
 import tomeko.legacyskyblock.utils.HypixelPackets
 import tomeko.legacyskyblock.utils.removeFormatting
 import java.util.regex.Pattern
