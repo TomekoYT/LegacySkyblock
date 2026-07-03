@@ -30,7 +30,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         var petName: String? = null
 
         @Include
-        var petLevel: String? = null
+        var petLevel: Int? = null
 
         @Include
         var petRarity: String? = null
@@ -94,7 +94,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
 
                     val match = Regex("^\\[Lvl (\\d+)] (.*)$").find(plainText)
                     if (match != null) {
-                        petLevel = match.groupValues[1]
+                        petLevel = match.groupValues[1].toInt()
                         petName = match.groupValues[2]
                         petRarity = getRarityFromComponentColor(component.siblings[2].style.color!!.value)
                         parsedName = true
@@ -113,7 +113,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
                     } else {
                         if (plainText.isEmpty() || plainText == "MAX LEVEL" || plainText.firstOrNull() == '+') {
                             resetItem()
-                            resetXP()
+                            petXPLine = null
                             break
                         }
 
@@ -129,7 +129,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
                     break
                 }
 
-                resetXP()
+                petXPLine = null
                 break
             }
         }
@@ -143,12 +143,12 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
 
             if (autoPetMatch != null) {
                 setTickCooldown()
-                petLevel = autoPetMatch.groupValues[1]
+                petLevel = autoPetMatch.groupValues[1].toInt()
                 petRarity = getRarityFromChatColor(autoPetMatch.groupValues[2])
                 petName = autoPetMatch.groupValues[3]
 
                 resetItem()
-                resetXP()
+                petXPLine = null
                 return
             }
 
@@ -159,7 +159,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
 
             if (levelUpMatch != null) {
                 val name = levelUpMatch.groupValues[1]
-                val level = levelUpMatch.groupValues[2]
+                val level = levelUpMatch.groupValues[2].toInt()
 
                 if (name != petName
                     || getRarityFromComponentColor(message.siblings[1].style.color!!.value) != petRarity
@@ -168,7 +168,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
 
                 setTickCooldown()
                 petLevel = level
-                resetXP()
+                petXPLine = null
                 return
             }
 
@@ -216,7 +216,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
                 return
             }
 
-            val level = match.groupValues[1]
+            val level = match.groupValues[1].toInt()
             val name = match.groupValues[2]
 
             setTickCooldown()
@@ -228,7 +228,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
                 item.getTooltipLines(Item.TooltipContext.EMPTY, mc.player, TooltipFlag.NORMAL)
 
             searchForPetItemInTooltip(tooltip)
-            resetXP()
+            petXPLine = null
         }
 
         fun getRarityFromComponentColor(color: Int): String? = when (color) {
@@ -290,16 +290,12 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             petLevel = null
             petRarity = null
             resetItem()
-            resetXP()
+            petXPLine = null
         }
 
         fun resetItem() {
             petItem = null
             petItemRarity = null
-        }
-
-        fun resetXP() {
-            petXPLine = null
         }
 
         private fun setPetXPFromTab(component: Component) {

@@ -50,7 +50,7 @@ public abstract class PetMenuMixin {
 
         if (!canSummon || buttonNum == 1 || legacyskyblock$isTogglingFavorite(buttonNum, containerInput)) return;
 
-        String level = matcher.group(1);
+        int level = Integer.parseInt(matcher.group(1));
         String name = matcher.group(2);
 
         PetDisplay.Companion.setTickCooldown();
@@ -59,7 +59,7 @@ public abstract class PetMenuMixin {
         PetDisplay.Companion.setPetRarity(PetDisplay.Companion.getRarityFromComponentColor(component.getSiblings().get(1).getStyle().getColor().getValue()));
 
         PetDisplay.Companion.searchForPetItemInTooltip(tooltip);
-        PetDisplay.Companion.resetXP();
+        PetDisplay.Companion.setPetXPLine(null);
     }
 
     private static boolean legacyskyblock$isTogglingFavorite(int buttonNum, ContainerInput containerInput) {
