@@ -6,7 +6,7 @@ import tomeko.legacyskyblock.utils.Constants
 
 object LegacySkyblockConfig : Config(
     Constants.MOD_ID + ".json",
-    "/assets/" + Constants.MOD_ID + "/icon.png",
+    Constants.MOD_ICON,
     Constants.MOD_NAME,
     Category.HYPIXEL
 ) {

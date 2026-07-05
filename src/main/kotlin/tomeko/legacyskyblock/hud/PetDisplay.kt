@@ -46,7 +46,7 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         private var tickCooldown = 0
 
         fun register() {
-            HudManager.register(PetDisplay(), Constants.MOD_ID)
+            HudManager.register(PetDisplay(), Constants.MOD_ID, Constants.MOD_ICON)
             ClientTickEvents.END_CLIENT_TICK.register(PetDisplay::searchTab)
             ClientReceiveMessageEvents.GAME.register(PetDisplay::onChatMessage)
             ClientTickEvents.END_CLIENT_TICK.register(PetDisplay::scanLoadoutsMenu)
@@ -538,9 +538,10 @@ class PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         )
     }
 
-    override val height: Float = actualHeight
     override val width: Float = actualWidth
+    override val height: Float = actualHeight
+    override fun minimumSize(): Pair<Float, Float> = actualWidth to actualHeight
     override fun update(): Boolean = true
     override fun multipleInstancesAllowed(): Boolean = false
-    override fun minimumSize() = 1f to 1f
+    override fun deletable(): Boolean = false
 }
