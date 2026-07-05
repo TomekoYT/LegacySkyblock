@@ -34,7 +34,7 @@ object LegacySkyblockConfig : Config(
     private const val SUBCATEGORY_PET_DISPLAY: String = "Pet Display"
 
     @Info(
-        description = "Works best with pet widget enabled in /widgets",
+        title = "Works best with pet widget enabled in /widgets",
         category = CATEGORY_HUD,
         subcategory = SUBCATEGORY_PET_DISPLAY
     )
@@ -125,6 +125,7 @@ object LegacySkyblockConfig : Config(
     private const val CATEGORY_MISC: String = "Misc"
     private const val SUBCATEGORY_HIDE_DAMAGE_SPLASH = "Hide Damage Splash"
 
+    @JvmStatic
     @MultiSelectDropdown(
         title = "Hide Damage Splash",
         checkable = true,

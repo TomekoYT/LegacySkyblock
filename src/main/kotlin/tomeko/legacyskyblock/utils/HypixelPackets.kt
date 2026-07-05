@@ -9,6 +9,7 @@ object HypixelPackets {
     @JvmField
     var inSkyblock: Boolean = false
 
+    @JvmStatic
     var currentIsland: SkyblockIslands? = null
 
     fun register() {
