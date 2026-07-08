@@ -20,8 +20,8 @@ import java.util.List;
 @Mixin(AbstractContainerScreen.class)
 public abstract class MiddleClickGUIItemsMixin {
     private static final String[] EXCLUDE_GUIS_EQUALS = {"Runic Pedestal", "Rune Removal", "Exp Sharing", "Offer Pets", "Quiver", "Time Pocket", "Beacon", "Pet Sitter", "Builder's Ruler", "Builder's Wand", "Basket of Seeds", "Nether Wart Pouch", "View Stash", "Change all to same color!", "Fishing Rod Parts", "Fast Travel"};
-    private static final String[] EXCLUDE_GUIS_STARTSWITH = {"Wardrobe", "You ", "Personal ", "The Hex", "Auctions:", "Reclaim Wood Singularity", "Gemstone Grinder"};
-    private static final String[] EXCLUDE_GUIS_ENDSWITH = {"Warps"};
+    private static final String[] EXCLUDE_GUIS_STARTSWITH = {"You ", "Personal ", "The Hex", "Auctions:", "Reclaim Wood Singularity", "Gemstone Grinder"};
+    private static final String[] EXCLUDE_GUIS_ENDSWITH = {"Warps", "Armor Sets", "Equipment Sets"};
     private static final String[] EXCLUDE_GUIS_CONTAINS = {"Chest", "Storage", "Backpack", "Anvil", "Minion", "Bag", "Sack", "Trap", "Item"};
 
     @WrapOperation(
