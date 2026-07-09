@@ -29,7 +29,7 @@ public abstract class PetMenuMixin {
                 || !instance.getTitle().getString().endsWith("Pets")
         ) return;
 
-        Component component = PetDisplay.Companion.removeFavoriteAndSkinStar(slot.getItem().getHoverName());
+        Component component = PetDisplay.removeFavoriteAndSkinStar(slot.getItem().getHoverName());
         Pattern pattern = Pattern.compile("^\\[Lvl (\\d+)] (.*)$");
         Matcher matcher = pattern.matcher(component.getString());
         if (!matcher.find()) return;
@@ -43,8 +43,8 @@ public abstract class PetMenuMixin {
         }
 
         if (canDespawn && !legacyskyblock$isTogglingFavorite(buttonNum, containerInput)) {
-            PetDisplay.Companion.setTickCooldown();
-            PetDisplay.Companion.resetAll();
+            PetDisplay.setTickCooldown();
+            PetDisplay.resetAll();
             return;
         }
 
@@ -53,13 +53,13 @@ public abstract class PetMenuMixin {
         int level = Integer.parseInt(matcher.group(1));
         String name = matcher.group(2);
 
-        PetDisplay.Companion.setTickCooldown();
-        PetDisplay.Companion.setPetName(name);
-        PetDisplay.Companion.setPetLevel(level);
-        PetDisplay.Companion.setPetRarity(PetDisplay.Companion.getRarityFromComponentColor(component.getSiblings().get(1).getStyle().getColor().getValue()));
+        PetDisplay.setTickCooldown();
+        PetDisplay.setPetName(name);
+        PetDisplay.setPetLevel(level);
+        PetDisplay.setPetRarity(PetDisplay.getRarityFromComponentColor(component.getSiblings().get(1).getStyle().getColor().getValue()));
 
-        PetDisplay.Companion.searchForPetItemInTooltip(tooltip);
-        PetDisplay.Companion.setPetXPLine(null);
+        PetDisplay.searchForPetItemInTooltip(tooltip);
+        PetDisplay.setPetXPLine(null);
     }
 
     private static boolean legacyskyblock$isTogglingFavorite(int buttonNum, ContainerInput containerInput) {

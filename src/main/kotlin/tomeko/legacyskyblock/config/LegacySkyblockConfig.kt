@@ -11,14 +11,7 @@ object LegacySkyblockConfig : Config(
     Category.HYPIXEL
 ) {
     val DEPENDENCIES: List<Pair<String, List<String>>> = listOf(
-        "petDisplayEnabled" to listOf(
-            "petDisplayShowName",
-            "petDisplayShowLevel",
-            "petDisplayShowIcon",
-            "petDisplayShowItemName",
-            "petDisplayShowItemIcon",
-            "petDisplayShowXP"
-        )
+
     )
 
     fun register() {
@@ -34,60 +27,18 @@ object LegacySkyblockConfig : Config(
     private const val SUBCATEGORY_PET_DISPLAY: String = "Pet Display"
 
     @Info(
+        title = "Pet Display can be edited by clicking Edit HUD in top left corner",
+        category = CATEGORY_HUD,
+        subcategory = SUBCATEGORY_PET_DISPLAY
+    )
+    var petDisplayEditInfo: Nothing? = null
+
+    @Info(
         title = "Works best with pet widget enabled in /widgets",
         category = CATEGORY_HUD,
         subcategory = SUBCATEGORY_PET_DISPLAY
     )
-    var petDisplayInfo: Nothing? = null
-
-    @Switch(
-        title = "Enabled",
-        category = CATEGORY_HUD,
-        subcategory = SUBCATEGORY_PET_DISPLAY
-    )
-    var petDisplayEnabled = true
-
-    @Switch(
-        title = "Show Pet Name",
-        category = CATEGORY_HUD,
-        subcategory = SUBCATEGORY_PET_DISPLAY
-    )
-    var petDisplayShowName = true
-
-    @Switch(
-        title = "Show Pet Level",
-        category = CATEGORY_HUD,
-        subcategory = SUBCATEGORY_PET_DISPLAY
-    )
-    var petDisplayShowLevel = true
-
-    @Switch(
-        title = "Show Pet Icon",
-        category = CATEGORY_HUD,
-        subcategory = SUBCATEGORY_PET_DISPLAY
-    )
-    var petDisplayShowIcon = true
-
-    @Switch(
-        title = "Show Pet Item Name",
-        category = CATEGORY_HUD,
-        subcategory = SUBCATEGORY_PET_DISPLAY
-    )
-    var petDisplayShowItemName = true
-
-    @Switch(
-        title = "Show Pet Item Icon",
-        category = CATEGORY_HUD,
-        subcategory = SUBCATEGORY_PET_DISPLAY
-    )
-    var petDisplayShowItemIcon = true
-
-    @Switch(
-        title = "Show Pet XP",
-        category = CATEGORY_HUD,
-        subcategory = SUBCATEGORY_PET_DISPLAY
-    )
-    var petDisplayShowXP = true
+    var petDisplayWidgetInfo: Nothing? = null
 
 
     private const val SUBCATEGORY_ACTION_BAR: String = "Action Bar"
