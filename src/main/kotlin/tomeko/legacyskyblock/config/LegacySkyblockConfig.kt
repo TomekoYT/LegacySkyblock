@@ -108,6 +108,16 @@ object LegacySkyblockConfig : Config(
     var hideDamageSplashEnabledIslands: BooleanArray = BooleanArray(20) { false }
 
 
+    private const val SUBCATEGORY_NBT_DATA = "NBT Data"
+
+    @Switch(
+        title = "Show Item NBT Data in Tooltip",
+        category = CATEGORY_MISC,
+        subcategory = SUBCATEGORY_NBT_DATA
+    )
+    var showItemNBTDataInTooltip = false
+
+
     private const val CATEGORY_DEBUG = "Debug"
 
     @Switch(
