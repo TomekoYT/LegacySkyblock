@@ -41,3 +41,7 @@ Modern Hypixel Skyblock mod aimed to port features from 1.8.9 mods
 #### Hide Damage Splash
 - Hide damage splash on mobs
 - Separate toggle for each island
+
+
+#### NBT Data
+- Show item nbt data in tooltip
