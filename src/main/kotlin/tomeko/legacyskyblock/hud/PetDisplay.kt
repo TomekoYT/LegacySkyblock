@@ -2,6 +2,7 @@ package tomeko.legacyskyblock.hud
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
+import net.minecraft.ChatFormatting
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.inventory.ContainerScreen
@@ -31,12 +32,6 @@ object PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
     }
 
     const val SUBCATEGORY_GENERAL = "General"
-
-    @Switch(
-        title = "Enabled",
-        subcategory = SUBCATEGORY_GENERAL
-    )
-    var enabled = true
 
     @Switch(
         title = "Show Pet Name",
@@ -124,24 +119,24 @@ object PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
 
     @JvmStatic
     @Include
-    var petName: String? = null
+    var petNameCache: String? = null
 
     @JvmStatic
     @Include
-    var petLevel: Int? = null
+    var petLevelCache: Int? = null
 
     @JvmStatic
     @Include
-    var petRarity: String? = null
+    var petRarityCache: String? = null
 
     @Include
-    var petItem: String? = null
+    var petItemCache: String? = null
 
     @Include
-    var petItemRarity: String? = null
+    var petItemRarityCache: String? = null
 
     @JvmStatic
-    var petXPLine: Component? = null
+    var petXPLineCache: Component? = null
 
     private var tickCooldown = 0
 
@@ -156,32 +151,77 @@ object PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
     override fun deletable(): Boolean = false
 
     override fun render(mcCtx: GuiGraphicsExtractor) {
-        if (!HypixelPackets.inSkyblock
-            || !enabled
-            || petName == null
-            || petLevel == null
-            || petRarity == null
-        ) return
+        if (!HudManager.isEditing && !HypixelPackets.inSkyblock) return
+
+        val petName: String?
+        val petLevel: Int?
+        val petRarity: String?
+        val petItem: String?
+        val petItemRarity: String?
+        val petXPLine: Component?
+
+        if (HudManager.isEditing
+            && (petNameCache == null
+                    || petLevelCache == null
+                    || petRarityCache == null
+                    )
+        ) {
+            petName = "Golden Dragon"
+            petLevel = 124
+            petRarity = "LEGENDARY"
+            petItem = "Antique Remedies"
+            petItemRarity = "EPIC"
+            petXPLine = Component.empty()
+                .append(Component.literal("475,180").withStyle(ChatFormatting.YELLOW))
+                .append(Component.literal("/").withStyle(ChatFormatting.GOLD))
+                .append(Component.literal("1.9M XP ").withStyle(ChatFormatting.YELLOW))
+                .append(Component.literal("(25.2%)").withStyle(ChatFormatting.GOLD))
+        } else {
+            petName = petNameCache
+            petLevel = petLevelCache
+            petRarity = petRarityCache
+            petItem = petItemCache
+            petItemRarity = petItemRarityCache
+            petXPLine = petXPLineCache
+        }
+
+        if (petName == null || petLevel == null || petRarity == null) return
+
+        val shouldShowPetItem = showItemName && petItem != null && petItemRarity != null
+        val shouldShowPetItemIcon = showItemIcon && petItem != null && petItemRarity != null
+        val shouldShowPetXP = showXP && petXPLine != null
 
         val mc = Minecraft.getInstance()
 
         var petNameLine = ""
         if (showLevel) petNameLine += "§7[Lvl $petLevel] "
-        if (showName) petNameLine += "${getChatColorFromRarity(petRarity!!)}${petName}"
+        if (showName) petNameLine += "${getChatColorFromRarity(petRarity)}${petName}"
 
         var maxTextWidth = mc.font.width(petNameLine).toFloat()
         var textLines = 1
 
         var petItemLine = ""
-        if (shouldShowPetItem()) {
-            petItemLine = "${getChatColorFromRarity(petItemRarity!!)}${petItem}"
+        if (shouldShowPetItem) {
+            petItemLine = "${getChatColorFromRarity(petItemRarity)}${petItem}"
             maxTextWidth = max(maxTextWidth, mc.font.width(petItemLine).toFloat())
             textLines++
         }
 
-        if (shouldShowPetXP()) {
-            maxTextWidth = max(maxTextWidth, mc.font.width(petXPLine!!).toFloat())
+        if (shouldShowPetXP) {
+            maxTextWidth = max(maxTextWidth, mc.font.width(petXPLine).toFloat())
             textLines++
+        }
+
+        fun getPetItemStack(): ItemStack? {
+            val itemIconID =
+                if (petItem!!.endsWith("Boost"))
+                    "PET_ITEM_${petItem.substringBefore(" ").uppercase()}_SKILL_BOOST_${petItemRarity}"
+                else
+                    petItem.uppercase().replace(" ", "_")
+
+            var itemIcon: ItemStack? = SimpleItemAPI.getItemByIdOrNull(SkyBlockId.item(itemIconID))
+            if (itemIcon == null) itemIcon = SimpleItemAPI.getPetByIdOrNull(SkyBlockId.item("PET_ITEM_$itemIconID"))
+            return itemIcon
         }
 
         val textHeight = textLines * mc.font.lineHeight + max(0, textLines - 1) * linesPadding
@@ -190,22 +230,23 @@ object PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             if (showIcon)
                 SimpleItemAPI.getPetByIdOrNull(
                     SkyBlockId.pet(
-                        petName!!.uppercase().replace(" ", "_"),
-                        petRarity!!
+                        petName.uppercase().replace(" ", "_"),
+                        petRarity
                     )
                 )
-            else if (shouldShowPetItemIcon())
-                getPetItemIcon()
+            else if (shouldShowPetItemIcon)
+                getPetItemStack()
             else
                 null
 
-        val hasBothIcons = icon != null && showIcon && shouldShowPetItemIcon()
+        val hasBothIcons = icon != null && showIcon && shouldShowPetItemIcon
 
         val actualIconSize = if (icon != null) iconSize else 0f
         val actualIconPadding = if (icon != null) iconPadding else 0f
 
         val effectiveItemIconPadding = itemIconPadding - 3f
-        val actualItemIconPadding = if (hasBothIcons) max(0f, (itemIconSize / 2f) + effectiveItemIconPadding) else 0f
+        val actualItemIconPadding =
+            if (hasBothIcons) max(0f, (itemIconSize / 2f) + effectiveItemIconPadding) else 0f
 
         val coreHeight = max(actualIconSize, textHeight)
         val itemY = (coreHeight - actualIconSize) / 2f
@@ -239,7 +280,7 @@ object PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             mcCtx.pose().popMatrix()
 
             if (hasBothIcons) {
-                val itemIcon = getPetItemIcon()
+                val itemIcon = getPetItemStack()
 
                 if (itemIcon != null) {
                     val badgeX = actualIconSize - (itemIconSize / 2f) + effectiveItemIconPadding
@@ -262,13 +303,13 @@ object PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             textY += (mc.font.lineHeight + linesPadding)
         }
 
-        if (shouldShowPetItem()) {
+        if (shouldShowPetItem) {
             renderComponent(mcCtx, Component.literal(petItemLine), textStartX, textY)
             textY += (mc.font.lineHeight + linesPadding)
         }
 
-        if (shouldShowPetXP()) {
-            renderComponent(mcCtx, petXPLine!!, textStartX, textY)
+        if (shouldShowPetXP) {
+            renderComponent(mcCtx, petXPLine, textStartX, textY)
         }
 
         mcCtx.pose().popMatrix()
@@ -340,9 +381,9 @@ object PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
 
                 val match = Regex("^\\[Lvl (\\d+)] (.*)$").find(plainText)
                 if (match != null) {
-                    petLevel = match.groupValues[1].toInt()
-                    petName = match.groupValues[2]
-                    petRarity = getRarityFromComponentColor(component.siblings[2].style.color!!.value)
+                    petLevelCache = match.groupValues[1].toInt()
+                    petNameCache = match.groupValues[2]
+                    petRarityCache = getRarityFromComponentColor(component.siblings[2].style.color!!.value)
                     parsedName = true
                     continue
                 } else {
@@ -359,12 +400,12 @@ object PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
                 } else {
                     if (plainText.isEmpty() || plainText == "MAX LEVEL" || plainText.firstOrNull() == '+') {
                         resetItem()
-                        petXPLine = null
+                        petXPLineCache = null
                         break
                     }
 
-                    petItem = plainText
-                    petItemRarity = getRarityFromComponentColor(component.siblings[1].style.color!!.value)
+                    petItemCache = plainText
+                    petItemRarityCache = getRarityFromComponentColor(component.siblings[1].style.color!!.value)
                     parsedItemOrXp = true
                     continue
                 }
@@ -375,7 +416,7 @@ object PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
                 break
             }
 
-            petXPLine = null
+            petXPLineCache = null
             break
         }
     }
@@ -389,12 +430,12 @@ object PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
 
         if (autoPetMatch != null) {
             setTickCooldown()
-            petLevel = autoPetMatch.groupValues[1].toInt()
-            petRarity = getRarityFromChatColor(autoPetMatch.groupValues[2])
-            petName = autoPetMatch.groupValues[3]
+            petLevelCache = autoPetMatch.groupValues[1].toInt()
+            petRarityCache = getRarityFromChatColor(autoPetMatch.groupValues[2])
+            petNameCache = autoPetMatch.groupValues[3]
 
             resetItem()
-            petXPLine = null
+            petXPLineCache = null
             return
         }
 
@@ -407,14 +448,14 @@ object PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             val name = levelUpMatch.groupValues[1]
             val level = levelUpMatch.groupValues[2].toInt()
 
-            if (name != petName
-                || getRarityFromComponentColor(message.siblings[1].style.color!!.value) != petRarity
-                || (petLevel != null && level <= petLevel!!)
+            if (name != petNameCache
+                || getRarityFromComponentColor(message.siblings[1].style.color!!.value) != petRarityCache
+                || (petLevelCache != null && level <= petLevelCache!!)
             ) return
 
             setTickCooldown()
-            petLevel = level
-            petXPLine = null
+            petLevelCache = level
+            petXPLineCache = null
             return
         }
 
@@ -426,8 +467,8 @@ object PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             val sibling = message.siblings[1]
 
             setTickCooldown()
-            petItem = sibling.string
-            petItemRarity = getRarityFromComponentColor(sibling.style.color!!.value)
+            petItemCache = sibling.string
+            petItemRarityCache = getRarityFromComponentColor(sibling.style.color!!.value)
             return
         }
 
@@ -466,15 +507,15 @@ object PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         val name = match.groupValues[2]
 
         setTickCooldown()
-        petName = name
-        petLevel = level
-        petRarity = getRarityFromComponentColor(component.siblings[1].style.color!!.value)
+        petNameCache = name
+        petLevelCache = level
+        petRarityCache = getRarityFromComponentColor(component.siblings[1].style.color!!.value)
 
         val tooltip: MutableList<Component> =
             item.getTooltipLines(Item.TooltipContext.EMPTY, mc.player, TooltipFlag.NORMAL)
 
         searchForPetItemInTooltip(tooltip)
-        petXPLine = null
+        petXPLineCache = null
     }
 
     @JvmStatic
@@ -508,48 +549,24 @@ object PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         else -> null
     }
 
-    private fun getPetItemIcon(): ItemStack? {
-        val itemIconID =
-            if (petItem!!.endsWith("Boost"))
-                "PET_ITEM_${petItem!!.substringBefore(" ").uppercase()}_SKILL_BOOST_${petItemRarity}"
-            else
-                petItem!!.uppercase().replace(" ", "_")
-
-        var itemIcon: ItemStack? = SimpleItemAPI.getItemByIdOrNull(SkyBlockId.item(itemIconID))
-        if (itemIcon == null) itemIcon = SimpleItemAPI.getPetByIdOrNull(SkyBlockId.item("PET_ITEM_$itemIconID"))
-        return itemIcon
-    }
-
-    private fun shouldShowPetItem(): Boolean {
-        return showItemName && petItem != null && petItemRarity != null
-    }
-
-    private fun shouldShowPetItemIcon(): Boolean {
-        return showItemIcon && petItem != null && petItemRarity != null
-    }
-
-    private fun shouldShowPetXP(): Boolean {
-        return showXP && petXPLine != null
-    }
-
     @JvmStatic
     fun resetAll() {
-        petName = null
-        petLevel = null
-        petRarity = null
+        petNameCache = null
+        petLevelCache = null
+        petRarityCache = null
         resetItem()
-        petXPLine = null
+        petXPLineCache = null
     }
 
     fun resetItem() {
-        petItem = null
-        petItemRarity = null
+        petItemCache = null
+        petItemRarityCache = null
     }
 
     private fun setPetXPFromTab(component: Component) {
         val copy: MutableComponent = component.copy()
         copy.siblings.removeFirst()
-        petXPLine = copy
+        petXPLineCache = copy
     }
 
     private fun isXpLine(text: String): Boolean {
@@ -572,8 +589,8 @@ object PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
             val pattern = Pattern.compile("^Held Item: (.*)$")
             val matcher = pattern.matcher(line.string)
             if (matcher.find()) {
-                petItem = matcher.group(1)
-                petItemRarity = getRarityFromComponentColor(line.siblings[1].style.color!!.value)
+                petItemCache = matcher.group(1)
+                petItemRarityCache = getRarityFromComponentColor(line.siblings[1].style.color!!.value)
                 return
             }
         }

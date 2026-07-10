@@ -54,12 +54,12 @@ public abstract class PetMenuMixin {
         String name = matcher.group(2);
 
         PetDisplay.setTickCooldown();
-        PetDisplay.setPetName(name);
-        PetDisplay.setPetLevel(level);
-        PetDisplay.setPetRarity(PetDisplay.getRarityFromComponentColor(component.getSiblings().get(1).getStyle().getColor().getValue()));
+        PetDisplay.setPetNameCache(name);
+        PetDisplay.setPetLevelCache(level);
+        PetDisplay.setPetRarityCache(PetDisplay.getRarityFromComponentColor(component.getSiblings().get(1).getStyle().getColor().getValue()));
 
         PetDisplay.searchForPetItemInTooltip(tooltip);
-        PetDisplay.setPetXPLine(null);
+        PetDisplay.setPetXPLineCache(null);
     }
 
     private static boolean legacyskyblock$isTogglingFavorite(int buttonNum, ContainerInput containerInput) {
