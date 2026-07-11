@@ -12,6 +12,7 @@ import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
+import org.polyfrost.compose.render.PolyColor
 import org.polyfrost.oneconfig.api.config.v1.annotations.*
 import org.polyfrost.oneconfig.api.hud.v1.HudManager
 import org.polyfrost.oneconfig.api.hud.v1.LegacyHud
@@ -31,91 +32,151 @@ object PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         ClientTickEvents.END_CLIENT_TICK.register(::scanLoadoutsMenu)
     }
 
-    const val SUBCATEGORY_GENERAL = "General"
+    private const val CATEGORY_GENERAL = "General"
+
+    private const val SUBCATEGORY_GENERAL = "General"
 
     @Switch(
-        title = "Show Pet Name",
+        title = "Text Shadow",
+        category = CATEGORY_GENERAL,
         subcategory = SUBCATEGORY_GENERAL
     )
-    var showName = true
+    var textShadow = true
 
-    @Switch(
-        title = "Show Pet Level",
+    @Color(
+        title = "Text Shadow Color",
+        category = CATEGORY_GENERAL,
         subcategory = SUBCATEGORY_GENERAL
     )
-    var showLevel = true
-
-    @Switch(
-        title = "Show Pet Icon",
-        subcategory = SUBCATEGORY_GENERAL
-    )
-    var showIcon = true
-
-    @Switch(
-        title = "Show Pet Item Name",
-        subcategory = SUBCATEGORY_GENERAL
-    )
-    var showItemName = true
-
-    @Switch(
-        title = "Show Pet Item Icon",
-        subcategory = SUBCATEGORY_GENERAL
-    )
-    var showItemIcon = true
-
-    @Switch(
-        title = "Show Pet XP",
-        subcategory = SUBCATEGORY_GENERAL
-    )
-    var showXP = true
-
-
-    const val SUBCATEGORY_TEXT_OPTIONS = "Text Options"
-
-    @Slider(
-        title = "Icon Size",
-        min = 1f,
-        max = 64f,
-        step = 1f,
-        subcategory = SUBCATEGORY_TEXT_OPTIONS
-    )
-    var iconSize = 32f
-
-    @Slider(
-        title = "Item Icon Size",
-        min = 1f,
-        max = 32f,
-        step = 1f,
-        subcategory = SUBCATEGORY_TEXT_OPTIONS
-    )
-    var itemIconSize = 16f
-
-    @Slider(
-        title = "Icon Padding",
-        min = 0f,
-        max = 10f,
-        step = 0.1f,
-        subcategory = SUBCATEGORY_TEXT_OPTIONS
-    )
-    var iconPadding = 3f
-
-    @Slider(
-        title = "Item Icon Padding",
-        min = 0f,
-        max = 5f,
-        step = 0.1f,
-        subcategory = SUBCATEGORY_TEXT_OPTIONS
-    )
-    var itemIconPadding = 2f
+    var textShadowColor = PolyColor(0xFF000000.toInt())
 
     @Slider(
         title = "Lines Padding",
         min = 0f,
         max = 10f,
         step = 0.1f,
-        subcategory = SUBCATEGORY_TEXT_OPTIONS
+        category = CATEGORY_GENERAL,
+        subcategory = SUBCATEGORY_GENERAL
     )
     var linesPadding = 3f
+
+
+    private const val SUBCATEGORY_PET = "Pet"
+
+    @Switch(
+        title = "Show Pet Name",
+        category = CATEGORY_GENERAL,
+        subcategory = SUBCATEGORY_PET
+    )
+    var showName = true
+
+    @Switch(
+        title = "Show Pet Level",
+        category = CATEGORY_GENERAL,
+        subcategory = SUBCATEGORY_PET
+    )
+    var showLevel = true
+
+    @Switch(
+        title = "Show Pet Item Name",
+        category = CATEGORY_GENERAL,
+        subcategory = SUBCATEGORY_PET
+    )
+    var showItemName = true
+
+    @Switch(
+        title = "Show Pet XP",
+        category = CATEGORY_GENERAL,
+        subcategory = SUBCATEGORY_PET
+    )
+    var showXP = true
+
+
+    private const val CATEGORY_ICONS = "Icons"
+
+    private const val SUBCATEGORY_PET_ICON = "Pet Icon"
+
+    @Switch(
+        title = "Show Pet Icon",
+        category = CATEGORY_ICONS,
+        subcategory = SUBCATEGORY_PET_ICON
+    )
+    var showIcon = true
+
+    @Slider(
+        title = "Icon Size",
+        min = 1f,
+        max = 64f,
+        step = 1f,
+        category = CATEGORY_ICONS,
+        subcategory = SUBCATEGORY_PET_ICON
+    )
+    var iconSize = 32f
+
+    @Slider(
+        title = "Icon Padding",
+        min = 0f,
+        max = 10f,
+        step = 0.1f,
+        category = CATEGORY_ICONS,
+        subcategory = SUBCATEGORY_PET_ICON
+    )
+    var iconPadding = 3f
+
+
+    private const val SUBCATEGORY_PET_ITEM_ICON = "Pet Item Icon"
+
+    @Switch(
+        title = "Show Pet Item Icon",
+        category = CATEGORY_ICONS,
+        subcategory = SUBCATEGORY_PET_ITEM_ICON
+    )
+    var showItemIcon = true
+
+    @Slider(
+        title = "Item Icon Size",
+        min = 1f,
+        max = 32f,
+        step = 1f,
+        category = CATEGORY_ICONS,
+        subcategory = SUBCATEGORY_PET_ITEM_ICON
+    )
+    var itemIconSize = 16f
+
+    @Slider(
+        title = "Item Icon Padding",
+        min = 0f,
+        max = 5f,
+        step = 0.1f,
+        category = CATEGORY_ICONS,
+        subcategory = SUBCATEGORY_PET_ITEM_ICON
+    )
+    var itemIconPadding = 2f
+
+
+    private const val CATEGORY_BACKGROUND = "Background"
+
+    @Switch(
+        title = "Show Background",
+        category = CATEGORY_BACKGROUND
+    )
+    var background = false
+
+    @Color(
+        title = "Background Color",
+        category = CATEGORY_BACKGROUND
+    )
+    var backgroundColor = PolyColor(0x80000000.toInt())
+
+    @Slider(
+        title = "Background Radius",
+        category = CATEGORY_BACKGROUND,
+        min = 0f,
+        max = 10f,
+        step = 0.1f
+    )
+    var backgroundRadius = 5f
+
 
     @JvmStatic
     @Include
@@ -260,13 +321,13 @@ object PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
 
         mcCtx.pose().pushMatrix()
 
-        if (showBackground) {
+        if (background) {
             mcCtx.fill(
-                -bgRadius.toInt(),
-                -bgRadius.toInt(),
-                (actualWidth + bgRadius).toInt(),
-                (actualHeight + bgRadius).toInt(),
-                bgColor
+                -backgroundRadius.toInt(),
+                -backgroundRadius.toInt(),
+                (actualWidth + backgroundRadius).toInt(),
+                (actualHeight + backgroundRadius).toInt(),
+                backgroundColor.argb
             )
         }
 
@@ -318,13 +379,13 @@ object PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
     private fun renderComponent(mcCtx: GuiGraphicsExtractor, component: Component, textX: Float, textY: Float) {
         val mc = Minecraft.getInstance()
 
-        if (showShadow) {
+        if (textShadow) {
             mcCtx.text(
                 mc.font,
                 component.string.removeFormatting(),
                 textX.toInt() + 1,
                 textY.toInt() + 1,
-                shadowColor,
+                textShadowColor.argb,
                 false
             )
         }
