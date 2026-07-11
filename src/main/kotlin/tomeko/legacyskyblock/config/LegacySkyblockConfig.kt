@@ -11,7 +11,10 @@ object LegacySkyblockConfig : Config(
     Category.HYPIXEL
 ) {
     val DEPENDENCIES: List<Pair<String, List<String>>> = listOf(
-
+        "NBTDataEnabled" to listOf(
+            "NBTDataHideEnchantments",
+            "NBTDataHideGemstones"
+        )
     )
 
     fun register() {
@@ -115,7 +118,21 @@ object LegacySkyblockConfig : Config(
         category = CATEGORY_MISC,
         subcategory = SUBCATEGORY_NBT_DATA
     )
-    var showItemNBTDataInTooltip = false
+    var NBTDataEnabled = false
+
+    @Switch(
+        title = "Hide Enchantments",
+        category = CATEGORY_MISC,
+        subcategory = SUBCATEGORY_NBT_DATA
+    )
+    var NBTDataHideEnchantments = true
+
+    @Switch(
+        title = "Hide Gemstones",
+        category = CATEGORY_MISC,
+        subcategory = SUBCATEGORY_NBT_DATA
+    )
+    var NBTDataHideGemstones = true
 
 
     private const val CATEGORY_DEBUG = "Debug"
