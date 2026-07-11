@@ -73,7 +73,11 @@ object LegacySkyblockConfig : Config(
     private const val SUBCATEGORY_MIDDLE_CLICK_GUI_ITEMS: String = "Middle Click GUI Items"
 
     @JvmField
-    @Switch(title = "Enabled", category = CATEGORY_GUI, subcategory = SUBCATEGORY_MIDDLE_CLICK_GUI_ITEMS)
+    @Switch(
+        title = "Middle Click GUI Items",
+        category = CATEGORY_GUI,
+        subcategory = SUBCATEGORY_MIDDLE_CLICK_GUI_ITEMS
+    )
     var middleClickGUIItemsEnabled: Boolean = true
 
 
