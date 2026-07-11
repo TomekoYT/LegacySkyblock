@@ -3,6 +3,7 @@ package tomeko.legacyskyblock.config
 import org.polyfrost.oneconfig.api.config.v1.Config
 import org.polyfrost.oneconfig.api.config.v1.annotations.*
 import tomeko.legacyskyblock.utils.Constants
+import tomeko.legacyskyblock.utils.SkyblockIslands
 
 object LegacySkyblockConfig : Config(
     Constants.MOD_ID + ".json",
@@ -93,6 +94,8 @@ object LegacySkyblockConfig : Config(
             "The Barn",
             "The Park",
             "Galatea",
+            "Torrhus Canyon",
+            "Safari Zone",
             "Gold Mine",
             "Deep Caverns",
             "Dwarven Mines",
@@ -108,7 +111,7 @@ object LegacySkyblockConfig : Config(
             "Jerry's Workshop"
         ]
     )
-    var hideDamageSplashEnabledIslands: BooleanArray = BooleanArray(20) { false }
+    var hideDamageSplashEnabledIslands: BooleanArray = BooleanArray(SkyblockIslands.entries.size) { false }
 
 
     private const val SUBCATEGORY_NBT_DATA = "NBT Data"

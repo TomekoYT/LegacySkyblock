@@ -11,6 +11,8 @@ enum class SkyblockIslands(
     THE_BARN("farming_1", "The Barn"),
     THE_PARK("foraging_1", "The Park"),
     GALATEA("foraging_2", "Galatea"),
+    TORRHUS_CANYON("foraging_3", "Torrhus Canyon"),
+    SAFARI_ZONE("safari", "Safari Zone"),
     GOLD_MINE("mining_1", "Gold Mine"),
     DEEP_CAVERNS("mining_2", "Deep Caverns"),
     DWARVEN_MINES("mining_3", "Dwarven Mines"),
