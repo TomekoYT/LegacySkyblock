@@ -45,4 +45,4 @@ Modern Hypixel Skyblock mod aimed to port features from 1.8.9 mods
 
 #### NBT Data
 - Show item nbt data in tooltip
-- Option to hide enchantments and gemstones
+- Fully customizable
