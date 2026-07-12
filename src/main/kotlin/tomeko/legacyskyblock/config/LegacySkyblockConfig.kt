@@ -2,6 +2,7 @@ package tomeko.legacyskyblock.config
 
 import org.polyfrost.oneconfig.api.config.v1.Config
 import org.polyfrost.oneconfig.api.config.v1.annotations.*
+import tomeko.legacyskyblock.misc.NBTTypes
 import tomeko.legacyskyblock.utils.Constants
 import tomeko.legacyskyblock.utils.SkyblockIslands
 
@@ -12,19 +13,30 @@ object LegacySkyblockConfig : Config(
     Category.HYPIXEL
 ) {
     val DEPENDENCIES: List<Pair<String, List<String>>> = listOf(
-        "NBTDataEnabled" to listOf(
-            "NBTDataHideEnchantments",
-            "NBTDataHideGemstones"
-        )
+
     )
 
     fun register() {
+        if (LegacySkyblockConfig::class.java.getDeclaredField("hideDamageSplashEnabledIslands")
+                .getAnnotation(MultiSelectDropdown::class.java).options.size != SkyblockIslands.entries.size
+        ) error("hideDamageSplashEnabledIslands missing options")
+
+        if (LegacySkyblockConfig::class.java.getDeclaredField("NBTDataEnabledTypes")
+                .getAnnotation(MultiSelectDropdown::class.java).options.size != NBTTypes.entries.size
+        ) error("NBTDataEnabledTypes missing options")
+
         preload()
         for ((condition, dependencies) in DEPENDENCIES) {
             for (dependency in dependencies) {
                 addDependency(dependency, condition)
             }
         }
+
+        if (hideDamageSplashEnabledIslands.size != SkyblockIslands.entries.size)
+            hideDamageSplashEnabledIslands = BooleanArray(SkyblockIslands.entries.size) { false }
+
+        if (NBTDataEnabledTypes.size != NBTTypes.entries.size)
+            NBTDataEnabledTypes = BooleanArray(NBTTypes.entries.size) { it == NBTTypes.entries.size - 1 }
     }
 
     private const val CATEGORY_HUD: String = "HUD"
@@ -88,8 +100,6 @@ object LegacySkyblockConfig : Config(
     @MultiSelectDropdown(
         title = "Hide Damage Splash",
         checkable = true,
-        category = CATEGORY_MISC,
-        subcategory = SUBCATEGORY_HIDE_DAMAGE_SPLASH,
         options = [
             "Private Island",
             "SkyBlock Hub",
@@ -113,33 +123,133 @@ object LegacySkyblockConfig : Config(
             "Backwater Bayou",
             "Lotus Atoll",
             "Jerry's Workshop"
-        ]
+        ],
+        category = CATEGORY_MISC,
+        subcategory = SUBCATEGORY_HIDE_DAMAGE_SPLASH
     )
     var hideDamageSplashEnabledIslands: BooleanArray = BooleanArray(SkyblockIslands.entries.size) { false }
 
 
     private const val SUBCATEGORY_NBT_DATA = "NBT Data"
 
-    @Switch(
+    @MultiSelectDropdown(
         title = "Show Item NBT Data in Tooltip",
+        checkable = true,
+        options = [
+            "Ability Scroll",
+            "Additional Coins",
+            "Art of War Count",
+            "Attributes",
+            "Auction",
+            "Base Stat Boost Percentage",
+            "Bid",
+            "Bingo Event",
+            "Bookworm Books",
+            "Boss Tier",
+            "Boosters",
+            "Cake Owner",
+            "Captured Date",
+            "Captured Player",
+            "Century Year",
+            "Century Year Obtained",
+            "Color",
+            "Date",
+            "Divan Powder Coating",
+            "Donated Museum",
+            "Drill Fuel",
+            "Drill Part Engine",
+            "Drill Part Fuel Tank",
+            "Drill Part Upgrade Module",
+            "Dungeon Item",
+            "Dungeon Item Level",
+            "Edition",
+            "Effects",
+            "Enchantments",
+            "Enhanced",
+            "Engine",
+            "Ethermerge",
+            "Event",
+            "Extended",
+            "Farming for Dummies Count",
+            "Fuel Tank",
+            "Fungi Cutter Mode",
+            "Gemstones",
+            "Gilded Gifted Coins",
+            "Historic Dungeon Score",
+            "Hook",
+            "Hot Potato Count",
+            "ID",
+            "Initiator Player",
+            "Kuudra Cavity Rarity",
+            "Lava Creatures Killed",
+            "Leaderboard Player",
+            "Leaderboard Position",
+            "Leaderboard Score",
+            "Levelable Experience",
+            "Levelable Level",
+            "Levelable Overclocks",
+            "Levels Found",
+            "Line",
+            "Logs Cut",
+            "Mana Disintegrator Count",
+            "Mined Crops",
+            "Modifier",
+            "Names Found",
+            "New Year's Cake",
+            "Origin Tag",
+            "Party Hat Color",
+            "Party Hat Emoji",
+            "Party Hat Year",
+            "Personal Compact Number",
+            "Personal Deletor Active",
+            "Personal Deletor Number",
+            "Pet Info",
+            "Pickonimbus Durability",
+            "Player",
+            "Playtime",
+            "Polarvoid",
+            "Potion",
+            "Potion Level",
+            "Potion Type",
+            "Power Ability Scroll",
+            "Raffle Win",
+            "Raffle Year",
+            "Rarity Upgrades",
+            "Recipient ID",
+            "Recipient Name",
+            "Recipient Team",
+            "Shown to Coral",
+            "Sinker",
+            "Skill Requirement",
+            "Soul Durability",
+            "Soulbound",
+            "Spray",
+            "Spray Item",
+            "Stacking Enchantment",
+            "Stats Book",
+            "Talisman Enrichment",
+            "TD Attune Mode",
+            "Tickets",
+            "Timestamp",
+            "Traps Defused",
+            "Tuned Transmission",
+            "Upgrade Level",
+            "Upgrade Module",
+            "Upgraded Rarity",
+            "UUID",
+            "Water Level",
+            "Wet Book Count",
+            "Winning Bid",
+            "Winning Team",
+            "Wood Singularity Count",
+            "Year",
+            "Year Obtained",
+            "Other"
+        ],
         category = CATEGORY_MISC,
         subcategory = SUBCATEGORY_NBT_DATA
     )
-    var NBTDataEnabled = false
-
-    @Switch(
-        title = "Hide Enchantments",
-        category = CATEGORY_MISC,
-        subcategory = SUBCATEGORY_NBT_DATA
-    )
-    var NBTDataHideEnchantments = true
-
-    @Switch(
-        title = "Hide Gemstones",
-        category = CATEGORY_MISC,
-        subcategory = SUBCATEGORY_NBT_DATA
-    )
-    var NBTDataHideGemstones = true
+    var NBTDataEnabledTypes: BooleanArray = BooleanArray(NBTTypes.entries.size) { it == NBTTypes.entries.size - 1 }
 
 
     private const val CATEGORY_DEBUG = "Debug"

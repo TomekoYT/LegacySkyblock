@@ -29,14 +29,13 @@ object ShowNBTData {
         lines: MutableList<Component>
     ) {
         if (!HypixelPackets.inSkyblock
-            || !LegacySkyblockConfig.NBTDataEnabled
             || !stack.has(DataComponents.CUSTOM_DATA)
         ) return
 
         val nbt = stack.get(DataComponents.CUSTOM_DATA)?.copyTag() ?: return
 
         for (key in nbt.keySet()) {
-            if (shouldSkipKey(key)) continue
+            if (!LegacySkyblockConfig.NBTDataEnabledTypes[NBTTypes.fromId(key).ordinal]) continue
 
             val value = nbt.get(key) ?: continue
 
@@ -199,11 +198,5 @@ object ShowNBTData {
                 )
             }
         }
-    }
-
-    private fun shouldSkipKey(key: String) = when (key) {
-        "enchantments" -> LegacySkyblockConfig.NBTDataHideEnchantments
-        "gems" -> LegacySkyblockConfig.NBTDataHideGemstones
-        else -> false
     }
 }
