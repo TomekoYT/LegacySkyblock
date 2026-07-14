@@ -24,7 +24,7 @@ import tomeko.legacyskyblock.utils.removeFormatting
 import java.util.regex.Pattern
 import kotlin.math.*
 
-object PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
+object PetDisplay : LegacyHud("${Constants.MOD_ID}/pet_display.json", "Pet Display", Category.PLAYER) {
     fun register() {
         HudManager.register(PetDisplay, Constants.MOD_ID, Constants.MOD_ICON)
         ClientTickEvents.END_CLIENT_TICK.register(::searchTab)
@@ -221,8 +221,9 @@ object PetDisplay : LegacyHud("pet-display", "Pet Display", Category.PLAYER) {
         val petItemRarity: String?
         val petXPLine: Component?
 
-        if (HudManager.isEditing
-            && (petNameCache == null
+        if (HudManager.isEditing &&
+            (!HypixelPackets.inSkyblock
+                    || petNameCache == null
                     || petLevelCache == null
                     || petRarityCache == null
                     )
