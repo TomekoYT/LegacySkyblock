@@ -17,4 +17,8 @@ object Debug {
     fun forcePrint(message: String) {
         LOGGER.info("[${Constants.MOD_NAME}] $message")
     }
+
+    fun forceError(message: String) {
+        error("[${Constants.MOD_NAME}] $message")
+    }
 }

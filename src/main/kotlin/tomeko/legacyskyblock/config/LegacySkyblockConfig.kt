@@ -4,6 +4,7 @@ import org.polyfrost.oneconfig.api.config.v1.Config
 import org.polyfrost.oneconfig.api.config.v1.annotations.*
 import tomeko.legacyskyblock.misc.NBTTypes
 import tomeko.legacyskyblock.utils.Constants
+import tomeko.legacyskyblock.utils.Debug
 import tomeko.legacyskyblock.utils.SkyblockIslands
 
 object LegacySkyblockConfig : Config(
@@ -17,13 +18,15 @@ object LegacySkyblockConfig : Config(
     )
 
     fun register() {
-        if (LegacySkyblockConfig::class.java.getDeclaredField("hideDamageSplashEnabledIslands")
-                .getAnnotation(MultiSelectDropdown::class.java).options.size != SkyblockIslands.entries.size
-        ) error("hideDamageSplashEnabledIslands missing options")
+        if (!LegacySkyblockConfig::class.java.getDeclaredField("hideDamageSplashEnabledIslands")
+                .getAnnotation(MultiSelectDropdown::class.java).options
+                .contentEquals(SkyblockIslands.entries.map { it.islandName }.toTypedArray())
+        ) Debug.forceError("hideDamageSplashEnabled missing options")
 
-        if (LegacySkyblockConfig::class.java.getDeclaredField("NBTDataEnabledTypes")
-                .getAnnotation(MultiSelectDropdown::class.java).options.size != NBTTypes.entries.size
-        ) error("NBTDataEnabledTypes missing options")
+        if (!LegacySkyblockConfig::class.java.getDeclaredField("NBTDataEnabledTypes")
+                .getAnnotation(MultiSelectDropdown::class.java).options
+                .contentEquals(NBTTypes.entries.map { it.nbtName }.toTypedArray())
+        ) Debug.forceError("NBTDataEnabledTypes missing options")
 
         preload()
         for ((condition, dependencies) in DEPENDENCIES) {
