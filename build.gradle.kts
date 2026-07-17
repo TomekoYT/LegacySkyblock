@@ -19,9 +19,9 @@ val hypixelModApiVersion = project.property("hypixel_mod_api_version") as String
 val skyblockApiVersion = project.property("skyblock_api_version") as String
 
 plugins {
+    id("org.jetbrains.kotlin.jvm") version "2.4.10"
     id("net.fabricmc.fabric-loom") version "1.17-SNAPSHOT"
-    id("org.jetbrains.kotlin.jvm") version "2.4.0"
-    id("org.jetbrains.kotlin.plugin.compose") version "2.4.0"
+    id("dev.deftu.gradle.bloom") version "0.2.0"
 }
 
 base {
@@ -29,8 +29,8 @@ base {
 }
 
 repositories {
-    google()
     mavenCentral()
+    google()
     maven("https://api.modrinth.com/maven")
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.stellardrift.ca/repository/maven-snapshots/")
@@ -63,6 +63,12 @@ dependencies {
     include("tech.thatgravyboat:skyblock-api:$skyblockApiVersion") {
         capabilities { requireCapability("tech.thatgravyboat:skyblock-api-$minecraftVersion") }
     }
+}
+
+bloom {
+    replacement("@MOD_NAME@", modName)
+    replacement("@MOD_ID@", modId)
+    replacement("@MOD_VERSION@", modVersion)
 }
 
 tasks.processResources {
