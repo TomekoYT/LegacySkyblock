@@ -24,7 +24,7 @@ import tomeko.legacyskyblock.utils.removeFormatting
 import java.util.regex.Pattern
 import kotlin.math.*
 
-object PetDisplay : LegacyHud("${Constants.MOD_ID}/pet_display.json", "Pet Display", Category.PLAYER) {
+object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Display", Category.PLAYER) {
     fun register() {
         HudManager.register(PetDisplay, Constants.MOD_ID, Constants.MOD_ICON)
         ClientTickEvents.END_CLIENT_TICK.register(::searchTab)
@@ -201,15 +201,15 @@ object PetDisplay : LegacyHud("${Constants.MOD_ID}/pet_display.json", "Pet Displ
 
     private var tickCooldown = 0
 
-    private var actualWidth = 0f
-    private var actualHeight = 0f
+    private var actualWidth = 1f
+    private var actualHeight = 1f
 
     override val width: Float = actualWidth
     override val height: Float = actualHeight
     override fun minimumSize(): Pair<Float, Float> = actualWidth to actualHeight
     override fun update(): Boolean = true
-    override fun multipleInstancesAllowed(): Boolean = false
-    override fun deletable(): Boolean = false
+    override fun multipleInstancesAllowed(): Boolean = true
+    override fun deletable(): Boolean = true
 
     override fun render(mcCtx: GuiGraphicsExtractor) {
         if (!HudManager.isEditing && !HypixelPackets.inSkyblock) return
@@ -434,7 +434,7 @@ object PetDisplay : LegacyHud("${Constants.MOD_ID}/pet_display.json", "Pet Displ
             if (!parsedName) {
                 if (plainText.endsWith(" ✦")) {
                     plainText = removeSkinStar(plainText)
-                    if (!component.siblings.isEmpty()) {
+                    if (component.siblings.isNotEmpty()) {
                         val copy: MutableComponent = component.copy()
                         copy.siblings.removeLast()
                         component = copy
