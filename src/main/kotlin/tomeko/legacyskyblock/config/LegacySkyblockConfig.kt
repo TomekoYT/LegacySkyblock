@@ -257,6 +257,12 @@ object LegacySkyblockConfig : Config(
 
     private const val CATEGORY_DEBUG = "Debug"
 
+    @Info(
+        title = "Probably should stay disabled",
+        category = CATEGORY_DEBUG
+    )
+    var debugModeInfo: Nothing? = null
+
     @Switch(
         title = "Debug Mode Enabled",
         category = CATEGORY_DEBUG
