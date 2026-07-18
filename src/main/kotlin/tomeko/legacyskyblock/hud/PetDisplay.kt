@@ -22,7 +22,6 @@ import tomeko.legacyskyblock.utils.Constants
 import tomeko.legacyskyblock.utils.HypixelPackets
 import tomeko.legacyskyblock.utils.SkyblockIslands
 import tomeko.legacyskyblock.utils.removeFormatting
-import java.util.regex.Pattern
 import kotlin.math.*
 
 object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Display", Category.PLAYER) {
@@ -316,7 +315,7 @@ object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displ
             if (showIcon)
                 SimpleItemAPI.getPetByIdOrNull(
                     SkyBlockId.pet(
-                        petName.uppercase().replace(" ", "_"),
+                        getPetID(petName),
                         petRarity
                     )
                 )
@@ -642,13 +641,11 @@ object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displ
             item.getTooltipLines(Item.TooltipContext.EMPTY, mc.player, TooltipFlag.NORMAL)
 
         for (line in tooltip) {
-            val pattern = Pattern.compile("^Held Item: (.*)$")
-            val matcher = pattern.matcher(line.string)
-            if (matcher.find()) {
-                riftPetItemCache = matcher.group(1)
-                riftPetItemRarityCache = getRarityFromComponentColor(line.siblings[1].style.color!!.value)
-                return
-            }
+            val match = Regex("Held Item: (.*)").find(line.string) ?: continue
+
+            riftPetItemCache = match.groupValues[1]
+            riftPetItemRarityCache = getRarityFromComponentColor(line.siblings[1].style.color!!.value)
+            return
         }
 
         resetRiftItem()
@@ -725,21 +722,6 @@ object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displ
     }
 
     @JvmStatic
-    fun searchForPetItemInTooltip(tooltip: MutableList<Component>) {
-        for (line in tooltip) {
-            val pattern = Pattern.compile("^Held Item: (.*)$")
-            val matcher = pattern.matcher(line.string)
-            if (matcher.find()) {
-                petItemCache = matcher.group(1)
-                petItemRarityCache = getRarityFromComponentColor(line.siblings[1].style.color!!.value)
-                return
-            }
-        }
-
-        resetItem()
-    }
-
-    @JvmStatic
     fun removeFavoriteAndSkinStar(name: Component): Component {
         if (name.siblings.isEmpty()) return name
 
@@ -758,5 +740,23 @@ object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displ
         }
 
         return copy
+    }
+
+    private fun getPetID(petName: String): String = when (petName) {
+        "Montezuma" -> "FRACTURED_MONTEZUMA_SOUL"
+        else -> petName.uppercase().replace(" ", "_")
+    }
+
+    @JvmStatic
+    fun searchForPetItemInTooltip(tooltip: MutableList<Component>) {
+        for (line in tooltip) {
+            val match = Regex("Held Item: (.*)").find(line.string) ?: continue
+
+            petItemCache = match.groupValues[1]
+            petItemRarityCache = getRarityFromComponentColor(line.siblings[1].style.color!!.value)
+            return
+        }
+
+        resetItem()
     }
 }
