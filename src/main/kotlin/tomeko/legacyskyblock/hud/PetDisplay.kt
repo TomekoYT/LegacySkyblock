@@ -20,6 +20,7 @@ import tech.thatgravyboat.skyblockapi.api.remote.api.SimpleItemAPI
 import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
 import tomeko.legacyskyblock.utils.Constants
 import tomeko.legacyskyblock.utils.HypixelPackets
+import tomeko.legacyskyblock.utils.SkyblockIslands
 import tomeko.legacyskyblock.utils.removeFormatting
 import java.util.regex.Pattern
 import kotlin.math.*
@@ -30,6 +31,7 @@ object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displ
         ClientTickEvents.END_CLIENT_TICK.register(::searchTab)
         ClientReceiveMessageEvents.GAME.register(::onChatMessage)
         ClientTickEvents.END_CLIENT_TICK.register(::scanLoadoutsMenu)
+        ClientTickEvents.END_CLIENT_TICK.register(::scanRiftMenu)
     }
 
     private const val CATEGORY_GENERAL = "General"
@@ -199,6 +201,22 @@ object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displ
     @JvmStatic
     var petXPLineCache: Component? = null
 
+
+    @Include
+    var riftPetNameCache: String? = null
+
+    @Include
+    var riftPetLevelCache: Int? = null
+
+    @Include
+    var riftPetRarityCache: String? = null
+
+    @Include
+    var riftPetItemCache: String? = null
+
+    @Include
+    var riftPetItemRarityCache: String? = null
+
     private var tickCooldown = 0
 
     private var actualWidth = 1f
@@ -221,11 +239,10 @@ object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displ
         val petItemRarity: String?
         val petXPLine: Component?
 
-        if (HudManager.isEditing &&
-            (!HypixelPackets.inSkyblock
-                    || petNameCache == null
-                    || petLevelCache == null
-                    || petRarityCache == null
+        if (HudManager.isEditing
+            && ((HypixelPackets.currentIsland == SkyblockIslands.THE_RIFT
+                    && (riftPetNameCache == null || riftPetLevelCache == null || riftPetRarityCache == null))
+                    || (!HypixelPackets.inSkyblock || petNameCache == null || petLevelCache == null || petRarityCache == null)
                     )
         ) {
             petName = "Golden Dragon"
@@ -238,6 +255,13 @@ object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displ
                 .append(Component.literal("/").withStyle(ChatFormatting.GOLD))
                 .append(Component.literal("1.9M XP ").withStyle(ChatFormatting.YELLOW))
                 .append(Component.literal("(25.2%)").withStyle(ChatFormatting.GOLD))
+        } else if (HypixelPackets.currentIsland == SkyblockIslands.THE_RIFT) {
+            petName = riftPetNameCache
+            petLevel = riftPetLevelCache
+            petRarity = riftPetRarityCache
+            petItem = riftPetItemCache
+            petItemRarity = riftPetItemRarityCache
+            petXPLine = null
         } else {
             petName = petNameCache
             petLevel = petLevelCache
@@ -529,8 +553,13 @@ object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displ
             val sibling = message.siblings[1]
 
             setTickCooldown()
-            petItemCache = sibling.string
-            petItemRarityCache = getRarityFromComponentColor(sibling.style.color!!.value)
+            if (HypixelPackets.currentIsland == SkyblockIslands.THE_RIFT) {
+                riftPetItemCache = sibling.string
+                riftPetItemRarityCache = getRarityFromComponentColor(sibling.style.color!!.value)
+            } else {
+                petItemCache = sibling.string
+                petItemRarityCache = getRarityFromComponentColor(sibling.style.color!!.value)
+            }
             return
         }
 
@@ -580,6 +609,51 @@ object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displ
         petXPLineCache = null
     }
 
+    private fun scanRiftMenu(mc: Minecraft) {
+        if (HypixelPackets.currentIsland != SkyblockIslands.THE_RIFT) return
+
+        val screen =
+        //? if >= 26.2 {
+                /*mc.gui.screen()
+                *///?} else {
+            mc.screen
+        //?}
+        if (screen !is ContainerScreen || screen.title.string != "SkyBlock Menu") return
+
+        val item = screen.menu.container.getItem(30)
+
+        val match = Regex("^\\[Lvl (\\d+)] (.*)$").find(item.hoverName.string)
+        if (match == null) {
+            riftPetNameCache = null
+            riftPetLevelCache = null
+            riftPetRarityCache = null
+            resetRiftItem()
+            return
+        }
+
+        val level = match.groupValues[1].toInt()
+        val name = match.groupValues[2]
+
+        riftPetNameCache = name
+        riftPetLevelCache = level
+        riftPetRarityCache = getRarityFromComponentColor(item.hoverName.siblings[1].style.color!!.value)
+
+        val tooltip: MutableList<Component> =
+            item.getTooltipLines(Item.TooltipContext.EMPTY, mc.player, TooltipFlag.NORMAL)
+
+        for (line in tooltip) {
+            val pattern = Pattern.compile("^Held Item: (.*)$")
+            val matcher = pattern.matcher(line.string)
+            if (matcher.find()) {
+                riftPetItemCache = matcher.group(1)
+                riftPetItemRarityCache = getRarityFromComponentColor(line.siblings[1].style.color!!.value)
+                return
+            }
+        }
+
+        resetRiftItem()
+    }
+
     @JvmStatic
     fun getRarityFromComponentColor(color: Int): String? = when (color) {
         16777215 -> "COMMON"
@@ -620,9 +694,14 @@ object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displ
         petXPLineCache = null
     }
 
-    fun resetItem() {
+    private fun resetItem() {
         petItemCache = null
         petItemRarityCache = null
+    }
+
+    private fun resetRiftItem() {
+        riftPetItemCache = null
+        riftPetItemRarityCache = null
     }
 
     private fun setPetXPFromTab(component: Component) {
