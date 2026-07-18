@@ -36,12 +36,24 @@ Modern Hypixel Skyblock mod aimed to port features from 1.8.9 mods
 - Replace left click with middle click in GUIs
 
 
+### Tooltip
+
+#### Missing Enchantments
+- Show Missing Enchantments
+- Show Non-maxed Enchantments
+
+
+#### NBT Data
+- Show item nbt data in tooltip
+- Toggle each data type separately
+
+
 ### Misc
 
 #### Hide Damage Splash
 - Hide damage splash on mobs
 - Toggle each island separately
 
-#### NBT Data
-- Show item nbt data in tooltip
-- Toggle each data type separately
+
+#### Fixes
+- Prevent Dropping Skyblock Menu
