@@ -68,6 +68,7 @@ dependencies {
 bloom {
     replacement("@MOD_NAME@", modName)
     replacement("@MOD_ID@", modId)
+    replacement("@MOD_ARCHIVES_NAME@", modArchivesName)
     replacement("@MOD_VERSION@", modVersion)
 }
 
