@@ -3,7 +3,6 @@ package tomeko.legacyskyblock.hud
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.minecraft.network.chat.Component
 import tomeko.legacyskyblock.config.LegacySkyblockConfig
-import tomeko.legacyskyblock.utils.Debug
 import tomeko.legacyskyblock.utils.HypixelPackets
 
 object ActionBar {
@@ -13,8 +12,6 @@ object ActionBar {
             if (!fromActionBar || !HypixelPackets.inSkyblock) {
                 return@ModifyGame message
             }
-
-            Debug.print(">${message.string}<")
 
             //Hide True Defense
             if (LegacySkyblockConfig.actionBarHideTrueDefense) {

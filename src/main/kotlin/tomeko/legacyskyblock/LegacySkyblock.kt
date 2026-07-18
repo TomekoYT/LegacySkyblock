@@ -17,11 +17,10 @@ class LegacySkyblock : ClientModInitializer {
         PetDisplay.register()
 
         MissingEnchants.register()
-
         ShowNBTData.register()
 
         HypixelPackets.register()
 
-        Debug.forcePrint("Initialized!")
+        Debug.forceLog("Initialized!")
     }
 }

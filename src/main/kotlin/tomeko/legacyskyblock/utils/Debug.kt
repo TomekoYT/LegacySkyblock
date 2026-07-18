@@ -8,13 +8,13 @@ object Debug {
     private val LOGGER: Logger = LoggerFactory.getLogger(Constants.MOD_ID)
 
     @JvmStatic
-    fun print(message: String) {
+    fun log(message: String) {
         if (!LegacySkyblockConfig.debugModeEnabled) return
 
-        forcePrint(message)
+        forceLog(message)
     }
 
-    fun forcePrint(message: String) {
+    fun forceLog(message: String) {
         LOGGER.info("[${Constants.MOD_NAME}] $message")
     }
 
