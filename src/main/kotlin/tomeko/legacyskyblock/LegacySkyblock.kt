@@ -4,7 +4,7 @@ import net.fabricmc.api.ClientModInitializer
 import tomeko.legacyskyblock.commands.*
 import tomeko.legacyskyblock.config.*
 import tomeko.legacyskyblock.hud.*
-import tomeko.legacyskyblock.misc.*
+import tomeko.legacyskyblock.tooltip.*
 import tomeko.legacyskyblock.utils.*
 
 class LegacySkyblock : ClientModInitializer {
@@ -15,6 +15,8 @@ class LegacySkyblock : ClientModInitializer {
 
         ActionBar.register()
         PetDisplay.register()
+
+        MissingEnchants.register()
 
         ShowNBTData.register()
 

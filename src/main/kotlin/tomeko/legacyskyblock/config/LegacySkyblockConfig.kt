@@ -2,7 +2,7 @@ package tomeko.legacyskyblock.config
 
 import org.polyfrost.oneconfig.api.config.v1.Config
 import org.polyfrost.oneconfig.api.config.v1.annotations.*
-import tomeko.legacyskyblock.misc.NBTTypes
+import tomeko.legacyskyblock.tooltip.NBTTypes
 import tomeko.legacyskyblock.utils.Constants
 import tomeko.legacyskyblock.utils.Debug
 import tomeko.legacyskyblock.utils.SkyblockIslands
@@ -96,47 +96,28 @@ object LegacySkyblockConfig : Config(
     var middleClickGUIItemsEnabled: Boolean = true
 
 
-    private const val CATEGORY_MISC: String = "Misc"
-    private const val SUBCATEGORY_HIDE_DAMAGE_SPLASH = "Hide Damage Splash"
+    private const val CATEGORY_TOOLTIP = "Tooltip"
+    private const val SUBCATEGORY_MISSING_ENCHANTMENTS = "Missing Enchantments"
 
-    @JvmStatic
-    @MultiSelectDropdown(
-        title = "Hide Damage Splash",
-        checkable = true,
-        options = [
-            "Private Island",
-            "SkyBlock Hub",
-            "Dungeon Hub",
-            "Catacombs",
-            "The Barn",
-            "The Park",
-            "Galatea",
-            "Torrhus Canyon",
-            "Safari Zone",
-            "Gold Mine",
-            "Deep Caverns",
-            "Dwarven Mines",
-            "Crystal Hollows",
-            "Spider's Den",
-            "The End",
-            "Crimson Isle",
-            "Kuudra",
-            "The Garden",
-            "The Rift",
-            "Backwater Bayou",
-            "Lotus Atoll",
-            "Jerry's Workshop"
-        ],
-        category = CATEGORY_MISC,
-        subcategory = SUBCATEGORY_HIDE_DAMAGE_SPLASH
+    @Switch(
+        title = "Show Missing Enchantments",
+        category = CATEGORY_TOOLTIP,
+        subcategory = SUBCATEGORY_MISSING_ENCHANTMENTS
     )
-    var hideDamageSplashEnabledIslands: BooleanArray = BooleanArray(SkyblockIslands.entries.size) { false }
+    var showMissingEnchantments: Boolean = true
+
+    @Switch(
+        title = "Show Non-maxed Enchantments",
+        category = CATEGORY_TOOLTIP,
+        subcategory = SUBCATEGORY_MISSING_ENCHANTMENTS
+    )
+    var showNonMaxedEnchantments: Boolean = true
 
 
     private const val SUBCATEGORY_NBT_DATA = "NBT Data"
 
     @MultiSelectDropdown(
-        title = "Show Item NBT Data in Tooltip",
+        title = "Show Item NBT Data",
         checkable = true,
         options = [
             "Ability Scroll",
@@ -249,10 +230,47 @@ object LegacySkyblockConfig : Config(
             "Year Obtained",
             "Other"
         ],
-        category = CATEGORY_MISC,
+        category = CATEGORY_TOOLTIP,
         subcategory = SUBCATEGORY_NBT_DATA
     )
     var NBTDataEnabledTypes: BooleanArray = BooleanArray(NBTTypes.entries.size) { it == NBTTypes.entries.size - 1 }
+
+
+    private const val CATEGORY_MISC: String = "Misc"
+    private const val SUBCATEGORY_HIDE_DAMAGE_SPLASH = "Hide Damage Splash"
+
+    @JvmStatic
+    @MultiSelectDropdown(
+        title = "Hide Damage Splash",
+        checkable = true,
+        options = [
+            "Private Island",
+            "SkyBlock Hub",
+            "Dungeon Hub",
+            "Catacombs",
+            "The Barn",
+            "The Park",
+            "Galatea",
+            "Torrhus Canyon",
+            "Safari Zone",
+            "Gold Mine",
+            "Deep Caverns",
+            "Dwarven Mines",
+            "Crystal Hollows",
+            "Spider's Den",
+            "The End",
+            "Crimson Isle",
+            "Kuudra",
+            "The Garden",
+            "The Rift",
+            "Backwater Bayou",
+            "Lotus Atoll",
+            "Jerry's Workshop"
+        ],
+        category = CATEGORY_MISC,
+        subcategory = SUBCATEGORY_HIDE_DAMAGE_SPLASH
+    )
+    var hideDamageSplashEnabledIslands: BooleanArray = BooleanArray(SkyblockIslands.entries.size) { false }
 
 
     private const val CATEGORY_DEBUG = "Debug"

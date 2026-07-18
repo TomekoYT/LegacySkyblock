@@ -1,8 +1,6 @@
-package tomeko.legacyskyblock.misc
+package tomeko.legacyskyblock.tooltip
 
 import com.google.gson.JsonElement
-import com.google.gson.JsonParser
-import com.google.gson.JsonSyntaxException
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
 import net.minecraft.ChatFormatting
 import net.minecraft.core.component.DataComponents
@@ -16,6 +14,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
 import tomeko.legacyskyblock.config.LegacySkyblockConfig
 import tomeko.legacyskyblock.utils.HypixelPackets
+import tomeko.legacyskyblock.utils.JsonHelper
 
 object ShowNBTData {
     fun register() {
@@ -97,14 +96,10 @@ object ShowNBTData {
                 val text = value.toString().removePrefix("'").removeSuffix("'")
 
                 if (text.startsWith("{") || text.startsWith("[")) {
-                    try {
-                        addFormattedJson(
-                            lines,
-                            key,
-                            JsonParser.parseString(text),
-                            indent
-                        )
-                    } catch (_: JsonSyntaxException) {
+                    val parsed = JsonHelper.tryParseJson(text)
+                    if (parsed != null) {
+                        addFormattedJson(lines, key, parsed, indent)
+                    } else {
                         lines.add(
                             Component.literal("$prefix$key: $text")
                                 .withStyle(ChatFormatting.DARK_GRAY)

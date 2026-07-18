@@ -1,4 +1,4 @@
-package tomeko.legacyskyblock.misc
+package tomeko.legacyskyblock.tooltip
 
 enum class NBTTypes(
     val nbtId: String,
