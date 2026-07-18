@@ -14,13 +14,14 @@ import tomeko.legacyskyblock.config.LegacySkyblockConfig
 import tomeko.legacyskyblock.utils.Constants
 import tomeko.legacyskyblock.utils.HypixelPackets
 import tomeko.legacyskyblock.utils.JsonHelper
+import tomeko.legacyskyblock.utils.SkyblockIslands
 import java.nio.file.Files
 import java.util.BitSet
 import java.util.Locale
 import kotlin.collections.iterator
 import kotlin.math.min
 
-object MissingEnchants {
+object MissingEnchantments {
     private val DATA_ROOT = FabricLoader.getInstance().configDir.resolve(Constants.MOD_ID).resolve("data")
     private val ENCHANTS_JSON_PATH = DATA_ROOT.resolve("constants/enchants.json")
     private const val ENCHANTS_JSON_URL =
@@ -69,8 +70,7 @@ object MissingEnchants {
         flag: TooltipFlag,
         tooltipLines: MutableList<Component>
     ) {
-        if (!LegacySkyblockConfig.showMissingEnchantments) return
-        if (!HypixelPackets.inSkyblock) return
+        if (!HypixelPackets.inSkyblock || HypixelPackets.currentIsland == SkyblockIslands.THE_RIFT || !LegacySkyblockConfig.showMissingEnchantments) return
 
         val expanded = Minecraft.getInstance().hasShiftDown()
 

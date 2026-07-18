@@ -16,7 +16,7 @@ class LegacySkyblock : ClientModInitializer {
         ActionBar.register()
         PetDisplay.register()
 
-        MissingEnchants.register()
+        MissingEnchantments.register()
         ShowNBTData.register()
 
         HypixelPackets.register()

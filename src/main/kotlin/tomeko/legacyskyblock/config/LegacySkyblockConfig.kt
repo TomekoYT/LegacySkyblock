@@ -14,7 +14,9 @@ object LegacySkyblockConfig : Config(
     Category.HYPIXEL
 ) {
     val DEPENDENCIES: List<Pair<String, List<String>>> = listOf(
-
+        "showMissingEnchantments" to listOf(
+            "showNonMaxedEnchantments"
+        )
     )
 
     fun register() {
