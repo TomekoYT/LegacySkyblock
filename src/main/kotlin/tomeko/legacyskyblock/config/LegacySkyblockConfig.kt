@@ -282,6 +282,17 @@ object LegacySkyblockConfig : Config(
     var hideDamageSplashEnabledIslands: BooleanArray = BooleanArray(SkyblockIslands.entries.size) { false }
 
 
+    private const val SUBCATEGORY_FIXES = "Fixes"
+
+    @JvmField
+    @Switch(
+        title = "Prevent Dropping Skyblock Menu",
+        category = CATEGORY_MISC,
+        subcategory = SUBCATEGORY_FIXES
+    )
+    var preventDroppingSkyblockMenu: Boolean = true
+
+
     private const val CATEGORY_DEBUG = "Debug"
 
     @Info(
