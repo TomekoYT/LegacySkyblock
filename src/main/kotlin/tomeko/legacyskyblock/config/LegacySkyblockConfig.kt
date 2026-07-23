@@ -124,6 +124,7 @@ object LegacySkyblockConfig : Config(
         options = [
             "Ability Scroll",
             "Additional Coins",
+            "Anvil UI Block Drop",
             "Art of War Count",
             "Attributes",
             "Auction",

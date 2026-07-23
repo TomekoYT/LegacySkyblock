@@ -6,6 +6,7 @@ enum class NBTTypes(
 ) {
     ABILITY_SCROLL("ability_scroll", "Ability Scroll"),
     ADDITIONAL_COINS("additional_coins", "Additional Coins"),
+    ANVIL_UI_BLOCK_DROP("AnvilUIBlockDrop", "Anvil UI Block Drop"),
     ART_OF_WAR_COUNT("art_of_war_count", "Art of War Count"),
     ATTRIBUTES("attributes", "Attributes"),
     AUCTION("auction", "Auction"),
