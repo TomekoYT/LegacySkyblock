@@ -66,6 +66,7 @@ object LegacySkyblockConfig : Config(
 
     @Switch(
         title = "Hide Defense",
+        description = "Hide defense from action bar while in Skyblock",
         category = CATEGORY_HUD,
         subcategory = SUBCATEGORY_ACTION_BAR
     )
@@ -73,6 +74,7 @@ object LegacySkyblockConfig : Config(
 
     @Switch(
         title = "Hide True Defense",
+        description = "Hide true defense from action bar while in Skyblock",
         category = CATEGORY_HUD,
         subcategory = SUBCATEGORY_ACTION_BAR
     )
@@ -80,6 +82,7 @@ object LegacySkyblockConfig : Config(
 
     @Switch(
         title = "Hide Florid Zombie Sword's Charges",
+        description = "Hide florid zombie sword's charges from action bar while in Skyblock",
         category = CATEGORY_HUD,
         subcategory = SUBCATEGORY_ACTION_BAR
     )
@@ -92,6 +95,7 @@ object LegacySkyblockConfig : Config(
     @JvmField
     @Switch(
         title = "Middle Click GUI Items",
+        description = "Replace left click with middle click in GUIs while in Skyblock",
         category = CATEGORY_GUI,
         subcategory = SUBCATEGORY_MIDDLE_CLICK_GUI_ITEMS
     )
@@ -103,6 +107,7 @@ object LegacySkyblockConfig : Config(
 
     @Switch(
         title = "Show Missing Enchantments",
+        description = "Show missing enchantments on items when pressing shift key while in Skyblock",
         category = CATEGORY_TOOLTIP,
         subcategory = SUBCATEGORY_MISSING_ENCHANTMENTS
     )
@@ -110,6 +115,7 @@ object LegacySkyblockConfig : Config(
 
     @Switch(
         title = "Show Non-maxed Enchantments",
+        description = "Show enchantments that can be upgraded on items when pressing shift key while in Skyblock",
         category = CATEGORY_TOOLTIP,
         subcategory = SUBCATEGORY_MISSING_ENCHANTMENTS
     )
@@ -120,6 +126,7 @@ object LegacySkyblockConfig : Config(
 
     @MultiSelectDropdown(
         title = "Show Item NBT Data",
+        description = "Show NBT data in item lore while in Skyblock",
         checkable = true,
         options = [
             "Ability Scroll",
@@ -255,6 +262,7 @@ object LegacySkyblockConfig : Config(
     @JvmStatic
     @MultiSelectDropdown(
         title = "Hide Damage Splash",
+        description = "Stop damage numbers from showing up when hitting an enemy while in Skyblock",
         checkable = true,
         options = [
             "Private Island",
@@ -291,6 +299,7 @@ object LegacySkyblockConfig : Config(
     @JvmField
     @Switch(
         title = "Prevent Dropping Skyblock Menu",
+        description = "Prevent opening Skyblock Menu when selected in hotbar and dropping an item from an open inventory",
         category = CATEGORY_MISC,
         subcategory = SUBCATEGORY_FIXES
     )
@@ -306,7 +315,7 @@ object LegacySkyblockConfig : Config(
     var debugModeInfo: Nothing? = null
 
     @Switch(
-        title = "Debug Mode Enabled",
+        title = "Debug Mode",
         category = CATEGORY_DEBUG
     )
     var debugModeEnabled: Boolean = false
