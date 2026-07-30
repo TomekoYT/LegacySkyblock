@@ -62,6 +62,11 @@ public abstract class PreventDroppingSkyblockMenuMixin {
             return;
         }
 
+        if (slotId < 0 || slotId >= localPlayer.containerMenu.slots.size()) {
+            original.call(gameMode, containerId, slotId, button, action, player);
+            return;
+        }
+
         ItemStack heldItem = localPlayer.getMainHandItem();
         ItemStack sourceItem = localPlayer.containerMenu.slots.get(slotId).getItem();
 
