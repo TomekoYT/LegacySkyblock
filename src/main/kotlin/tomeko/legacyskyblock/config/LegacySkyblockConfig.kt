@@ -8,7 +8,7 @@ import tomeko.legacyskyblock.utils.Debug
 import tomeko.legacyskyblock.utils.SkyblockIslands
 
 object LegacySkyblockConfig : Config(
-    Constants.MOD_ID + ".json",
+    "${Constants.MOD_ID}/config.json",
     Constants.MOD_ICON,
     Constants.MOD_NAME,
     Category.HYPIXEL
@@ -140,6 +140,7 @@ object LegacySkyblockConfig : Config(
             "Bid",
             "Bingo Event",
             "Bookworm Books",
+            "Boss ID",
             "Boss Tier",
             "Boosters",
             "Builder's Ruler Data",
@@ -228,6 +229,7 @@ object LegacySkyblockConfig : Config(
             "Skill Requirement",
             "Soul Durability",
             "Soulbound",
+            "Spawned For",
             "Spray",
             "Spray Item",
             "Stacking Enchantment",

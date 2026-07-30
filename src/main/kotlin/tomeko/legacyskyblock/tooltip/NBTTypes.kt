@@ -15,6 +15,7 @@ enum class NBTTypes(
     BID("bid", "Bid"),
     BINGO_EVENT("bingo_event", "Bingo Event"),
     BOOKWORM_BOOKS("bookworm_books", "Bookworm Books"),
+    BOSS_ID("bossId", "Boss ID"),
     BOSS_TIER("boss_tier", "Boss Tier"),
     BOOSTERS("boosters", "Boosters"),
     BUILDERS_RULER_DATA("builder's_ruler_data", "Builder's Ruler Data"),
@@ -103,6 +104,7 @@ enum class NBTTypes(
     SKILL_REQ("\\w+_skill_req", "Skill Requirement"),
     SOUL_DURABILITY("soul_durability", "Soul Durability"),
     SOULBOUND("soulbound", "Soulbound"),
+    SPAWNED_FOR("spawnedFor", "Spawned For"),
     SPRAY("spray", "Spray"),
     SPRAY_ITEM("spray_item", "Spray Item"),
     STACKING_ENCHANTMENT(
