@@ -18,6 +18,9 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.Locale
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 object PetIcons {
     @Volatile
@@ -42,6 +45,7 @@ object PetIcons {
     }
 
     data class PetsData(
+        var pet_types: Map<String, String>? = null,
         var pet_item_display_name_to_id: Map<String, String>? = null
     )
 
@@ -62,10 +66,50 @@ object PetIcons {
         "MYTHIC" to 5
     )
 
-    private val iconCache = HashMap<String, ItemStack?>()
+    private val iconCache = ConcurrentHashMap<String, ItemStack?>()
+
+    private const val PREFETCH_THREAD_COUNT = 8
 
     fun register() {
         JsonHelper.downloadAndCacheJson(PETS_CONSTANTS_URL, PETS_CONSTANTS_PATH)
+        prefetchAllIconsAsync()
+    }
+
+    private fun prefetchAllIconsAsync() {
+        Thread({
+            try {
+                val data = getPetsData(PETS_CONSTANTS_PATH)
+                val petIds = data.pet_types?.keys ?: emptySet()
+                val petItemIds = data.pet_item_display_name_to_id?.values?.toSet() ?: emptySet()
+
+                if (petIds.isEmpty() && petItemIds.isEmpty()) return@Thread
+
+                val executor = Executors.newFixedThreadPool(PREFETCH_THREAD_COUNT) { r ->
+                    Thread(r, "${Constants.MOD_ARCHIVES_NAME}-PetIconPrefetch-Worker").apply { isDaemon = true }
+                }
+
+                try {
+                    for (petId in petIds) {
+                        for (rarityIndex in RARITY_INDEX.values) {
+                            executor.execute { getIcon("$petId;$rarityIndex") }
+                        }
+                    }
+
+                    for (petItemId in petItemIds) {
+                        executor.execute { getIcon(petItemId) }
+                    }
+
+                    executor.shutdown()
+                    executor.awaitTermination(5, TimeUnit.MINUTES)
+                } finally {
+                    executor.shutdownNow()
+                }
+            } catch (_: Exception) {
+            }
+        }, "${Constants.MOD_ARCHIVES_NAME}-PetIconPrefetch").apply {
+            isDaemon = true
+            start()
+        }
     }
 
     fun getPetIcon(petId: String, rarity: String?): ItemStack? {
