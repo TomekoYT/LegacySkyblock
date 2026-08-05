@@ -16,6 +16,7 @@ import org.polyfrost.compose.render.PolyColor
 import org.polyfrost.oneconfig.api.config.v1.annotations.*
 import org.polyfrost.oneconfig.api.hud.v1.HudManager
 import org.polyfrost.oneconfig.api.hud.v1.LegacyHud
+import tomeko.legacyskyblock.neu.PetFetcher
 import tomeko.legacyskyblock.utils.Constants
 import tomeko.legacyskyblock.utils.HypixelPackets
 import tomeko.legacyskyblock.utils.SkyblockIslands
@@ -25,7 +26,7 @@ import kotlin.math.*
 object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Display", Category.PLAYER) {
     fun register() {
         HudManager.register(PetDisplay, Constants.MOD_ID, Constants.MOD_ICON)
-        PetIcons.register()
+        PetFetcher.register()
         ClientTickEvents.END_CLIENT_TICK.register(::searchTab)
         ClientReceiveMessageEvents.GAME.register(::onChatMessage)
         ClientTickEvents.END_CLIENT_TICK.register(::scanLoadoutsMenu)
@@ -296,13 +297,13 @@ object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displ
             textLines++
         }
 
-        fun getPetItemStack(): ItemStack? = PetIcons.getPetItemIcon(petItem, petItemRarity)
+        fun getPetItemStack(): ItemStack? = PetFetcher.getPetItemIcon(petItem, petItemRarity)
 
         val textHeight = textLines * mc.font.lineHeight + max(0, textLines - 1) * linesPadding
 
         val icon: ItemStack? =
             if (showIcon)
-                PetIcons.getPetIcon(getPetID(petName), petRarity)
+                PetFetcher.getPetIcon(getPetID(petName), petRarity)
             else if (shouldShowPetItemIcon)
                 getPetItemStack()
             else

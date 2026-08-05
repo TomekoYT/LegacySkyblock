@@ -1,4 +1,4 @@
-package tomeko.legacyskyblock.hud
+package tomeko.legacyskyblock.neu
 
 import com.google.common.collect.ImmutableMultimap
 import com.mojang.authlib.GameProfile
@@ -11,9 +11,9 @@ import net.minecraft.resources.Identifier
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.component.ResolvableProfile
+import tomeko.legacyskyblock.hud.PetDisplay
 import tomeko.legacyskyblock.utils.Constants
 import tomeko.legacyskyblock.utils.JsonHelper
-import tomeko.legacyskyblock.utils.NeuItemHelper
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.Locale
@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-object PetIcons {
+object PetFetcher {
     @Volatile
     private var cachedPetsData: PetsData? = null
 

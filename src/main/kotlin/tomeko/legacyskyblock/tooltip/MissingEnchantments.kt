@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.item.component.CustomData
 import tomeko.legacyskyblock.config.LegacySkyblockConfig
+import tomeko.legacyskyblock.neu.NeuEnchantsHelper
 import tomeko.legacyskyblock.utils.Constants
 import tomeko.legacyskyblock.utils.HypixelPackets
 import tomeko.legacyskyblock.utils.JsonHelper
@@ -330,7 +331,7 @@ object MissingEnchantments {
     private fun findMissingEnchantNames(itemType: String, currentEnchants: Set<String>): List<String> {
         if (!loadPoolsIfNeeded()) return emptyList()
 
-        val possibleEnchants = JsonHelper.getEnchants(itemType, ENCHANTS_JSON_PATH)
+        val possibleEnchants = NeuEnchantsHelper.getEnchants(itemType, ENCHANTS_JSON_PATH)
         if (possibleEnchants.isEmpty()) return emptyList()
 
         val satisfiedPools = buildSatisfiedPools(currentEnchants)
@@ -365,7 +366,7 @@ object MissingEnchantments {
 
         if (!Files.exists(ENCHANTS_JSON_PATH)) return false
 
-        val pools = JsonHelper.getEnchantPools(ENCHANTS_JSON_PATH)
+        val pools = NeuEnchantsHelper.getEnchantPools(ENCHANTS_JSON_PATH)
         if (pools.isEmpty()) return false
 
         poolIdsByEnchant.clear()
@@ -413,7 +414,7 @@ object MissingEnchantments {
         val notMaxed = mutableListOf<String>()
 
         for ((id, currentLevel) in currentEnchants) {
-            val maxLevel = JsonHelper.getMaxLevel(id, ENCHANTS_JSON_PATH)
+            val maxLevel = NeuEnchantsHelper.getMaxLevel(id, ENCHANTS_JSON_PATH)
             if (maxLevel > 0 && currentLevel < maxLevel) {
                 notMaxed.add("${toPrettyName(id)} ${toRoman(currentLevel)}→${toRoman(maxLevel)}")
             }

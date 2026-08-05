@@ -1,5 +1,6 @@
-package tomeko.legacyskyblock.utils
+package tomeko.legacyskyblock.neu
 
+import tomeko.legacyskyblock.utils.Constants
 import tomeko.legacyskyblock.utils.JsonHelper.getOrDownloadJson
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
