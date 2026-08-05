@@ -279,7 +279,7 @@ object LegacySkyblockConfig : Config(
             "The Park",
             "Galatea",
             "Torrhus Canyon",
-            "Safari Zone",
+            "Critter Safari",
             "Gold Mine",
             "Deep Caverns",
             "Dwarven Mines",
