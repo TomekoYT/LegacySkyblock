@@ -5,4 +5,6 @@ object Constants {
     const val MOD_ID = "@MOD_ID@"
     const val MOD_ARCHIVES_NAME = "@MOD_ARCHIVES_NAME@"
     const val MOD_ICON = "/assets/$MOD_ID/icon.png"
+
+    const val NEU_REPO_RAW_BASE_URL = "https://raw.githubusercontent.com/NotEnoughUpdates/NotEnoughUpdates-REPO/master/"
 }

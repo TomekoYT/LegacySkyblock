@@ -25,7 +25,7 @@ object MissingEnchantments {
     private val DATA_ROOT = FabricLoader.getInstance().configDir.resolve(Constants.MOD_ID).resolve("data")
     private val ENCHANTS_JSON_PATH = DATA_ROOT.resolve("constants/enchants.json")
     private const val ENCHANTS_JSON_URL =
-        "https://raw.githubusercontent.com/NotEnoughUpdates/NotEnoughUpdates-REPO/master/constants/enchants.json"
+        "${Constants.NEU_REPO_RAW_BASE_URL}constants/enchants.json"
 
     private const val MAX_LINE_WIDTH = 200
     private const val LIST_PREFIX = "› "

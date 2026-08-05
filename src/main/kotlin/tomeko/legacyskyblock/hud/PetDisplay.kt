@@ -16,8 +16,6 @@ import org.polyfrost.compose.render.PolyColor
 import org.polyfrost.oneconfig.api.config.v1.annotations.*
 import org.polyfrost.oneconfig.api.hud.v1.HudManager
 import org.polyfrost.oneconfig.api.hud.v1.LegacyHud
-import tech.thatgravyboat.skyblockapi.api.remote.api.SimpleItemAPI
-import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
 import tomeko.legacyskyblock.utils.Constants
 import tomeko.legacyskyblock.utils.HypixelPackets
 import tomeko.legacyskyblock.utils.SkyblockIslands
@@ -27,6 +25,7 @@ import kotlin.math.*
 object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Display", Category.PLAYER) {
     fun register() {
         HudManager.register(PetDisplay, Constants.MOD_ID, Constants.MOD_ICON)
+        PetIcons.register()
         ClientTickEvents.END_CLIENT_TICK.register(::searchTab)
         ClientReceiveMessageEvents.GAME.register(::onChatMessage)
         ClientTickEvents.END_CLIENT_TICK.register(::scanLoadoutsMenu)
@@ -297,28 +296,13 @@ object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displ
             textLines++
         }
 
-        fun getPetItemStack(): ItemStack? {
-            val itemIconID =
-                if (petItem!!.endsWith("Boost"))
-                    "PET_ITEM_${petItem.substringBefore(" ").uppercase()}_SKILL_BOOST_${petItemRarity}"
-                else
-                    petItem.uppercase().replace(" ", "_")
-
-            var itemIcon: ItemStack? = SimpleItemAPI.getItemByIdOrNull(SkyBlockId.item(itemIconID))
-            if (itemIcon == null) itemIcon = SimpleItemAPI.getPetByIdOrNull(SkyBlockId.item("PET_ITEM_$itemIconID"))
-            return itemIcon
-        }
+        fun getPetItemStack(): ItemStack? = PetIcons.getPetItemIcon(petItem, petItemRarity)
 
         val textHeight = textLines * mc.font.lineHeight + max(0, textLines - 1) * linesPadding
 
         val icon: ItemStack? =
             if (showIcon)
-                SimpleItemAPI.getPetByIdOrNull(
-                    SkyBlockId.pet(
-                        getPetID(petName),
-                        petRarity
-                    )
-                )
+                PetIcons.getPetIcon(getPetID(petName), petRarity)
             else if (shouldShowPetItemIcon)
                 getPetItemStack()
             else

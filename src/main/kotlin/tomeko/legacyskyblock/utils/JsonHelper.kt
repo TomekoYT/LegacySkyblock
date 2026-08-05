@@ -1,5 +1,6 @@
 package tomeko.legacyskyblock.utils
 
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
@@ -16,7 +17,7 @@ import java.nio.file.StandardCopyOption
 import java.time.Duration
 
 object JsonHelper {
-    private val GSON = GsonBuilder().create()
+    val GSON: Gson = GsonBuilder().create()
     private val HTTP: HttpClient by lazy { HttpClient.newHttpClient() }
 
     private val DEFAULT_TIMEOUT = Duration.ofSeconds(30)
@@ -115,5 +116,19 @@ object JsonHelper {
         } catch (_: JsonSyntaxException) {
             null
         }
+    }
+
+    fun getOrDownloadJson(url: String, target: Path): JsonElement? {
+        if (Files.exists(target)) {
+            try {
+                Files.newBufferedReader(target).use { reader ->
+                    return JsonParser.parseReader(reader)
+                }
+            } catch (_: Exception) {
+            }
+        }
+
+        val text = downloadAndCacheJson(url, target) ?: return null
+        return tryParseJson(text)
     }
 }
