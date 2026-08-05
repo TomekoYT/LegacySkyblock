@@ -2,6 +2,7 @@ package tomeko.legacyskyblock.config
 
 import org.polyfrost.oneconfig.api.config.v1.Config
 import org.polyfrost.oneconfig.api.config.v1.annotations.*
+import tomeko.legacyskyblock.dungeons.DungeonItems
 import tomeko.legacyskyblock.tooltip.NBTTypes
 import tomeko.legacyskyblock.utils.Constants
 import tomeko.legacyskyblock.utils.Debug
@@ -20,15 +21,21 @@ object LegacySkyblockConfig : Config(
     )
 
     fun register() {
-        if (!LegacySkyblockConfig::class.java.getDeclaredField("hideDamageSplashEnabledIslands")
+        if (!LegacySkyblockConfig::class.java.getDeclaredField("autoRefillEnabledItems")
                 .getAnnotation(MultiSelectDropdown::class.java).options
-                .contentEquals(SkyblockIslands.entries.map { it.islandName }.toTypedArray())
-        ) Debug.forceError("hideDamageSplashEnabled missing options")
+                .contentEquals(DungeonItems.entries.map { it.itemName }.toTypedArray())
+        ) Debug.forceError("autoRefillEnabledItems missing options")
 
         if (!LegacySkyblockConfig::class.java.getDeclaredField("NBTDataEnabledTypes")
                 .getAnnotation(MultiSelectDropdown::class.java).options
                 .contentEquals(NBTTypes.entries.map { it.nbtName }.toTypedArray())
         ) Debug.forceError("NBTDataEnabledTypes missing options")
+
+        if (!LegacySkyblockConfig::class.java.getDeclaredField("hideDamageSplashEnabledIslands")
+                .getAnnotation(MultiSelectDropdown::class.java).options
+                .contentEquals(SkyblockIslands.entries.map { it.islandName }.toTypedArray())
+        ) Debug.forceError("hideDamageSplashEnabled missing options")
+
 
         preload()
         for ((condition, dependencies) in DEPENDENCIES) {
@@ -37,11 +44,15 @@ object LegacySkyblockConfig : Config(
             }
         }
 
-        if (hideDamageSplashEnabledIslands.size != SkyblockIslands.entries.size)
-            hideDamageSplashEnabledIslands = BooleanArray(SkyblockIslands.entries.size) { false }
+
+        if (autoRefillEnabledItems.size != DungeonItems.entries.size)
+            autoRefillEnabledItems = BooleanArray(DungeonItems.entries.size) { false }
 
         if (NBTDataEnabledTypes.size != NBTTypes.entries.size)
             NBTDataEnabledTypes = BooleanArray(NBTTypes.entries.size) { it == NBTTypes.entries.size - 1 }
+
+        if (hideDamageSplashEnabledIslands.size != SkyblockIslands.entries.size)
+            hideDamageSplashEnabledIslands = BooleanArray(SkyblockIslands.entries.size) { false }
     }
 
     private const val CATEGORY_HUD: String = "HUD"
@@ -100,6 +111,26 @@ object LegacySkyblockConfig : Config(
         subcategory = SUBCATEGORY_MIDDLE_CLICK_GUI_ITEMS
     )
     var middleClickGUIItemsEnabled: Boolean = true
+
+
+    private const val CATEGORY_DUNGEONS = "Dungeons"
+    private const val SUBCATEGORY_AUTO_REFILL = "Auto Refill"
+
+    @MultiSelectDropdown(
+        title = "Auto Refill",
+        description = "Refill dungeon items when joining new dungeon instance",
+        checkable = true,
+        options = [
+            "Ender Pearl",
+            "Spirit Leap",
+            "Superboom TNT",
+            "Decoy",
+            "Inflatable Jerry"
+        ],
+        category = CATEGORY_DUNGEONS,
+        subcategory = SUBCATEGORY_AUTO_REFILL
+    )
+    var autoRefillEnabledItems: BooleanArray = BooleanArray(DungeonItems.entries.size) { false }
 
 
     private const val CATEGORY_TOOLTIP = "Tooltip"

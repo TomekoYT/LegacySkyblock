@@ -6,6 +6,8 @@ import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationPacke
 import net.minecraft.client.Minecraft
 
 object HypixelPackets {
+    var currentHypixelServerName: String? = null
+
     @JvmField
     var inSkyblock: Boolean = false
 
@@ -33,6 +35,8 @@ object HypixelPackets {
             disableAll()
             return
         }
+
+        currentHypixelServerName = packet.serverName
 
         val serverTypeName = packet.serverType.get().name
 
@@ -63,6 +67,7 @@ object HypixelPackets {
     }
 
     private fun disableServerTypes() {
+        currentHypixelServerName = null
         inSkyblock = false
     }
 
