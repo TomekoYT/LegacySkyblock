@@ -23,19 +23,393 @@ import tomeko.legacyskyblock.utils.SkyblockIslands
 import tomeko.legacyskyblock.utils.removeFormatting
 import kotlin.math.*
 
-object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Display", Category.PLAYER) {
-    fun register() {
-        HudManager.register(PetDisplay, Constants.MOD_ID, Constants.MOD_ICON)
-        PetFetcher.register()
-        ClientTickEvents.END_CLIENT_TICK.register(::searchTab)
-        ClientReceiveMessageEvents.GAME.register(::onChatMessage)
-        ClientTickEvents.END_CLIENT_TICK.register(::scanLoadoutsMenu)
-        ClientTickEvents.END_CLIENT_TICK.register(::scanRiftMenu)
+class PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Display", Category.PLAYER) {
+    companion object {
+        fun register() {
+            HudManager.register(PetDisplay(), Constants.MOD_ID, Constants.MOD_ICON)
+            PetFetcher.register()
+            ClientTickEvents.END_CLIENT_TICK.register(::searchTab)
+            ClientReceiveMessageEvents.GAME.register(::onChatMessage)
+            ClientTickEvents.END_CLIENT_TICK.register(::scanLoadoutsMenu)
+            ClientTickEvents.END_CLIENT_TICK.register(::scanRiftMenu)
+        }
+
+        private const val CATEGORY_GENERAL = "General"
+        private const val SUBCATEGORY_GENERAL = "General"
+        private const val SUBCATEGORY_PET = "Pet"
+
+        private const val CATEGORY_ICONS = "Icons"
+        private const val SUBCATEGORY_PET_ICON = "Pet Icon"
+        private const val SUBCATEGORY_PET_ITEM_ICON = "Pet Item Icon"
+
+        private const val CATEGORY_BACKGROUND = "Background"
+
+        @Include
+        var petNameCache: String? = null
+
+        @Include
+        var petLevelCache: Int? = null
+
+        @Include
+        var petRarityCache: String? = null
+
+        @Include
+        var petItemCache: String? = null
+
+        @Include
+        var petItemRarityCache: String? = null
+
+        var petXPLineCache: Component? = null
+
+
+        @Include
+        var riftPetNameCache: String? = null
+
+        @Include
+        var riftPetLevelCache: Int? = null
+
+        @Include
+        var riftPetRarityCache: String? = null
+
+        @Include
+        var riftPetItemCache: String? = null
+
+        @Include
+        var riftPetItemRarityCache: String? = null
+
+        private var tickCooldown = 0
+
+        private fun searchTab(mc: Minecraft) {
+            if (tickCooldown > 0) {
+                tickCooldown--
+                return
+            }
+
+            if (!HypixelPackets.inSkyblock) return
+
+            val connection = mc.connection ?: return
+
+            val sortedPlayers = connection.listedOnlinePlayers.sortedWith(
+                compareBy<PlayerInfo> { it.team?.name ?: "" }
+                    .thenBy { it.profile.name ?: "" }
+            )
+
+            var foundHeader = false
+            var parsedName = false
+            var parsedItemOrXp = false
+
+            for (player in sortedPlayers) {
+                var component = player.tabListDisplayName ?: Component.literal("")
+                var plainText = component.string.removeFormatting().trim()
+
+                if (!foundHeader) {
+                    if (plainText == "Pet:") {
+                        foundHeader = true
+                    }
+                    continue
+                }
+
+                if (!parsedName) {
+                    if (plainText.endsWith(" ✦")) {
+                        plainText = removeSkinStar(plainText)
+                        if (component.siblings.isNotEmpty()) {
+                            val copy: MutableComponent = component.copy()
+                            copy.siblings.removeLast()
+                            component = copy
+                        }
+                    }
+
+                    val match = Regex("^\\[Lvl (\\d+)] (.*)$").find(plainText)
+                    if (match != null) {
+                        petLevelCache = match.groupValues[1].toInt()
+                        petNameCache = match.groupValues[2]
+                        petRarityCache = getRarityFromComponentColor(component.siblings[2].style.color!!.value)
+                        parsedName = true
+                        continue
+                    } else {
+                        if (plainText == "No pet selected") resetAll()
+                        break
+                    }
+                }
+
+                if (!parsedItemOrXp) {
+                    if (isXpLine(plainText)) {
+                        setPetXPFromTab(component)
+                        resetItem()
+                        break
+                    } else {
+                        if (plainText.isEmpty() || plainText == "MAX LEVEL" || plainText.firstOrNull() == '+') {
+                            resetItem()
+                            petXPLineCache = null
+                            break
+                        }
+
+                        petItemCache = plainText
+                        petItemRarityCache = getRarityFromComponentColor(component.siblings[1].style.color!!.value)
+                        parsedItemOrXp = true
+                        continue
+                    }
+                }
+
+                if (isXpLine(plainText)) {
+                    setPetXPFromTab(component)
+                    break
+                }
+
+                petXPLineCache = null
+                break
+            }
+        }
+
+        private fun onChatMessage(message: Component, fromActionBar: Boolean) {
+            if (!HypixelPackets.inSkyblock || fromActionBar) return
+
+            val autoPetMatch = Regex(
+                "^§cAutopet §eequipped your §7\\[Lvl (\\d+)] (§.)((?:[^§]|§.)+?)(?:§d ✦)?§e! §a§lVIEW RULE$"
+            ).find(message.string)
+
+            if (autoPetMatch != null) {
+                setTickCooldown()
+                petLevelCache = autoPetMatch.groupValues[1].toInt()
+                petRarityCache = getRarityFromChatColor(autoPetMatch.groupValues[2])
+                petNameCache = autoPetMatch.groupValues[3]
+
+                resetItem()
+                petXPLineCache = null
+                return
+            }
+
+
+            val levelUpMatch = Regex(
+                "^Your\\s+(.+?)\\s+leveled up to level\\s+(\\d+)!$"
+            ).find(message.string)
+
+            if (levelUpMatch != null) {
+                val name = levelUpMatch.groupValues[1]
+                val level = levelUpMatch.groupValues[2].toInt()
+
+                if (name != petNameCache
+                    || getRarityFromComponentColor(message.siblings[1].style.color!!.value) != petRarityCache
+                    || (petLevelCache != null && level <= petLevelCache!!)
+                ) return
+
+                setTickCooldown()
+                petLevelCache = level
+                petXPLineCache = null
+                return
+            }
+
+            val holdingPetItemMatch = Regex(
+                "^Your pet is now holding (.+)\\.$"
+            ).find(message.string)
+
+            if (holdingPetItemMatch != null) {
+                val sibling = message.siblings[1]
+
+                setTickCooldown()
+                if (HypixelPackets.currentIsland == SkyblockIslands.THE_RIFT) {
+                    riftPetItemCache = sibling.string
+                    riftPetItemRarityCache = getRarityFromComponentColor(sibling.style.color!!.value)
+                } else {
+                    petItemCache = sibling.string
+                    petItemRarityCache = getRarityFromComponentColor(sibling.style.color!!.value)
+                }
+                return
+            }
+
+            val removedPetItemMatch = Regex(
+                "^You removed (.+) from your pet!$"
+            ).find(message.string)
+
+            if (removedPetItemMatch != null) {
+                setTickCooldown()
+                resetItem()
+                return
+            }
+        }
+
+        private fun scanLoadoutsMenu(mc: Minecraft) {
+            if (!HypixelPackets.inSkyblock) return
+
+            val screen =
+            //? if >= 26.2 {
+                    /*mc.gui.screen()
+                *///?} else {
+                mc.screen
+            //?}
+            if (screen !is ContainerScreen || !screen.title.string.endsWith("Loadouts")) return
+
+            val item = screen.menu.container.getItem(21)
+            val component = removeFavoriteAndSkinStar(item.hoverName)
+            val match = Regex("^\\[Lvl (\\d+)] (.*)$").find(component.string)
+
+            if (match == null) {
+                resetAll()
+                return
+            }
+
+            val level = match.groupValues[1].toInt()
+            val name = match.groupValues[2]
+
+            setTickCooldown()
+            petNameCache = name
+            petLevelCache = level
+            petRarityCache = getRarityFromComponentColor(component.siblings[1].style.color!!.value)
+
+            val tooltip: MutableList<Component> =
+                item.getTooltipLines(Item.TooltipContext.EMPTY, mc.player, TooltipFlag.NORMAL)
+
+            searchForPetItemInTooltip(tooltip)
+            petXPLineCache = null
+        }
+
+        private fun scanRiftMenu(mc: Minecraft) {
+            if (HypixelPackets.currentIsland != SkyblockIslands.THE_RIFT) return
+
+            val screen =
+            //? if >= 26.2 {
+                    /*mc.gui.screen()
+                *///?} else {
+                mc.screen
+            //?}
+            if (screen !is ContainerScreen || screen.title.string != "SkyBlock Menu") return
+
+            val item = screen.menu.container.getItem(30)
+
+            val match = Regex("^\\[Lvl (\\d+)] (.*)$").find(item.hoverName.string)
+            if (match == null) {
+                riftPetNameCache = null
+                riftPetLevelCache = null
+                riftPetRarityCache = null
+                resetRiftItem()
+                return
+            }
+
+            val level = match.groupValues[1].toInt()
+            val name = match.groupValues[2]
+
+            riftPetNameCache = name
+            riftPetLevelCache = level
+            riftPetRarityCache = getRarityFromComponentColor(item.hoverName.siblings[1].style.color!!.value)
+
+            val tooltip: MutableList<Component> =
+                item.getTooltipLines(Item.TooltipContext.EMPTY, mc.player, TooltipFlag.NORMAL)
+
+            for (line in tooltip) {
+                val match = Regex("Held Item: (.*)").find(line.string) ?: continue
+
+                riftPetItemCache = match.groupValues[1]
+                riftPetItemRarityCache = getRarityFromComponentColor(line.siblings[1].style.color!!.value)
+                return
+            }
+
+            resetRiftItem()
+        }
+
+        fun getRarityFromComponentColor(color: Int): String? = when (color) {
+            16777215 -> "COMMON"
+            5635925 -> "UNCOMMON"
+            5592575 -> "RARE"
+            11141290 -> "EPIC"
+            16755200 -> "LEGENDARY"
+            16733695 -> "MYTHIC"
+            else -> null
+        }
+
+        fun getRarityFromChatColor(color: String): String? = when (color) {
+            "§f" -> "COMMON"
+            "§a" -> "UNCOMMON"
+            "§9" -> "RARE"
+            "§5" -> "EPIC"
+            "§6" -> "LEGENDARY"
+            "§d" -> "MYTHIC"
+            else -> null
+        }
+
+        fun getChatColorFromRarity(rarity: String): String? = when (rarity) {
+            "COMMON" -> "§f"
+            "UNCOMMON" -> "§a"
+            "RARE" -> "§9"
+            "EPIC" -> "§5"
+            "LEGENDARY" -> "§6"
+            "MYTHIC" -> "§d"
+            else -> null
+        }
+
+        fun resetAll() {
+            petNameCache = null
+            petLevelCache = null
+            petRarityCache = null
+            resetItem()
+            petXPLineCache = null
+        }
+
+        private fun resetItem() {
+            petItemCache = null
+            petItemRarityCache = null
+        }
+
+        private fun resetRiftItem() {
+            riftPetItemCache = null
+            riftPetItemRarityCache = null
+        }
+
+        private fun setPetXPFromTab(component: Component) {
+            val copy: MutableComponent = component.copy()
+            copy.siblings.removeFirst()
+            petXPLineCache = copy
+        }
+
+        private fun isXpLine(text: String): Boolean {
+            return text.firstOrNull()?.isDigit() == true
+        }
+
+        private fun removeSkinStar(name: String): String {
+            if (name.endsWith(" ✦")) return name.dropLast(2)
+            return name
+        }
+
+        fun setTickCooldown() {
+            tickCooldown = 60
+        }
+
+        fun removeFavoriteAndSkinStar(name: Component): Component {
+            if (name.siblings.isEmpty()) return name
+
+            val copy = name.copy()
+
+            val first: Component = copy.siblings.first()
+            if (first.string.startsWith("⭐ ")) {
+                copy.siblings.removeFirst()
+            }
+
+            if (copy.siblings.isEmpty()) return copy
+
+            val last: Component = copy.siblings.last()
+            if (last.string.endsWith(" ✦")) {
+                copy.siblings.removeLast()
+            }
+
+            return copy
+        }
+
+        private fun getPetID(petName: String): String = when (petName) {
+            "Montezuma" -> "FRACTURED_MONTEZUMA_SOUL"
+            else -> petName.uppercase().replace(" ", "_")
+        }
+
+        fun searchForPetItemInTooltip(tooltip: MutableList<Component>) {
+            for (line in tooltip) {
+                val match = Regex("Held Item: (.*)").find(line.string) ?: continue
+
+                petItemCache = match.groupValues[1]
+                petItemRarityCache = getRarityFromComponentColor(line.siblings[1].style.color!!.value)
+                return
+            }
+
+            resetItem()
+        }
     }
-
-    private const val CATEGORY_GENERAL = "General"
-
-    private const val SUBCATEGORY_GENERAL = "General"
 
     @Switch(
         title = "Text Shadow",
@@ -61,8 +435,6 @@ object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displ
     )
     var linesPadding = 3f
 
-
-    private const val SUBCATEGORY_PET = "Pet"
 
     @Switch(
         title = "Show Pet Name",
@@ -100,10 +472,6 @@ object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displ
     var showInRift = true
 
 
-    private const val CATEGORY_ICONS = "Icons"
-
-    private const val SUBCATEGORY_PET_ICON = "Pet Icon"
-
     @Switch(
         title = "Show Pet Icon",
         category = CATEGORY_ICONS,
@@ -130,9 +498,6 @@ object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displ
         subcategory = SUBCATEGORY_PET_ICON
     )
     var iconPadding = 3f
-
-
-    private const val SUBCATEGORY_PET_ITEM_ICON = "Pet Item Icon"
 
     @Switch(
         title = "Show Pet Item Icon",
@@ -162,8 +527,6 @@ object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displ
     var itemIconPadding = 2f
 
 
-    private const val CATEGORY_BACKGROUND = "Background"
-
     @Switch(
         title = "Show Background",
         category = CATEGORY_BACKGROUND
@@ -184,46 +547,6 @@ object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displ
         step = 0.1f
     )
     var backgroundRadius = 5f
-
-
-    @JvmStatic
-    @Include
-    var petNameCache: String? = null
-
-    @JvmStatic
-    @Include
-    var petLevelCache: Int? = null
-
-    @JvmStatic
-    @Include
-    var petRarityCache: String? = null
-
-    @Include
-    var petItemCache: String? = null
-
-    @Include
-    var petItemRarityCache: String? = null
-
-    @JvmStatic
-    var petXPLineCache: Component? = null
-
-
-    @Include
-    var riftPetNameCache: String? = null
-
-    @Include
-    var riftPetLevelCache: Int? = null
-
-    @Include
-    var riftPetRarityCache: String? = null
-
-    @Include
-    var riftPetItemCache: String? = null
-
-    @Include
-    var riftPetItemRarityCache: String? = null
-
-    private var tickCooldown = 0
 
     private var actualWidth = 1f
     private var actualHeight = 1f
@@ -422,341 +745,5 @@ object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displ
             0xFFFFFFFF.toInt(),
             false
         )
-    }
-
-    private fun searchTab(mc: Minecraft) {
-        if (tickCooldown > 0) {
-            tickCooldown--
-            return
-        }
-
-        if (!HypixelPackets.inSkyblock) return
-
-        val connection = mc.connection ?: return
-
-        val sortedPlayers = connection.listedOnlinePlayers.sortedWith(
-            compareBy<PlayerInfo> { it.team?.name ?: "" }
-                .thenBy { it.profile.name ?: "" }
-        )
-
-        var foundHeader = false
-        var parsedName = false
-        var parsedItemOrXp = false
-
-        for (player in sortedPlayers) {
-            var component = player.tabListDisplayName ?: Component.literal("")
-            var plainText = component.string.removeFormatting().trim()
-
-            if (!foundHeader) {
-                if (plainText == "Pet:") {
-                    foundHeader = true
-                }
-                continue
-            }
-
-            if (!parsedName) {
-                if (plainText.endsWith(" ✦")) {
-                    plainText = removeSkinStar(plainText)
-                    if (component.siblings.isNotEmpty()) {
-                        val copy: MutableComponent = component.copy()
-                        copy.siblings.removeLast()
-                        component = copy
-                    }
-                }
-
-                val match = Regex("^\\[Lvl (\\d+)] (.*)$").find(plainText)
-                if (match != null) {
-                    petLevelCache = match.groupValues[1].toInt()
-                    petNameCache = match.groupValues[2]
-                    petRarityCache = getRarityFromComponentColor(component.siblings[2].style.color!!.value)
-                    parsedName = true
-                    continue
-                } else {
-                    if (plainText == "No pet selected") resetAll()
-                    break
-                }
-            }
-
-            if (!parsedItemOrXp) {
-                if (isXpLine(plainText)) {
-                    setPetXPFromTab(component)
-                    resetItem()
-                    break
-                } else {
-                    if (plainText.isEmpty() || plainText == "MAX LEVEL" || plainText.firstOrNull() == '+') {
-                        resetItem()
-                        petXPLineCache = null
-                        break
-                    }
-
-                    petItemCache = plainText
-                    petItemRarityCache = getRarityFromComponentColor(component.siblings[1].style.color!!.value)
-                    parsedItemOrXp = true
-                    continue
-                }
-            }
-
-            if (isXpLine(plainText)) {
-                setPetXPFromTab(component)
-                break
-            }
-
-            petXPLineCache = null
-            break
-        }
-    }
-
-    private fun onChatMessage(message: Component, fromActionBar: Boolean) {
-        if (!HypixelPackets.inSkyblock || fromActionBar) return
-
-        val autoPetMatch = Regex(
-            "^§cAutopet §eequipped your §7\\[Lvl (\\d+)] (§.)((?:[^§]|§.)+?)(?:§d ✦)?§e! §a§lVIEW RULE$"
-        ).find(message.string)
-
-        if (autoPetMatch != null) {
-            setTickCooldown()
-            petLevelCache = autoPetMatch.groupValues[1].toInt()
-            petRarityCache = getRarityFromChatColor(autoPetMatch.groupValues[2])
-            petNameCache = autoPetMatch.groupValues[3]
-
-            resetItem()
-            petXPLineCache = null
-            return
-        }
-
-
-        val levelUpMatch = Regex(
-            "^Your\\s+(.+?)\\s+leveled up to level\\s+(\\d+)!$"
-        ).find(message.string)
-
-        if (levelUpMatch != null) {
-            val name = levelUpMatch.groupValues[1]
-            val level = levelUpMatch.groupValues[2].toInt()
-
-            if (name != petNameCache
-                || getRarityFromComponentColor(message.siblings[1].style.color!!.value) != petRarityCache
-                || (petLevelCache != null && level <= petLevelCache!!)
-            ) return
-
-            setTickCooldown()
-            petLevelCache = level
-            petXPLineCache = null
-            return
-        }
-
-        val holdingPetItemMatch = Regex(
-            "^Your pet is now holding (.+)\\.$"
-        ).find(message.string)
-
-        if (holdingPetItemMatch != null) {
-            val sibling = message.siblings[1]
-
-            setTickCooldown()
-            if (HypixelPackets.currentIsland == SkyblockIslands.THE_RIFT) {
-                riftPetItemCache = sibling.string
-                riftPetItemRarityCache = getRarityFromComponentColor(sibling.style.color!!.value)
-            } else {
-                petItemCache = sibling.string
-                petItemRarityCache = getRarityFromComponentColor(sibling.style.color!!.value)
-            }
-            return
-        }
-
-        val removedPetItemMatch = Regex(
-            "^You removed (.+) from your pet!$"
-        ).find(message.string)
-
-        if (removedPetItemMatch != null) {
-            setTickCooldown()
-            resetItem()
-            return
-        }
-    }
-
-    private fun scanLoadoutsMenu(mc: Minecraft) {
-        if (!HypixelPackets.inSkyblock) return
-
-        val screen =
-        //? if >= 26.2 {
-                /*mc.gui.screen()
-                *///?} else {
-            mc.screen
-        //?}
-        if (screen !is ContainerScreen || !screen.title.string.endsWith("Loadouts")) return
-
-        val item = screen.menu.container.getItem(21)
-        val component = removeFavoriteAndSkinStar(item.hoverName)
-        val match = Regex("^\\[Lvl (\\d+)] (.*)$").find(component.string)
-
-        if (match == null) {
-            resetAll()
-            return
-        }
-
-        val level = match.groupValues[1].toInt()
-        val name = match.groupValues[2]
-
-        setTickCooldown()
-        petNameCache = name
-        petLevelCache = level
-        petRarityCache = getRarityFromComponentColor(component.siblings[1].style.color!!.value)
-
-        val tooltip: MutableList<Component> =
-            item.getTooltipLines(Item.TooltipContext.EMPTY, mc.player, TooltipFlag.NORMAL)
-
-        searchForPetItemInTooltip(tooltip)
-        petXPLineCache = null
-    }
-
-    private fun scanRiftMenu(mc: Minecraft) {
-        if (HypixelPackets.currentIsland != SkyblockIslands.THE_RIFT) return
-
-        val screen =
-        //? if >= 26.2 {
-                /*mc.gui.screen()
-                *///?} else {
-            mc.screen
-        //?}
-        if (screen !is ContainerScreen || screen.title.string != "SkyBlock Menu") return
-
-        val item = screen.menu.container.getItem(30)
-
-        val match = Regex("^\\[Lvl (\\d+)] (.*)$").find(item.hoverName.string)
-        if (match == null) {
-            riftPetNameCache = null
-            riftPetLevelCache = null
-            riftPetRarityCache = null
-            resetRiftItem()
-            return
-        }
-
-        val level = match.groupValues[1].toInt()
-        val name = match.groupValues[2]
-
-        riftPetNameCache = name
-        riftPetLevelCache = level
-        riftPetRarityCache = getRarityFromComponentColor(item.hoverName.siblings[1].style.color!!.value)
-
-        val tooltip: MutableList<Component> =
-            item.getTooltipLines(Item.TooltipContext.EMPTY, mc.player, TooltipFlag.NORMAL)
-
-        for (line in tooltip) {
-            val match = Regex("Held Item: (.*)").find(line.string) ?: continue
-
-            riftPetItemCache = match.groupValues[1]
-            riftPetItemRarityCache = getRarityFromComponentColor(line.siblings[1].style.color!!.value)
-            return
-        }
-
-        resetRiftItem()
-    }
-
-    @JvmStatic
-    fun getRarityFromComponentColor(color: Int): String? = when (color) {
-        16777215 -> "COMMON"
-        5635925 -> "UNCOMMON"
-        5592575 -> "RARE"
-        11141290 -> "EPIC"
-        16755200 -> "LEGENDARY"
-        16733695 -> "MYTHIC"
-        else -> null
-    }
-
-    fun getRarityFromChatColor(color: String): String? = when (color) {
-        "§f" -> "COMMON"
-        "§a" -> "UNCOMMON"
-        "§9" -> "RARE"
-        "§5" -> "EPIC"
-        "§6" -> "LEGENDARY"
-        "§d" -> "MYTHIC"
-        else -> null
-    }
-
-    fun getChatColorFromRarity(rarity: String): String? = when (rarity) {
-        "COMMON" -> "§f"
-        "UNCOMMON" -> "§a"
-        "RARE" -> "§9"
-        "EPIC" -> "§5"
-        "LEGENDARY" -> "§6"
-        "MYTHIC" -> "§d"
-        else -> null
-    }
-
-    @JvmStatic
-    fun resetAll() {
-        petNameCache = null
-        petLevelCache = null
-        petRarityCache = null
-        resetItem()
-        petXPLineCache = null
-    }
-
-    private fun resetItem() {
-        petItemCache = null
-        petItemRarityCache = null
-    }
-
-    private fun resetRiftItem() {
-        riftPetItemCache = null
-        riftPetItemRarityCache = null
-    }
-
-    private fun setPetXPFromTab(component: Component) {
-        val copy: MutableComponent = component.copy()
-        copy.siblings.removeFirst()
-        petXPLineCache = copy
-    }
-
-    private fun isXpLine(text: String): Boolean {
-        return text.firstOrNull()?.isDigit() == true
-    }
-
-    private fun removeSkinStar(name: String): String {
-        if (name.endsWith(" ✦")) return name.dropLast(2)
-        return name
-    }
-
-    @JvmStatic
-    fun setTickCooldown() {
-        tickCooldown = 60
-    }
-
-    @JvmStatic
-    fun removeFavoriteAndSkinStar(name: Component): Component {
-        if (name.siblings.isEmpty()) return name
-
-        val copy = name.copy()
-
-        val first: Component = copy.siblings.first()
-        if (first.string.startsWith("⭐ ")) {
-            copy.siblings.removeFirst()
-        }
-
-        if (copy.siblings.isEmpty()) return copy
-
-        val last: Component = copy.siblings.last()
-        if (last.string.endsWith(" ✦")) {
-            copy.siblings.removeLast()
-        }
-
-        return copy
-    }
-
-    private fun getPetID(petName: String): String = when (petName) {
-        "Montezuma" -> "FRACTURED_MONTEZUMA_SOUL"
-        else -> petName.uppercase().replace(" ", "_")
-    }
-
-    @JvmStatic
-    fun searchForPetItemInTooltip(tooltip: MutableList<Component>) {
-        for (line in tooltip) {
-            val match = Regex("Held Item: (.*)").find(line.string) ?: continue
-
-            petItemCache = match.groupValues[1]
-            petItemRarityCache = getRarityFromComponentColor(line.siblings[1].style.color!!.value)
-            return
-        }
-
-        resetItem()
     }
 }
