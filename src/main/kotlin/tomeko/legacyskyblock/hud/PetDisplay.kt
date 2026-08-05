@@ -92,6 +92,13 @@ object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displ
     )
     var showXP = true
 
+    @Switch(
+        title = "Show in The Rift",
+        category = CATEGORY_GENERAL,
+        subcategory = SUBCATEGORY_PET
+    )
+    var showInRift = true
+
 
     private const val CATEGORY_ICONS = "Icons"
 
@@ -240,7 +247,7 @@ object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displ
 
         if (HudManager.isEditing
             && ((HypixelPackets.currentIsland == SkyblockIslands.THE_RIFT
-                    && (riftPetNameCache == null || riftPetLevelCache == null || riftPetRarityCache == null))
+                    && (!showInRift || riftPetNameCache == null || riftPetLevelCache == null || riftPetRarityCache == null))
                     || (!HypixelPackets.inSkyblock || petNameCache == null || petLevelCache == null || petRarityCache == null)
                     )
         ) {
@@ -255,11 +262,19 @@ object PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displ
                 .append(Component.literal("1.9M XP ").withStyle(ChatFormatting.YELLOW))
                 .append(Component.literal("(25.2%)").withStyle(ChatFormatting.GOLD))
         } else if (HypixelPackets.currentIsland == SkyblockIslands.THE_RIFT) {
-            petName = riftPetNameCache
-            petLevel = riftPetLevelCache
-            petRarity = riftPetRarityCache
-            petItem = riftPetItemCache
-            petItemRarity = riftPetItemRarityCache
+            if (showInRift) {
+                petName = riftPetNameCache
+                petLevel = riftPetLevelCache
+                petRarity = riftPetRarityCache
+                petItem = riftPetItemCache
+                petItemRarity = riftPetItemRarityCache
+            } else {
+                petName = null
+                petLevel = null
+                petRarity = null
+                petItem = null
+                petItemRarity = null
+            }
             petXPLine = null
         } else {
             petName = petNameCache
