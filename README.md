@@ -11,49 +11,58 @@
 </a>
 
 # Legacy Skyblock
+
 Modern Hypixel Skyblock mod aimed to port features from 1.8.9 mods
 
 ## Features
 
-
 ### HUD
 
 #### Pet Display
+
 - Show your active pet on screen
 - Show pet item, xp, icon
 - Works with Hypixel pet widget, fallbacks to pets menu, autopet rules and new loadouts system
 
-
 #### Action Bar
+
 - Hide Defense
 - Hide True Defense
 - Hide Florid Zombie Sword's charges
 
-
 ### GUI
 
 #### Middle Click GUI Items
+
 - Replace left click with middle click in GUIs
 
+### Dungeons
+
+#### Auto Refill
+
+- Refill dungeon items when joining new dungeon instance
+- Ender Pearl, Spirit Leap, Superboom TNT, Decoy, Inflatable Jerry
 
 ### Tooltip
 
 #### Missing Enchantments
+
 - Show Missing Enchantments
 - Show Non-maxed Enchantments
 
-
 #### NBT Data
+
 - Show item nbt data in tooltip
 - Toggle each data type separately
-
 
 ### Misc
 
 #### Hide Damage Splash
+
 - Hide damage splash on mobs
 - Toggle each island separately
 
-
 #### Fixes
+
 - Prevent Dropping Skyblock Menu
+- Prevent Closing Hoppity Call with New Rabbit
