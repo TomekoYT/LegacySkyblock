@@ -344,6 +344,15 @@ object LegacySkyblockConfig : Config(
     )
     var preventDroppingSkyblockMenu: Boolean = true
 
+    @JvmField
+    @Switch(
+        title = "Prevent Closing Hoppity Call with New Rabbit",
+        description = "Prevent closing hoppity call menu if it has new unique rabbit to offer",
+        category = CATEGORY_MISC,
+        subcategory = SUBCATEGORY_FIXES
+    )
+    var preventClosingHoppityCall: Boolean = true
+
 
     private const val CATEGORY_DEBUG = "Debug"
 
