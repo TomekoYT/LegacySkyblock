@@ -310,7 +310,7 @@ object LegacySkyblockConfig : Config(
             "Catacombs",
             "The Barn",
             "The Park",
-            "Galatea",
+            "Moonglade Marsh",
             "Torrhus Canyon",
             "Critter Safari",
             "Gold Mine",

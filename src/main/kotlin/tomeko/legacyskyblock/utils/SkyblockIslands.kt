@@ -10,7 +10,7 @@ enum class SkyblockIslands(
     CATACOMBS("dungeon", "Catacombs"),
     THE_BARN("farming_1", "The Barn"),
     THE_PARK("foraging_1", "The Park"),
-    GALATEA("foraging_2", "Galatea"),
+    MOONGLADE_MARSH("foraging_2", "Moonglade Marsh"),
     TORRHUS_CANYON("foraging_3", "Torrhus Canyon"),
     CRITTER_SAFARI("safari", "Critter Safari"),
     GOLD_MINE("mining_1", "Gold Mine"),
