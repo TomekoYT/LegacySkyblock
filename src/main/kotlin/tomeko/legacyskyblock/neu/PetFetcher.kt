@@ -66,7 +66,7 @@ object PetFetcher {
         "MYTHIC" to 5
     )
 
-    private val iconCache = ConcurrentHashMap<String, ItemStack?>()
+    private val iconCache = ConcurrentHashMap<String, java.util.Optional<ItemStack>>()
 
     private const val PREFETCH_THREAD_COUNT = 8
 
@@ -129,10 +129,10 @@ object PetFetcher {
     }
 
     private fun getIcon(internalName: String): ItemStack? {
-        if (iconCache.containsKey(internalName)) return iconCache[internalName]
+        iconCache[internalName]?.let { return it.orElse(null) }
 
         val icon = buildIcon(internalName)
-        iconCache[internalName] = icon
+        iconCache[internalName] = java.util.Optional.ofNullable(icon)
         return icon
     }
 
