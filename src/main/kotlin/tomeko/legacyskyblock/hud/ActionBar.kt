@@ -15,22 +15,12 @@ object ActionBar {
 
             //Hide True Defense
             if (LegacySkyblockConfig.actionBarHideTrueDefense) {
-                message = replaceActionBar(message, "§f.*?§f. True Defense")
+                message = replaceActionBar(message, "§f\\d+.")
             }
 
             //Hide Defense
             if (LegacySkyblockConfig.actionBarHideDefense) {
-                message = replaceActionBar(message, "§a.*?§a. Defense")
-            }
-
-            //Hide Florid Zombie Sword's charges
-            if (LegacySkyblockConfig.actionBarHideFloridZombieSwordsCharges) {
-                message = replaceActionBar(message, "§e§lⓩⓩⓩⓩⓩ§6§l")
-                message = replaceActionBar(message, "§e§lⓩⓩⓩⓩ§6§lⓄ")
-                message = replaceActionBar(message, "§e§lⓩⓩⓩ§6§lⓄⓄ")
-                message = replaceActionBar(message, "§e§lⓩⓩ§6§lⓄⓄⓄ")
-                message = replaceActionBar(message, "§e§lⓩ§6§lⓄⓄⓄⓄ")
-                message = replaceActionBar(message, "§e§l§6§lⓄⓄⓄⓄⓄ")
+                message = replaceActionBar(message, "§a\\d+.")
             }
 
             return@ModifyGame message

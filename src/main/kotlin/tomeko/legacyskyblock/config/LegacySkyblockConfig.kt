@@ -91,14 +91,6 @@ object LegacySkyblockConfig : Config(
     )
     var actionBarHideTrueDefense = false
 
-    @Switch(
-        title = "Hide Florid Zombie Sword's Charges",
-        description = "Hide florid zombie sword's charges from action bar while in Skyblock",
-        category = CATEGORY_HUD,
-        subcategory = SUBCATEGORY_ACTION_BAR
-    )
-    var actionBarHideFloridZombieSwordsCharges = false
-
 
     private const val CATEGORY_GUI: String = "GUI"
     private const val SUBCATEGORY_MIDDLE_CLICK_GUI_ITEMS: String = "Middle Click GUI Items"
