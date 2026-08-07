@@ -28,7 +28,6 @@ Modern Hypixel Skyblock mod aimed to port features from 1.8.9 mods
 
 - Hide Defense
 - Hide True Defense
-- Hide Florid Zombie Sword's charges
 
 ### GUI
 
