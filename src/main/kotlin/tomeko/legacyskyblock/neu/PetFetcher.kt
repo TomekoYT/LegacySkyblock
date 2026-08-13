@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMultimap
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
 import com.mojang.authlib.properties.PropertyMap
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
@@ -72,7 +73,7 @@ object PetFetcher {
 
     fun register() {
         JsonHelper.downloadAndCacheJson(PETS_CONSTANTS_URL, PETS_CONSTANTS_PATH)
-        prefetchAllIconsAsync()
+        ClientLifecycleEvents.CLIENT_STARTED.register { prefetchAllIconsAsync() }
     }
 
     private fun prefetchAllIconsAsync() {
@@ -91,12 +92,22 @@ object PetFetcher {
                 try {
                     for (petId in petIds) {
                         for (rarityIndex in RARITY_INDEX.values) {
-                            executor.execute { getIcon("$petId;$rarityIndex") }
+                            executor.execute {
+                                try {
+                                    getIcon("$petId;$rarityIndex")
+                                } catch (_: Exception) {
+                                }
+                            }
                         }
                     }
 
                     for (petItemId in petItemIds) {
-                        executor.execute { getIcon(petItemId) }
+                        executor.execute {
+                            try {
+                                getIcon(petItemId)
+                            } catch (_: Exception) {
+                            }
+                        }
                     }
 
                     executor.shutdown()
@@ -139,23 +150,24 @@ object PetFetcher {
     private fun buildIcon(internalName: String): ItemStack? {
         val neuItem = NeuItemHelper.getNeuItem(internalName, ITEMS_ROOT) ?: return null
 
-        val texture = neuItem.skullTexture
-        if (texture != null) {
-            val builder = ImmutableMultimap.builder<String, Property>()
-            builder.put("textures", Property("textures", texture))
-            val properties = PropertyMap(builder.build())
-
-            val profile = GameProfile(UUID.randomUUID(), internalName.take(16), properties)
-
-            val stack = ItemStack(Items.PLAYER_HEAD)
-            stack.set(DataComponents.PROFILE, ResolvableProfile.createResolved(profile))
-            return stack
+        return try {
+            val texture = neuItem.skullTexture
+            if (texture != null) {
+                val builder = ImmutableMultimap.builder<String, Property>()
+                builder.put("textures", Property("textures", texture))
+                val properties = PropertyMap(builder.build())
+                val profile = GameProfile(UUID.randomUUID(), internalName.take(16), properties)
+                val stack = ItemStack(Items.PLAYER_HEAD)
+                stack.set(DataComponents.PROFILE, ResolvableProfile.createResolved(profile))
+                stack
+            } else {
+                val itemModelId = neuItem.itemModel ?: return null
+                val identifier = Identifier.tryParse(itemModelId) ?: return null
+                val item = BuiltInRegistries.ITEM.get(identifier).orElse(null) ?: return null
+                ItemStack(item)
+            }
+        } catch (_: IllegalStateException) {
+            null
         }
-
-        val itemModelId = neuItem.itemModel ?: return null
-        val identifier = Identifier.tryParse(itemModelId) ?: return null
-        val item = BuiltInRegistries.ITEM.get(identifier).orElse(null) ?: return null
-
-        return ItemStack(item)
     }
 }
