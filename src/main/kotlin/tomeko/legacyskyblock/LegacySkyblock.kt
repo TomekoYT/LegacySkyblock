@@ -7,6 +7,7 @@ import tomeko.legacyskyblock.dungeons.*
 import tomeko.legacyskyblock.hud.*
 import tomeko.legacyskyblock.tooltip.*
 import tomeko.legacyskyblock.utils.*
+import tomeko.legacyskyblock.waypoints.BeeheemothWaypoint
 
 class LegacySkyblock : ClientModInitializer {
     override fun onInitializeClient() {
@@ -23,6 +24,8 @@ class LegacySkyblock : ClientModInitializer {
         ShowNBTData.register()
 
         HypixelPackets.register()
+
+        BeeheemothWaypoint.register()
 
         Debug.forceLog("Initialized!")
     }

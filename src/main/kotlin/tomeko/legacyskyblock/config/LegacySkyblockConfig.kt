@@ -125,6 +125,18 @@ object LegacySkyblockConfig : Config(
     var autoRefillEnabledItems: BooleanArray = BooleanArray(DungeonItems.entries.size) { false }
 
 
+    private const val CATEGORY_WAYPOINTS = "Waypoints"
+    private const val SUBCATEGORY_TORRHUS_CANYON = "Torrhus Canyon"
+
+    @Switch(
+        title = "Show Beeheemoth Waypoint",
+        description = "Show waypoint for Beeheemoth position",
+        category = CATEGORY_WAYPOINTS,
+        subcategory = SUBCATEGORY_TORRHUS_CANYON
+    )
+    var showBeeheemothWaypoint = true
+
+
     private const val CATEGORY_TOOLTIP = "Tooltip"
     private const val SUBCATEGORY_MISSING_ENCHANTMENTS = "Missing Enchantments"
 
