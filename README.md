@@ -42,6 +42,12 @@ Modern Hypixel Skyblock mod aimed to port features from 1.8.9 mods
 - Refill dungeon items when joining new dungeon instance
 - Ender Pearl, Spirit Leap, Superboom TNT, Decoy, Inflatable Jerry
 
+### Waypoints
+
+#### Torrhus Canyon
+
+- Show Beeheemoth Waypoint
+
 ### Tooltip
 
 #### Missing Enchantments
