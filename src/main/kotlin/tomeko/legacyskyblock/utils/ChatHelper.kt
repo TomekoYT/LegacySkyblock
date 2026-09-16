@@ -19,9 +19,9 @@ object ChatHelper {
         ).append(message)
 
         //? if >= 26.2 {
-        /*Minecraft.getInstance().gui.hud.chat.addClientSystemMessage(component)
-        *///?} else {
-        Minecraft.getInstance().gui.chat.addClientSystemMessage(component)
+        Minecraft.getInstance().gui.hud.chat.addClientSystemMessage(component)
+        //?} else {
+        //Minecraft.getInstance().gui.chat.addClientSystemMessage(component)
         //?}
     }
 

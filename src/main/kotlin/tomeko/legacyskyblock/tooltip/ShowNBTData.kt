@@ -13,7 +13,7 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
 import tomeko.legacyskyblock.config.LegacySkyblockConfig
-import tomeko.legacyskyblock.utils.HypixelPackets
+import tomeko.legacyskyblock.location.HypixelPackets
 import tomeko.legacyskyblock.utils.JsonHelper
 
 object ShowNBTData {

@@ -6,8 +6,8 @@ import net.minecraft.client.Minecraft
 import net.minecraft.world.entity.animal.bee.Bee
 import org.polyfrost.compose.render.PolyColor
 import tomeko.legacyskyblock.config.LegacySkyblockConfig
-import tomeko.legacyskyblock.utils.HypixelPackets
-import tomeko.legacyskyblock.utils.SkyblockIslands
+import tomeko.legacyskyblock.location.HypixelPackets
+import tomeko.legacyskyblock.location.SkyblockIslands
 
 object BeeheemothWaypoint {
     private var waypoint: Waypoint? = null

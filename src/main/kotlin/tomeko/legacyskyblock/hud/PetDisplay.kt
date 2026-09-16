@@ -18,8 +18,8 @@ import org.polyfrost.oneconfig.api.hud.v1.HudManager
 import org.polyfrost.oneconfig.api.hud.v1.LegacyHud
 import tomeko.legacyskyblock.neu.PetFetcher
 import tomeko.legacyskyblock.utils.Constants
-import tomeko.legacyskyblock.utils.HypixelPackets
-import tomeko.legacyskyblock.utils.SkyblockIslands
+import tomeko.legacyskyblock.location.HypixelPackets
+import tomeko.legacyskyblock.location.SkyblockIslands
 import tomeko.legacyskyblock.utils.removeFormatting
 import kotlin.math.*
 
@@ -233,9 +233,9 @@ class PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displa
 
             val screen =
             //? if >= 26.2 {
-                    /*mc.gui.screen()
-                *///?} else {
-                mc.screen
+                    mc.gui.screen()
+                //?} else {
+                //mc.screen
             //?}
             if (screen !is ContainerScreen || !screen.title.string.endsWith("Loadouts")) return
 
@@ -268,9 +268,9 @@ class PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displa
 
             val screen =
             //? if >= 26.2 {
-                    /*mc.gui.screen()
-                *///?} else {
-                mc.screen
+                    mc.gui.screen()
+                //?} else {
+                //mc.screen
             //?}
             if (screen !is ContainerScreen || screen.title.string != "SkyBlock Menu") return
 

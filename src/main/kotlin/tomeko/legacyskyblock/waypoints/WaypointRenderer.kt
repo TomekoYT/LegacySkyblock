@@ -7,17 +7,15 @@ import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
 //? if >= 26.2 {
-/*import net.minecraft.client.renderer.OrderedSubmitNodeCollector
-*///?} else {
-import net.minecraft.client.renderer.MultiBufferSource
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector
+//?} else {
+//import net.minecraft.client.renderer.MultiBufferSource
 //?}
 import net.minecraft.client.renderer.rendertype.RenderTypes
 import net.minecraft.core.BlockPos
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.Identifier
-//? if = 26.1 {
 import org.joml.Matrix4f
-//?}
 import org.polyfrost.compose.render.PolyColor
 
 import kotlin.math.*
@@ -52,9 +50,9 @@ object WaypointRenderer {
 
         val camera =
         //? if >= 26.2 {
-        //Minecraft.getInstance().gameRenderer.mainCamera()
+        Minecraft.getInstance().gameRenderer.mainCamera()
             //?} else {
-            Minecraft.getInstance().gameRenderer.mainCamera
+            //Minecraft.getInstance().gameRenderer.mainCamera
         //?}
 
         val viewerX = camera.position().x
@@ -68,9 +66,9 @@ object WaypointRenderer {
         drawBox(
             context.poseStack(),
             //? if >= 26.2 {
-            /*context.submitNodeCollector().order(1),
-            *///?} else {
-            context.bufferSource(),
+            context.submitNodeCollector().order(1),
+            //?} else {
+            //context.bufferSource(),
             //?}
             renderX, renderY, renderZ,
             waypoint.boxColor.red / 255f,
@@ -82,9 +80,9 @@ object WaypointRenderer {
         renderBeaconBeam(
             context.poseStack(),
             //? if >= 26.2 {
-            /*context.submitNodeCollector().order(1),
-            *///?} else {
-            context.bufferSource(),
+            context.submitNodeCollector().order(1),
+            //?} else {
+            //context.bufferSource(),
             //?}
             renderX, renderY + 1, renderZ,
             waypoint.beamColor.red / 255f,
@@ -103,9 +101,9 @@ object WaypointRenderer {
         renderWaypointText(
             context.poseStack(),
             //? if >= 26.2 {
-            /*context.submitNodeCollector().order(1),
-            *///?} else {
-            context.bufferSource(),
+            context.submitNodeCollector().order(1),
+            //?} else {
+            //context.bufferSource(),
             //?}
             waypoint.text, waypoint.owner, waypoint.pos,
             waypoint.renderText, waypoint.renderOwner, waypoint.renderDistance,
@@ -117,9 +115,9 @@ object WaypointRenderer {
     private fun drawBox(
         matrices: PoseStack,
         //? if >= 26.2 {
-        /*collector: OrderedSubmitNodeCollector,
-        *///?} else {
-        consumers: MultiBufferSource,
+        collector: OrderedSubmitNodeCollector,
+        //?} else {
+        //consumers: MultiBufferSource,
         //?}
         x: Double, y: Double, z: Double,
         r: Float, g: Float, b: Float, a: Float
@@ -128,11 +126,11 @@ object WaypointRenderer {
         matrices.translate(x, y, z)
 
         //? if >= 26.2 {
-        /*collector.submitCustomGeometry(matrices, RenderTypes.debugFilledBox()) { pose, buffer ->
-            *///?} else {
-        val buffer = consumers.getBuffer(RenderTypes.debugFilledBox())
+        collector.submitCustomGeometry(matrices, RenderTypes.debugFilledBox()) { pose, buffer ->
+            //?} else {
+        /*val buffer = consumers.getBuffer(RenderTypes.debugFilledBox())
         val pose = matrices.last().pose()
-        //?}
+        *///?}
 
         addDoubleSidedQuad(
             buffer, pose, 0f, 0f, 0f, 1f, 0f, 0f, 1f, 0f, 1f, 0f, 0f, 1f, r, g, b, a
@@ -154,17 +152,17 @@ object WaypointRenderer {
         )
 
         //? if >= 26.2 {
-        /*}
-        *///?}
+        }
+        //?}
         matrices.popPose()
     }
 
     private fun addDoubleSidedQuad(
         buffer: VertexConsumer,
         //? if >= 26.2 {
-        /*pose: PoseStack.Pose,
-        *///?} else {
-        pose: Matrix4f,
+        pose: PoseStack.Pose,
+        //?} else {
+        //pose: Matrix4f,
         //?}
         x1: Float, y1: Float, z1: Float,
         x2: Float, y2: Float, z2: Float,
@@ -173,9 +171,9 @@ object WaypointRenderer {
         r: Float, g: Float, b: Float, a: Float
     ) {
         //? if >= 26.2 {
-        /*val p = pose.pose()
-        *///?} else {
-        val p = pose
+        val p = pose.pose()
+        //?} else {
+        //val p = pose
         //?}
 
         buffer.addVertex(p, x1, y1, z1).setColor(r, g, b, a)
@@ -192,9 +190,9 @@ object WaypointRenderer {
     private fun renderBeaconBeam(
         matrices: PoseStack,
         //? if >= 26.2 {
-        /*collector: OrderedSubmitNodeCollector,
-        *///?} else {
-        consumers: MultiBufferSource,
+        collector: OrderedSubmitNodeCollector,
+        //?} else {
+        //consumers: MultiBufferSource,
         //?}
         x: Double, y: Double, z: Double,
         r: Float, g: Float, b: Float, a: Float
@@ -222,11 +220,11 @@ object WaypointRenderer {
         matrices.pushPose()
         matrices.translate(x, y, z)
         //? if >= 26.2 {
-        /*collector.submitCustomGeometry(matrices, RenderTypes.beaconBeam(BEAM_TEXTURE, true)) { pose, buffer ->
-            *///?} else {
-        val pose = matrices.last()
+        collector.submitCustomGeometry(matrices, RenderTypes.beaconBeam(BEAM_TEXTURE, true)) { pose, buffer ->
+            //?} else {
+        /*val pose = matrices.last()
         val buffer = consumers.getBuffer(RenderTypes.beaconBeam(BEAM_TEXTURE, true))
-        //?}
+        *///?}
 
         val yMin = 0.0f
         val yMax = 300.0f
@@ -261,8 +259,8 @@ object WaypointRenderer {
         )
 
         //? if >= 26.2 {
-        /*}
-        *///?}
+        }
+        //?}
         matrices.popPose()
     }
 
@@ -277,34 +275,34 @@ object WaypointRenderer {
         v1: Float, v2: Float
     ) {
         //? if >= 26.2 {
-        /*val p = pose.pose()
-        *///?} else {
-        val p = pose
+        val p = pose.pose()
+        //?} else {
+        //val p = pose
         //?}
         buffer.addVertex(p, x1, yMax, z1).setColor(r, g, b, topA).setUv(u1, v2).setUv2(15, 15)
             //? if >= 26.2 {
-            /*.setNormal(pose, 0.0f, 1.0f, 0.0f)*///?} else {
-            .setNormal(0.0f, 1.0f, 0.0f)//?}
+            .setNormal(pose, 0.0f, 1.0f, 0.0f)//?} else {
+            /*.setNormal(0.0f, 1.0f, 0.0f)*///?}
         buffer.addVertex(p, x1, yMin, z1).setColor(r, g, b, botA).setUv(u1, v1).setUv2(15, 15)
             //? if >= 26.2 {
-            /*.setNormal(pose, 0.0f, 1.0f, 0.0f)*///?} else {
-            .setNormal(0.0f, 1.0f, 0.0f)//?}
+            .setNormal(pose, 0.0f, 1.0f, 0.0f)//?} else {
+            /*.setNormal(0.0f, 1.0f, 0.0f)*///?}
         buffer.addVertex(p, x2, yMin, z2).setColor(r, g, b, botA).setUv(u2, v1).setUv2(15, 15)
             //? if >= 26.2 {
-            /*.setNormal(pose, 0.0f, 1.0f, 0.0f)*///?} else {
-            .setNormal(0.0f, 1.0f, 0.0f)//?}
+            .setNormal(pose, 0.0f, 1.0f, 0.0f)//?} else {
+            /*.setNormal(0.0f, 1.0f, 0.0f)*///?}
         buffer.addVertex(p, x2, yMax, z2).setColor(r, g, b, topA).setUv(u2, v2).setUv2(15, 15)
             //? if >= 26.2 {
-            /*.setNormal(pose, 0.0f, 1.0f, 0.0f)*///?} else {
-            .setNormal(0.0f, 1.0f, 0.0f)//?}
+            .setNormal(pose, 0.0f, 1.0f, 0.0f)//?} else {
+            /*.setNormal(0.0f, 1.0f, 0.0f)*///?}
     }
 
     private fun renderWaypointText(
         matrices: PoseStack,
         //? if >= 26.2 {
-        /*collector: OrderedSubmitNodeCollector,
-        *///?} else {
-        consumers: MultiBufferSource,
+        collector: OrderedSubmitNodeCollector,
+        //?} else {
+        //consumers: MultiBufferSource,
         //?}
         str: String, owner: String, loc: BlockPos,
         renderText: Boolean, renderOwner: Boolean, renderDistance: Boolean,
@@ -329,15 +327,15 @@ object WaypointRenderer {
 
         val camera =
         //? if >= 26.2 {
-                /*Minecraft.getInstance().gameRenderer.mainCamera()
-            *///?} else {
-            Minecraft.getInstance().gameRenderer.mainCamera
+                Minecraft.getInstance().gameRenderer.mainCamera()
+            //?} else {
+            //Minecraft.getInstance().gameRenderer.mainCamera
         //?}
 
         matrices.pushPose()
         matrices.translate(dx, dy, dz)
-        matrices.mulPose(Axis.YP.rotationDegrees(-camera.yRot()))
-        matrices.mulPose(Axis.XP.rotationDegrees(camera.xRot()))
+        matrices.mulPose(Axis.YP.rotationDegrees(-camera.yRot()).get(Matrix4f()))
+        matrices.mulPose(Axis.XP.rotationDegrees(camera.xRot()).get(Matrix4f()))
 
         val scale = 0.025f * scaleMultiplier
         matrices.scale(-scale, -scale, scale)
@@ -349,9 +347,9 @@ object WaypointRenderer {
                 owner, ownerArgb, lineOffset, scaleMultiplier,
                 matrices,
                 //? if >= 26.2 {
-                /*collector
-                *///?} else {
-                consumers
+                collector
+                //?} else {
+                //consumers
                 //?}
             )
 
@@ -363,9 +361,9 @@ object WaypointRenderer {
                 str, textArgb, lineOffset, scaleMultiplier,
                 matrices,
                 //? if >= 26.2 {
-                /*collector
-                *///?} else {
-                consumers
+                collector
+                //?} else {
+                //consumers
                 //?}
             )
 
@@ -377,9 +375,9 @@ object WaypointRenderer {
                 distText, distArgb, lineOffset, scaleMultiplier,
                 matrices,
                 //? if >= 26.2 {
-                /*collector
-                *///?} else {
-                consumers
+                collector
+                //?} else {
+                //consumers
                 //?}
             )
         }
@@ -394,16 +392,16 @@ object WaypointRenderer {
         scaleMultiplier: Float,
         matrices: PoseStack,
         //? if >= 26.2 {
-        /*collector: OrderedSubmitNodeCollector
-        *///?} else {
-        consumers: MultiBufferSource
+        collector: OrderedSubmitNodeCollector
+        //?} else {
+        //consumers: MultiBufferSource
         //?}
     ) {
         val width = -Minecraft.getInstance().font.width(text) / 2f
         val background = (Minecraft.getInstance().options.textBackgroundOpacity().get() * 255.0).toInt() shl 24
 
         //? if >= 26.2 {
-        /*collector.submitText(
+        collector.submitText(
             matrices,
             width,
             line.toFloat(),
@@ -415,8 +413,8 @@ object WaypointRenderer {
             background,
             0
         )
-        *///?} else {
-        Minecraft.getInstance().font.drawInBatch(
+        //?} else {
+        /*Minecraft.getInstance().font.drawInBatch(
             Component.literal(text),
             width,
             line.toFloat(),
@@ -428,6 +426,6 @@ object WaypointRenderer {
             background,
             15728880
         )
-        //?}
+        *///?}
     }
 }

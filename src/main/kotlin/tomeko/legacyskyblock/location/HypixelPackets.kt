@@ -1,33 +1,22 @@
-package tomeko.legacyskyblock.utils
+package tomeko.legacyskyblock.location
 
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.hypixel.modapi.HypixelModAPI
 import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationPacket
-import net.minecraft.client.Minecraft
+import tomeko.legacyskyblock.utils.Debug
 
 object HypixelPackets {
-    var currentHypixelServerName: String? = null
-
-    @JvmField
     var inSkyblock: Boolean = false
-
-    @JvmStatic
+        private set
     var currentIsland: SkyblockIslands? = null
+        private set
+    var currentHypixelServerName: String? = null
+        private set
 
     fun register() {
-        ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick { mc: Minecraft -> checkHypixel(mc) })
-        HypixelModAPI.getInstance()
-            .createHandler(ClientboundLocationPacket::class.java) { packet: ClientboundLocationPacket ->
-                onLocationPacket(packet)
-            }
+        ClientPlayConnectionEvents.DISCONNECT.register { _, _ -> disableAll() }
+        HypixelModAPI.getInstance().createHandler(ClientboundLocationPacket::class.java, ::onLocationPacket)
         HypixelModAPI.getInstance().subscribeToEventPacket(ClientboundLocationPacket::class.java)
-    }
-
-    private fun checkHypixel(mc: Minecraft) {
-        val server = mc.currentServer
-        if (server == null || !server.ip.contains("hypixel")) {
-            disableAll()
-        }
     }
 
     private fun onLocationPacket(packet: ClientboundLocationPacket) {
@@ -67,8 +56,8 @@ object HypixelPackets {
     }
 
     private fun disableServerTypes() {
-        currentHypixelServerName = null
         inSkyblock = false
+        currentHypixelServerName = null
     }
 
     private fun disableModes() {

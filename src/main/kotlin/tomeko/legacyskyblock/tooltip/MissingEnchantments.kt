@@ -13,9 +13,9 @@ import net.minecraft.world.item.component.CustomData
 import tomeko.legacyskyblock.config.LegacySkyblockConfig
 import tomeko.legacyskyblock.neu.NeuEnchantsHelper
 import tomeko.legacyskyblock.utils.Constants
-import tomeko.legacyskyblock.utils.HypixelPackets
+import tomeko.legacyskyblock.location.HypixelPackets
 import tomeko.legacyskyblock.utils.JsonHelper
-import tomeko.legacyskyblock.utils.SkyblockIslands
+import tomeko.legacyskyblock.location.SkyblockIslands
 import java.nio.file.Files
 import java.util.BitSet
 import java.util.Locale

@@ -3,7 +3,7 @@ package tomeko.legacyskyblock.hud
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.minecraft.network.chat.Component
 import tomeko.legacyskyblock.config.LegacySkyblockConfig
-import tomeko.legacyskyblock.utils.HypixelPackets
+import tomeko.legacyskyblock.location.HypixelPackets
 
 object ActionBar {
     fun register() {

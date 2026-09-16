@@ -1,5 +1,6 @@
 package tomeko.legacyskyblock.mixins;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -8,12 +9,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
-import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tomeko.legacyskyblock.config.LegacySkyblockConfig;
+import tomeko.legacyskyblock.location.HypixelPackets;
 import tomeko.legacyskyblock.utils.ChatHelper;
 
 import java.util.List;
@@ -26,8 +27,9 @@ public abstract class PreventClosingHoppityCallMixin {
     private void legacyskyblock$preventClosingHoppityCall(KeyEvent keyEvent, CallbackInfoReturnable<Boolean> cir) {
         AbstractContainerScreen<?> instance = (AbstractContainerScreen<?>) (Object) this;
 
-        if (!LegacySkyblockConfig.preventClosingHoppityCall
-                || keyEvent.key() != GLFW.GLFW_KEY_ESCAPE
+        if (!HypixelPackets.INSTANCE.getInSkyblock()
+                || !LegacySkyblockConfig.preventClosingHoppityCall
+                || keyEvent.key() != InputConstants.KEY_ESCAPE
                 || !(instance.getMenu() instanceof ChestMenu chestMenu)
                 || !instance.getTitle().getString().equals("Hoppity")
                 || 49 >= chestMenu.slots.size()

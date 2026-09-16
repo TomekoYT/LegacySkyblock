@@ -6,10 +6,10 @@ import tomeko.legacyskyblock.dungeons.DungeonItems
 import tomeko.legacyskyblock.tooltip.NBTTypes
 import tomeko.legacyskyblock.utils.Constants
 import tomeko.legacyskyblock.utils.Debug
-import tomeko.legacyskyblock.utils.SkyblockIslands
+import tomeko.legacyskyblock.location.SkyblockIslands
 
 object LegacySkyblockConfig : Config(
-    "${Constants.MOD_ID}/config.json",
+    "${Constants.MOD_ID}.json",
     Constants.MOD_ICON,
     Constants.MOD_NAME,
     Category.HYPIXEL

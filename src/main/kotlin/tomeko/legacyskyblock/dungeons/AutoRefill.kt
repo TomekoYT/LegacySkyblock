@@ -3,8 +3,8 @@ package tomeko.legacyskyblock.dungeons
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.client.Minecraft
 import tomeko.legacyskyblock.config.LegacySkyblockConfig
-import tomeko.legacyskyblock.utils.HypixelPackets
-import tomeko.legacyskyblock.utils.SkyblockIslands
+import tomeko.legacyskyblock.location.HypixelPackets
+import tomeko.legacyskyblock.location.SkyblockIslands
 import java.util.LinkedList
 import java.util.Queue
 

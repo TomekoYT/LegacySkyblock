@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import tomeko.legacyskyblock.config.LegacySkyblockConfig;
-import tomeko.legacyskyblock.utils.HypixelPackets;
+import tomeko.legacyskyblock.location.HypixelPackets;
 
 @Mixin(AbstractContainerScreen.class)
 public abstract class PreventDroppingSkyblockMenuMixin {
@@ -22,12 +22,10 @@ public abstract class PreventDroppingSkyblockMenuMixin {
     private static int pendingOriginalSlot = -1;
 
     @WrapOperation(
-            method = "slotClicked",
+            method = "slotClicked(Lnet/minecraft/world/inventory/Slot;IILnet/minecraft/world/inventory/ContainerInput;)V",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;" +
-                            "handleContainerInput(IIILnet/minecraft/world/inventory/ContainerInput;" +
-                            "Lnet/minecraft/world/entity/player/Player;)V"
+                    target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;handleContainerInput(IIILnet/minecraft/world/inventory/ContainerInput;Lnet/minecraft/world/entity/player/Player;)V"
             )
     )
     private void legacyskyblock$preventDrop(
@@ -40,7 +38,7 @@ public abstract class PreventDroppingSkyblockMenuMixin {
             Operation<Void> original
     ) {
         if (action != ContainerInput.THROW
-                || !HypixelPackets.inSkyblock
+                || !HypixelPackets.INSTANCE.getInSkyblock()
                 || !LegacySkyblockConfig.preventDroppingSkyblockMenu
                 || !(player instanceof LocalPlayer localPlayer)) {
 

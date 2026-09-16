@@ -4,6 +4,10 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+//? if >= 26.3 {
+/*import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
+*///?}
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.ContainerInput;
@@ -13,7 +17,7 @@ import net.minecraft.world.item.TooltipFlag;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import tomeko.legacyskyblock.config.LegacySkyblockConfig;
-import tomeko.legacyskyblock.utils.HypixelPackets;
+import tomeko.legacyskyblock.location.HypixelPackets;
 
 import java.util.List;
 
@@ -28,19 +32,44 @@ public abstract class MiddleClickGUIItemsMixin {
             method = "mouseClicked",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;slotClicked(Lnet/minecraft/world/inventory/Slot;IILnet/minecraft/world/inventory/ContainerInput;)V"
+                    target = //? if >= 26.3 {
+                            //"Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;slotClicked(Lnet/minecraft/world/inventory/Slot;ILnet/minecraft/client/input/MouseButtonEvent;Lnet/minecraft/world/inventory/ContainerInput;)V"
+                            //?} else {
+                            "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;slotClicked(Lnet/minecraft/world/inventory/Slot;IILnet/minecraft/world/inventory/ContainerInput;)V"
+                    //?}
             )
     )
     private void legacyskyblock$useMiddleClick(
             AbstractContainerScreen instance,
             Slot slot,
             int slotId,
+            //? if >= 26.3 {
+            //MouseButtonEvent event,
+            //?} else {
             int buttonNum,
+            //?}
             ContainerInput containerInput,
             Operation<Void> original
     ) {
+        //? if >= 26.3 {
+        /*int buttonNum = switch (event.button()) {
+            case 1 -> 0;
+            case 3 -> 1;
+            default -> event.button();
+        };
+        *///?}
         if (legacyskyblock$shouldCallOriginal(instance, slot, buttonNum, containerInput)) {
-            original.call(instance, slot, slotId, buttonNum, containerInput);
+            original.call(
+                    instance,
+                    slot,
+                    slotId,
+                    //? if >= 26.3 {
+                    //event,
+                    //?} else {
+                    buttonNum,
+                    //?}
+                    containerInput
+            );
             return;
         }
 
@@ -48,7 +77,11 @@ public abstract class MiddleClickGUIItemsMixin {
                 instance,
                 slot,
                 slotId,
+                //? if >= 26.3 {
+                //new MouseButtonEvent(event.x(), event.y(), new MouseButtonInfo(2, event.modifiers())),
+                //?} else {
                 2,
+                //?}
                 ContainerInput.CLONE
         );
     }
@@ -64,7 +97,7 @@ public abstract class MiddleClickGUIItemsMixin {
                         || containerInput != ContainerInput.PICKUP
                         || !LegacySkyblockConfig.middleClickGUIItemsEnabled
                         || !(instance.getMenu() instanceof ChestMenu)
-                        || !HypixelPackets.inSkyblock
+                        || !HypixelPackets.INSTANCE.getInSkyblock()
                         || slot == null
         ) return true;
 

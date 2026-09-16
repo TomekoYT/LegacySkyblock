@@ -1,4 +1,4 @@
-package tomeko.legacyskyblock.utils
+package tomeko.legacyskyblock.location
 
 enum class SkyblockIslands(
     val islandId: String,

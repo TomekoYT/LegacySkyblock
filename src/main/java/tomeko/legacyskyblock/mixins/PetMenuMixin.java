@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tomeko.legacyskyblock.hud.PetDisplay;
-import tomeko.legacyskyblock.utils.HypixelPackets;
+import tomeko.legacyskyblock.location.HypixelPackets;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -24,7 +24,7 @@ public abstract class PetMenuMixin {
     @Inject(method = "slotClicked", at = @At("HEAD"))
     private void legacyskyblock$detectClickOnPet(Slot slot, int slotId, int buttonNum, ContainerInput containerInput, CallbackInfo ci) {
         AbstractContainerScreen<?> instance = (AbstractContainerScreen<?>) (Object) this;
-        if (!HypixelPackets.inSkyblock
+        if (!HypixelPackets.INSTANCE.getInSkyblock()
                 || !(instance.getMenu() instanceof ChestMenu)
                 || !instance.getTitle().getString().endsWith("Pets")
         ) return;

@@ -5,6 +5,7 @@ import tomeko.legacyskyblock.commands.*
 import tomeko.legacyskyblock.config.*
 import tomeko.legacyskyblock.dungeons.*
 import tomeko.legacyskyblock.hud.*
+import tomeko.legacyskyblock.location.HypixelPackets
 import tomeko.legacyskyblock.tooltip.*
 import tomeko.legacyskyblock.utils.*
 import tomeko.legacyskyblock.waypoints.BeeheemothWaypoint
