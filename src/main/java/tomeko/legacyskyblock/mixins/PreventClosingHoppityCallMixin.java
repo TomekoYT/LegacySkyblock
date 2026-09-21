@@ -28,7 +28,7 @@ public abstract class PreventClosingHoppityCallMixin {
         AbstractContainerScreen<?> instance = (AbstractContainerScreen<?>) (Object) this;
 
         if (!HypixelPackets.INSTANCE.getInSkyblock()
-                || !LegacySkyblockConfig.preventClosingHoppityCall
+                || !LegacySkyblockConfig.INSTANCE.getPreventClosingHoppityCall()
                 || keyEvent.key() != InputConstants.KEY_ESCAPE
                 || !(instance.getMenu() instanceof ChestMenu chestMenu)
                 || !instance.getTitle().getString().equals("Hoppity")

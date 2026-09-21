@@ -21,7 +21,7 @@ public abstract class HideDamageSplashMixin<T extends Entity, S extends EntityRe
             CallbackInfoReturnable<Component> cir
     ) {
         if (HypixelPackets.INSTANCE.getCurrentIsland() == null
-                || !LegacySkyblockConfig.getHideDamageSplashEnabledIslands()[HypixelPackets.INSTANCE.getCurrentIsland().ordinal()]
+                || !LegacySkyblockConfig.INSTANCE.getHideDamageSplashEnabledIslands()[HypixelPackets.INSTANCE.getCurrentIsland().ordinal()]
                 || !(entity instanceof ArmorStand armorStand)
         ) return;
 

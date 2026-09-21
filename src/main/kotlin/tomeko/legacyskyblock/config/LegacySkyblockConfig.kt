@@ -95,7 +95,6 @@ object LegacySkyblockConfig : Config(
     private const val CATEGORY_GUI: String = "GUI"
     private const val SUBCATEGORY_MIDDLE_CLICK_GUI_ITEMS: String = "Middle Click GUI Items"
 
-    @JvmField
     @Switch(
         title = "Middle Click GUI Items",
         description = "Replace left click with middle click in GUIs while in Skyblock",
@@ -311,7 +310,6 @@ object LegacySkyblockConfig : Config(
     private const val CATEGORY_MISC: String = "Misc"
     private const val SUBCATEGORY_HIDE_DAMAGE_SPLASH = "Hide Damage Splash"
 
-    @JvmStatic
     @MultiSelectDropdown(
         title = "Hide Damage Splash",
         description = "Stop damage numbers from showing up when hitting an enemy while in Skyblock",
@@ -348,16 +346,14 @@ object LegacySkyblockConfig : Config(
 
     private const val SUBCATEGORY_FIXES = "Fixes"
 
-    @JvmField
     @Switch(
-        title = "Prevent Dropping Skyblock Menu",
-        description = "Prevent opening Skyblock Menu when selected in hotbar and dropping an item from an open inventory",
+        title = "[TEMPORARY REMOVED] Prevent Dropping Skyblock Menu",
+        description = "[TEMPORARY REMOVED] Prevent opening Skyblock Menu when selected in hotbar and dropping an item from an open inventory",
         category = CATEGORY_MISC,
         subcategory = SUBCATEGORY_FIXES
     )
-    var preventDroppingSkyblockMenu: Boolean = true
+    var preventDroppingSkyblockMenu: Boolean = false
 
-    @JvmField
     @Switch(
         title = "Prevent Closing Hoppity Call with New Rabbit",
         description = "Prevent closing hoppity call menu if it has new unique rabbit to offer",
