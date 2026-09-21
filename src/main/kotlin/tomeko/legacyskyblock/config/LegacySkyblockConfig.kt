@@ -347,12 +347,12 @@ object LegacySkyblockConfig : Config(
     private const val SUBCATEGORY_FIXES = "Fixes"
 
     @Switch(
-        title = "[TEMPORARY REMOVED] Prevent Dropping Skyblock Menu",
-        description = "[TEMPORARY REMOVED] Prevent opening Skyblock Menu when selected in hotbar and dropping an item from an open inventory",
+        title = "Prevent Dropping Skyblock Menu",
+        description = "Prevent opening Skyblock Menu when selected in hotbar and dropping an item from an open inventory. This intentionally switches your selected hotbar slot to 1 before opening an inventory",
         category = CATEGORY_MISC,
         subcategory = SUBCATEGORY_FIXES
     )
-    var preventDroppingSkyblockMenu: Boolean = false
+    var preventDroppingSkyblockMenuEnabled = false
 
     @Switch(
         title = "Prevent Closing Hoppity Call with New Rabbit",
@@ -360,7 +360,7 @@ object LegacySkyblockConfig : Config(
         category = CATEGORY_MISC,
         subcategory = SUBCATEGORY_FIXES
     )
-    var preventClosingHoppityCall: Boolean = true
+    var preventClosingHoppityCall = true
 
 
     private const val CATEGORY_DEBUG = "Debug"
@@ -375,5 +375,5 @@ object LegacySkyblockConfig : Config(
         title = "Debug Mode",
         category = CATEGORY_DEBUG
     )
-    var debugModeEnabled: Boolean = false
+    var debugModeEnabled = false
 }

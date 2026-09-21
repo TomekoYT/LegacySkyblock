@@ -6,6 +6,7 @@ import tomeko.legacyskyblock.config.*
 import tomeko.legacyskyblock.dungeons.*
 import tomeko.legacyskyblock.hud.*
 import tomeko.legacyskyblock.location.HypixelPackets
+import tomeko.legacyskyblock.misc.PreventDroppingSkyblockMenu
 import tomeko.legacyskyblock.tooltip.*
 import tomeko.legacyskyblock.utils.*
 import tomeko.legacyskyblock.waypoints.BeeheemothWaypoint
@@ -21,10 +22,12 @@ class LegacySkyblock : ClientModInitializer {
         ActionBar.register()
         PetDisplay.register()
 
+        HypixelPackets.register()
+
+        PreventDroppingSkyblockMenu.register()
+
         MissingEnchantments.register()
         ShowNBTData.register()
-
-        HypixelPackets.register()
 
         BeeheemothWaypoint.register()
 
