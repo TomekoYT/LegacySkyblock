@@ -5,11 +5,11 @@ import tomeko.legacyskyblock.commands.*
 import tomeko.legacyskyblock.config.*
 import tomeko.legacyskyblock.dungeons.*
 import tomeko.legacyskyblock.hud.*
-import tomeko.legacyskyblock.location.HypixelPackets
-import tomeko.legacyskyblock.misc.PreventDroppingSkyblockMenu
+import tomeko.legacyskyblock.location.*
+import tomeko.legacyskyblock.misc.*
 import tomeko.legacyskyblock.tooltip.*
 import tomeko.legacyskyblock.utils.*
-import tomeko.legacyskyblock.waypoints.BeeheemothWaypoint
+import tomeko.legacyskyblock.waypoints.*
 
 class LegacySkyblock : ClientModInitializer {
     override fun onInitializeClient() {
@@ -31,6 +31,6 @@ class LegacySkyblock : ClientModInitializer {
 
         BeeheemothWaypoint.register()
 
-        Debug.forceLog("Initialized!")
+        Debug.forceLog("${Constants.MOD_VERSION} Initialized!")
     }
 }
