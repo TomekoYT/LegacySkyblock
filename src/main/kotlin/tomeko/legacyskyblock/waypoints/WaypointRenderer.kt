@@ -91,23 +91,16 @@ object WaypointRenderer {
             waypoint.beamColor.alpha / 255f
         )
 
-        val textArgb =
-            (waypoint.textColor.alpha shl 24) or (waypoint.textColor.red shl 16) or (waypoint.textColor.green shl 8) or waypoint.textColor.blue
-        val ownerArgb =
-            (waypoint.ownerColor.alpha shl 24) or (waypoint.ownerColor.red shl 16) or (waypoint.ownerColor.green shl 8) or waypoint.ownerColor.blue
-        val distArgb =
-            (waypoint.distanceTextColor.alpha shl 24) or (waypoint.distanceTextColor.red shl 16) or (waypoint.distanceTextColor.green shl 8) or waypoint.distanceTextColor.blue
-
         renderWaypointText(
             context.poseStack(),
             //? if >= 26.2 {
-            context.submitNodeCollector().order(1),
+            context.submitNodeCollector().order(2),
             //?} else {
             //context.bufferSource(),
             //?}
             waypoint.text, waypoint.owner, waypoint.pos,
             waypoint.renderText, waypoint.renderOwner, waypoint.renderDistance,
-            textArgb, ownerArgb, distArgb,
+            waypoint.textColor.argb, waypoint.ownerColor.argb, waypoint.distanceTextColor.argb,
             viewerX, viewerY, viewerZ
         )
     }
