@@ -25,11 +25,22 @@ public abstract class HideDamageSplashMixin<T extends Entity, S extends EntityRe
                 || !(entity instanceof ArmorStand armorStand)
         ) return;
 
-        String name = StringHelperKt.removeFormatting(armorStand.getName().getString()).replaceAll("\\.", "");
+        String name = StringHelperKt.removeFormatting(armorStand.getName().getString()).replaceAll("[.,]", "");
+        if (name.length() <= 2) {
+            if (StringHelperKt.parseNumber(name) != null) cir.setReturnValue(null);
+            return;
+        }
+
         if (name.endsWith("❤")) name = name.substring(0, name.length() - 1);
         if (name.endsWith("+")) name = name.substring(0, name.length() - 1);
-        if (name.endsWith("✧")) name = name.substring(0, name.length() - 1);
-        if (name.startsWith("✧")) name = name.substring(1);
+
+        if (name.length() <= 2) {
+            if (StringHelperKt.parseNumber(name) != null) cir.setReturnValue(null);
+            return;
+        }
+
+        if (!Character.isDigit(name.charAt(name.length() - 1))) name = name.substring(0, name.length() - 1);
+        if (!Character.isDigit(name.charAt(0))) name = name.substring(1);
 
         if (StringHelperKt.parseNumber(name) == null) return;
 
