@@ -31,7 +31,7 @@ class PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displa
             ClientTickEvents.END_CLIENT_TICK.register(::searchTab)
             ClientReceiveMessageEvents.GAME.register(::onChatMessage)
             ClientTickEvents.END_CLIENT_TICK.register(::scanLoadoutsMenu)
-            ClientTickEvents.END_CLIENT_TICK.register(::scanRiftMenu)
+            ClientTickEvents.END_CLIENT_TICK.register(::scanRiftAndSafariMenus)
         }
 
         private const val CATEGORY_GENERAL = "General"
@@ -76,6 +76,21 @@ class PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displa
 
         @Include
         var riftPetItemRarityCache: String? = null
+
+        @Include
+        var safariPetNameCache: String? = null
+
+        @Include
+        var safariPetLevelCache: Int? = null
+
+        @Include
+        var safariPetRarityCache: String? = null
+
+        @Include
+        var safariPetItemCache: String? = null
+
+        @Include
+        var safariPetItemRarityCache: String? = null
 
         private var tickCooldown = 0
 
@@ -232,10 +247,10 @@ class PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displa
             if (!HypixelPackets.inSkyblock) return
 
             val screen =
-            //? if >= 26.2 {
-                    mc.gui.screen()
-                //?} else {
-                //mc.screen
+                //? if >= 26.2 {
+                mc.gui.screen()
+            //?} else {
+            //mc.screen
             //?}
             if (screen !is ContainerScreen || !screen.title.string.endsWith("Loadouts")) return
 
@@ -263,34 +278,52 @@ class PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displa
             petXPLineCache = null
         }
 
-        private fun scanRiftMenu(mc: Minecraft) {
-            if (HypixelPackets.currentIsland != SkyblockIslands.THE_RIFT) return
+        private fun scanRiftAndSafariMenus(mc: Minecraft) {
+            if (HypixelPackets.currentIsland != SkyblockIslands.THE_RIFT && HypixelPackets.currentIsland != SkyblockIslands.CRITTER_SAFARI) return
 
             val screen =
-            //? if >= 26.2 {
-                    mc.gui.screen()
-                //?} else {
-                //mc.screen
+                //? if >= 26.2 {
+                mc.gui.screen()
+            //?} else {
+            //mc.screen
             //?}
             if (screen !is ContainerScreen || screen.title.string != "SkyBlock Menu") return
 
-            val item = screen.menu.container.getItem(30)
+            val item = screen.menu.container.getItem(
+                if (HypixelPackets.currentIsland == SkyblockIslands.THE_RIFT) 30
+                else 29
+            )
 
             val match = Regex("^\\[Lvl (\\d+)] (.*)$").find(item.hoverName.string)
             if (match == null) {
-                riftPetNameCache = null
-                riftPetLevelCache = null
-                riftPetRarityCache = null
-                resetRiftItem()
+                if (HypixelPackets.currentIsland == SkyblockIslands.THE_RIFT) {
+                    riftPetNameCache = null
+                    riftPetLevelCache = null
+                    riftPetRarityCache = null
+                    resetRiftItem()
+                } else {
+                    safariPetNameCache = null
+                    safariPetLevelCache = null
+                    safariPetRarityCache = null
+                    resetSafariItem()
+                }
                 return
             }
 
             val level = match.groupValues[1].toInt()
             val name = match.groupValues[2]
 
-            riftPetNameCache = name
-            riftPetLevelCache = level
-            riftPetRarityCache = getRarityFromComponentColor(item.hoverName.siblings[1].style.color!!.value)
+            if (HypixelPackets.currentIsland == SkyblockIslands.THE_RIFT) {
+                riftPetNameCache = name
+                riftPetLevelCache = level
+                riftPetRarityCache = getRarityFromComponentColor(item.hoverName.siblings[1].style.color!!.value)
+                resetRiftItem()
+            } else {
+                safariPetNameCache = name
+                safariPetLevelCache = level
+                safariPetRarityCache = getRarityFromComponentColor(item.hoverName.siblings[1].style.color!!.value)
+                resetSafariItem()
+            }
 
             val tooltip: MutableList<Component> =
                 item.getTooltipLines(Item.TooltipContext.EMPTY, mc.player, TooltipFlag.NORMAL)
@@ -298,12 +331,17 @@ class PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displa
             for (line in tooltip) {
                 val match = Regex("Held Item: (.*)").find(line.string) ?: continue
 
-                riftPetItemCache = match.groupValues[1]
-                riftPetItemRarityCache = getRarityFromComponentColor(line.siblings[1].style.color!!.value)
+                if (HypixelPackets.currentIsland == SkyblockIslands.THE_RIFT) {
+                    riftPetItemCache = match.groupValues[1]
+                    riftPetItemRarityCache = getRarityFromComponentColor(line.siblings[1].style.color!!.value)
+                } else {
+                    safariPetItemCache = match.groupValues[1]
+                    safariPetItemRarityCache = getRarityFromComponentColor(line.siblings[1].style.color!!.value)
+                }
                 return
             }
 
-            resetRiftItem()
+            resetSafariItem()
         }
 
         fun getRarityFromComponentColor(color: Int): String? = when (color) {
@@ -352,6 +390,11 @@ class PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displa
         private fun resetRiftItem() {
             riftPetItemCache = null
             riftPetItemRarityCache = null
+        }
+
+        private fun resetSafariItem() {
+            safariPetItemCache = null
+            safariPetItemRarityCache = null
         }
 
         private fun setPetXPFromTab(component: Component) {
@@ -471,6 +514,13 @@ class PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displa
     )
     var showInRift = true
 
+    @Switch(
+        title = "Show in Critter Safari",
+        category = CATEGORY_GENERAL,
+        subcategory = SUBCATEGORY_PET
+    )
+    var showInCritterSafari = true
+
 
     @Switch(
         title = "Show Pet Icon",
@@ -569,8 +619,8 @@ class PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displa
         val petXPLine: Component?
 
         if (HudManager.isEditing
-            && ((HypixelPackets.currentIsland == SkyblockIslands.THE_RIFT
-                    && (!showInRift || riftPetNameCache == null || riftPetLevelCache == null || riftPetRarityCache == null))
+            && ((HypixelPackets.currentIsland == SkyblockIslands.THE_RIFT && (!showInRift || riftPetNameCache == null || riftPetLevelCache == null || riftPetRarityCache == null))
+                    || ((HypixelPackets.currentIsland == SkyblockIslands.CRITTER_SAFARI) && (!showInCritterSafari || safariPetNameCache == null || safariPetLevelCache == null || safariPetRarityCache == null))
                     || (!HypixelPackets.inSkyblock || petNameCache == null || petLevelCache == null || petRarityCache == null)
                     )
         ) {
@@ -591,6 +641,21 @@ class PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displa
                 petRarity = riftPetRarityCache
                 petItem = riftPetItemCache
                 petItemRarity = riftPetItemRarityCache
+            } else {
+                petName = null
+                petLevel = null
+                petRarity = null
+                petItem = null
+                petItemRarity = null
+            }
+            petXPLine = null
+        } else if (HypixelPackets.currentIsland == SkyblockIslands.CRITTER_SAFARI) {
+            if (showInCritterSafari) {
+                petName = safariPetNameCache
+                petLevel = safariPetLevelCache
+                petRarity = safariPetRarityCache
+                petItem = safariPetItemCache
+                petItemRarity = safariPetRarityCache
             } else {
                 petName = null
                 petLevel = null
