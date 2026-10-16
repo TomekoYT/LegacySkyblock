@@ -17,7 +17,7 @@ val modMenuVersion = project.property("mod_menu_version") as String
 val hypixelModApiVersion = project.property("hypixel_mod_api_version") as String
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "2.4.20"
+    id("org.jetbrains.kotlin.jvm") version "2.4.21"
     id("net.fabricmc.fabric-loom") version "1.17-SNAPSHOT"
     id("dev.deftu.gradle.bloom") version "0.2.0"
 }
@@ -32,6 +32,7 @@ repositories {
 
     maven("https://api.modrinth.com/maven")
     maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://redirector.kotlinlang.org/maven/compose-dev")
     maven("https://repo.polyfrost.org/releases")
     maven("https://repo.polyfrost.org/snapshots")
     maven("https://maven.terraformersmc.com/")
