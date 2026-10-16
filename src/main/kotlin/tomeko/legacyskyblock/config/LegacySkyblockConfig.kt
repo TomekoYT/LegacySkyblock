@@ -53,6 +53,8 @@ object LegacySkyblockConfig : Config(
 
         if (hideDamageSplashEnabledIslands.size != SkyblockIslands.entries.size)
             hideDamageSplashEnabledIslands = BooleanArray(SkyblockIslands.entries.size) { false }
+
+        save()
     }
 
     private const val CATEGORY_HUD: String = "HUD"
@@ -238,8 +240,10 @@ object LegacySkyblockConfig : Config(
             "Logs Cut",
             "Mana Disintegrator Count",
             "Mined Crops",
+            "Mithril Infusion",
             "Modifier",
             "Names Found",
+            "Necromancer Souls",
             "Nether Wart Pouch Data",
             "New Year Cake Bag Data",
             "New Year's Cake",
@@ -265,6 +269,7 @@ object LegacySkyblockConfig : Config(
             "Recipient ID",
             "Recipient Name",
             "Recipient Team",
+            "Resources Generated",
             "Rift Transferred",
             "Runes",
             "Runic Kills",
@@ -284,6 +289,7 @@ object LegacySkyblockConfig : Config(
             "Tickets",
             "Timestamp",
             "Toolkit Type",
+            "Total Generations",
             "Traps Defused",
             "Tune",
             "Tuned Transmission",
