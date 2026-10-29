@@ -1,29 +1,45 @@
 package tomeko.legacyskyblock.hud
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.minecraft.ChatFormatting
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.inventory.ContainerScreen
 import net.minecraft.client.multiplayer.PlayerInfo
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
+import net.minecraft.network.chat.Style
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
+import org.polyfrost.compose.composables.PolyBox
+import org.polyfrost.compose.composables.PolyColumn
+import org.polyfrost.compose.composables.PolyMcText
+import org.polyfrost.compose.composables.PolyModifier
+import org.polyfrost.compose.composables.PolyRow
+import org.polyfrost.compose.composables.absoluteAt
+import org.polyfrost.compose.composables.padding
+import org.polyfrost.compose.composables.size
+import org.polyfrost.compose.layout.PolyInsets
+import org.polyfrost.compose.mc.McFontQueue
 import org.polyfrost.compose.render.PolyColor
 import org.polyfrost.oneconfig.api.config.v1.annotations.*
+import org.polyfrost.oneconfig.api.hud.v1.Hud
 import org.polyfrost.oneconfig.api.hud.v1.HudManager
-import org.polyfrost.oneconfig.api.hud.v1.LegacyHud
+import org.polyfrost.oneconfig.api.ui.v1.item.PolyItemIcon
 import tomeko.legacyskyblock.neu.PetFetcher
 import tomeko.legacyskyblock.utils.Constants
 import tomeko.legacyskyblock.location.HypixelPackets
 import tomeko.legacyskyblock.location.SkyblockIslands
 import tomeko.legacyskyblock.utils.removeFormatting
+import java.util.Optional
 import kotlin.math.*
 
-class PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Display", Category.PLAYER) {
+class PetDisplay : Hud("${Constants.MOD_ID}_pet_display.json", "Pet Display", Category.PLAYER) {
     companion object {
         fun register() {
             HudManager.register(PetDisplay(), Constants.MOD_ID, Constants.MOD_ICON)
@@ -42,8 +58,6 @@ class PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displa
         private const val SUBCATEGORY_PET_ICON = "Pet Icon"
         private const val SUBCATEGORY_PET_ITEM_ICON = "Pet Item Icon"
 
-        private const val CATEGORY_BACKGROUND = "Background"
-
         @Include
         var petNameCache: String? = null
 
@@ -60,7 +74,6 @@ class PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displa
         var petItemRarityCache: String? = null
 
         var petXPLineCache: Component? = null
-
 
         @Include
         var riftPetNameCache: String? = null
@@ -374,6 +387,16 @@ class PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displa
             else -> null
         }
 
+        private fun getArgbFromRarity(rarity: String?): Int? = when (rarity) {
+            "COMMON" -> 0xFFFFFFFF.toInt()
+            "UNCOMMON" -> 0xFF55FF55.toInt()
+            "RARE" -> 0xFF5555FF.toInt()
+            "EPIC" -> 0xFFAA00AA.toInt()
+            "LEGENDARY" -> 0xFFFFAA00.toInt()
+            "MYTHIC" -> 0xFFFF55FF.toInt()
+            else -> null
+        }
+
         fun resetAll() {
             petNameCache = null
             petLevelCache = null
@@ -454,20 +477,6 @@ class PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displa
         }
     }
 
-    @Switch(
-        title = "Text Shadow",
-        category = CATEGORY_GENERAL,
-        subcategory = SUBCATEGORY_GENERAL
-    )
-    var textShadow = true
-
-    @Color(
-        title = "Text Shadow Color",
-        category = CATEGORY_GENERAL,
-        subcategory = SUBCATEGORY_GENERAL
-    )
-    var textShadowColor = PolyColor(0xFF000000.toInt())
-
     @Slider(
         title = "Lines Padding",
         min = 0f,
@@ -477,6 +486,16 @@ class PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displa
         subcategory = SUBCATEGORY_GENERAL
     )
     var linesPadding = 3f
+
+    @Slider(
+        title = "Background Margin",
+        min = 0f,
+        max = 10f,
+        step = 0.1f,
+        category = CATEGORY_GENERAL,
+        subcategory = SUBCATEGORY_GENERAL
+    )
+    var backgroundMargin = 4f
 
 
     @Switch(
@@ -576,40 +595,37 @@ class PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displa
     )
     var itemIconPadding = 2f
 
+    private data class Segment(val text: String, val color: Int?)
 
-    @Switch(
-        title = "Show Background",
-        category = CATEGORY_BACKGROUND
+    private data class PetData(
+        val name: List<Segment>,
+        val item: List<Segment>?,
+        val xp: List<Segment>?,
+        val icon: ItemStack?,
+        val itemIcon: ItemStack?,
+        val linesPadding: Float,
+        val backgroundMargin: Float,
+        val iconSize: Float,
+        val iconPadding: Float,
+        val itemIconSize: Float,
+        val itemIconPadding: Float
     )
-    var background = false
 
-    @Color(
-        title = "Background Color",
-        category = CATEGORY_BACKGROUND
-    )
-    var backgroundColor = PolyColor(0x80000000.toInt())
+    private var dataState: MutableState<PetData?> = mutableStateOf(null)
 
-    @Slider(
-        title = "Background Radius",
-        category = CATEGORY_BACKGROUND,
-        min = 0f,
-        max = 10f,
-        step = 0.1f
-    )
-    var backgroundRadius = 5f
+    private fun segments(component: Component): List<Segment> {
+        val out = mutableListOf<Segment>()
+        component.visit({ style, text ->
+            if (text.isNotEmpty()) {
+                out += Segment(text, style.color?.value?.let { 0xFF000000.toInt() or it })
+            }
+            Optional.empty()
+        }, Style.EMPTY)
+        return out
+    }
 
-    private var actualWidth = 1f
-    private var actualHeight = 1f
-
-    override val width: Float = actualWidth
-    override val height: Float = actualHeight
-    override fun minimumSize(): Pair<Float, Float> = actualWidth to actualHeight
-    override fun update(): Boolean = true
-    override fun multipleInstancesAllowed(): Boolean = true
-    override fun deletable(): Boolean = true
-
-    override fun render(mcCtx: GuiGraphicsExtractor) {
-        if (!HudManager.isEditing && !HypixelPackets.inSkyblock) return
+    private fun collect(editing: Boolean): PetData? {
+        if (!editing && !HypixelPackets.inSkyblock) return null
 
         val petName: String?
         val petLevel: Int?
@@ -618,7 +634,7 @@ class PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displa
         val petItemRarity: String?
         val petXPLine: Component?
 
-        if (HudManager.isEditing
+        if (editing
             && ((HypixelPackets.currentIsland == SkyblockIslands.THE_RIFT && (!showInRift || riftPetNameCache == null || riftPetLevelCache == null || riftPetRarityCache == null))
                     || ((HypixelPackets.currentIsland == SkyblockIslands.CRITTER_SAFARI) && (!showInCritterSafari || safariPetNameCache == null || safariPetLevelCache == null || safariPetRarityCache == null))
                     || (!HypixelPackets.inSkyblock || petNameCache == null || petLevelCache == null || petRarityCache == null)
@@ -655,7 +671,7 @@ class PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displa
                 petLevel = safariPetLevelCache
                 petRarity = safariPetRarityCache
                 petItem = safariPetItemCache
-                petItemRarity = safariPetRarityCache
+                petItemRarity = safariPetItemRarityCache
             } else {
                 petName = null
                 petLevel = null
@@ -673,36 +689,25 @@ class PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displa
             petXPLine = petXPLineCache
         }
 
-        if (petName == null || petLevel == null || petRarity == null) return
+        if (petName == null || petLevel == null || petRarity == null) return null
 
         val shouldShowPetItem = showItemName && petItem != null && petItemRarity != null
         val shouldShowPetItemIcon = showItemIcon && petItem != null && petItemRarity != null
         val shouldShowPetXP = showXP && petXPLine != null
 
-        val mc = Minecraft.getInstance()
+        val nameLine = mutableListOf<Segment>()
+        if (showLevel) nameLine += Segment("[Lvl $petLevel] ", 0xFFAAAAAA.toInt())
+        if (showName) nameLine += Segment(petName, getArgbFromRarity(petRarity))
 
-        var petNameLine = ""
-        if (showLevel) petNameLine += "§7[Lvl $petLevel] "
-        if (showName) petNameLine += "${getChatColorFromRarity(petRarity)}${petName}"
+        val itemLine =
+            if (shouldShowPetItem) listOf(Segment(petItem, getArgbFromRarity(petItemRarity)))
+            else null
 
-        var maxTextWidth = mc.font.width(petNameLine).toFloat()
-        var textLines = 1
-
-        var petItemLine = ""
-        if (shouldShowPetItem) {
-            petItemLine = "${getChatColorFromRarity(petItemRarity)}${petItem}"
-            maxTextWidth = max(maxTextWidth, mc.font.width(petItemLine).toFloat())
-            textLines++
-        }
-
-        if (shouldShowPetXP) {
-            maxTextWidth = max(maxTextWidth, mc.font.width(petXPLine).toFloat())
-            textLines++
-        }
+        val xpLine =
+            if (shouldShowPetXP) segments(petXPLine)
+            else null
 
         fun getPetItemStack(): ItemStack? = PetFetcher.getPetItemIcon(petItem, petItemRarity)
-
-        val textHeight = textLines * mc.font.lineHeight + max(0, textLines - 1) * linesPadding
 
         val icon: ItemStack? =
             if (showIcon)
@@ -713,102 +718,161 @@ class PetDisplay : LegacyHud("${Constants.MOD_ID}_pet_display.json", "Pet Displa
                 null
 
         val hasBothIcons = icon != null && showIcon && shouldShowPetItemIcon
+        val itemIcon = if (hasBothIcons) getPetItemStack() else null
 
-        val actualIconSize = if (icon != null) iconSize else 0f
-        val actualIconPadding = if (icon != null) iconPadding else 0f
+        return PetData(
+            name = nameLine,
+            item = itemLine,
+            xp = xpLine,
+            icon = icon,
+            itemIcon = itemIcon,
+            linesPadding = linesPadding,
+            backgroundMargin = backgroundMargin,
+            iconSize = iconSize,
+            iconPadding = iconPadding,
+            itemIconSize = itemIconSize,
+            itemIconPadding = itemIconPadding
+        )
+    }
 
-        val effectiveItemIconPadding = itemIconPadding - 3f
-        val actualItemIconPadding =
-            if (hasBothIcons) max(0f, (itemIconSize / 2f) + effectiveItemIconPadding) else 0f
+    init {
+        padLeft = 4f
+        padRight = 4f
+        padTop = 4f
+        padBottom = 4f
+        staticWidth = false
+    }
 
-        val coreHeight = max(actualIconSize, textHeight)
-        val itemY = (coreHeight - actualIconSize) / 2f
-        var textY = (coreHeight - textHeight) / 2f
+    override val description: String = "Your active pet, its held item and XP in Hypixel SkyBlock."
 
-        val textStartX = actualIconSize + actualItemIconPadding + actualIconPadding
-        actualWidth = textStartX + maxTextWidth
+    override fun update(): Boolean {
+        dataState.value = collect(!isReal || HudManager.isEditing)
+        return true
+    }
 
-        val badgeBottomY = itemY + actualIconSize + actualItemIconPadding
-        actualHeight = max(coreHeight, badgeBottomY)
+    override fun updateFrequency(): Long = 50_000_000L
 
-        mcCtx.pose().pushMatrix()
+    override fun setup() {
+        super.setup()
+        update()
+    }
 
-        if (background) {
-            mcCtx.fill(
-                -backgroundRadius.toInt(),
-                -backgroundRadius.toInt(),
-                (actualWidth + backgroundRadius).toInt(),
-                (actualHeight + backgroundRadius).toInt(),
-                backgroundColor.argb
-            )
-        }
+    override fun hasBackground(): Boolean = dataState.value != null
 
-        if (icon != null) {
-            val scale = actualIconSize / 16f
+    @Composable
+    override fun Content() {
+        val data = dataState.value ?: return
 
-            mcCtx.pose().pushMatrix()
-            mcCtx.pose().translate(0f, itemY)
-            mcCtx.pose().scale(scale, scale)
-            mcCtx.item(icon, 0, 0)
-            mcCtx.pose().popMatrix()
+        val scale = textScale
+        val color = PolyColor(textColor, textChroma, textChromaSpeed)
+        val shadow = showShadow
 
-            if (hasBothIcons) {
-                val itemIcon = getPetItemStack()
+        val lines = listOfNotNull(data.name.takeIf { it.isNotEmpty() }, data.item, data.xp)
 
-                if (itemIcon != null) {
-                    val badgeX = actualIconSize - (itemIconSize / 2f) + effectiveItemIconPadding
-                    val badgeY = (itemY + actualIconSize) - (itemIconSize / 2f) + effectiveItemIconPadding
+        val lineHeight = McFontQueue.measureTextHeight(scale)
+        val linesGap = data.linesPadding * scale
+        val textHeight = if (lines.isEmpty()) 0f else lines.size * lineHeight + (lines.size - 1) * linesGap
+        val textWidth = lines.maxOfOrNull { lineWidth(it, scale) } ?: 0f
 
-                    val badgeScale = itemIconSize / 16f
+        val icon = data.icon
+        val iconPx = if (icon != null) data.iconSize * scale else 0f
+        val itemIconPx = data.itemIconSize * scale
 
-                    mcCtx.pose().pushMatrix()
-                    mcCtx.pose().translate(badgeX, badgeY)
-                    mcCtx.pose().scale(badgeScale, badgeScale)
+        val itemIconPad = (data.itemIconPadding - 3f) * scale
+        val itemIconExtra = if (data.itemIcon != null) max(0f, itemIconPx / 2f + itemIconPad) else 0f
 
-                    mcCtx.item(itemIcon, 0, 0)
-                    mcCtx.pose().popMatrix()
+        val coreHeight = max(iconPx, textHeight)
+        val iconY = (coreHeight - iconPx) / 2f
+        val textY = (coreHeight - textHeight) / 2f
+        val totalHeight = max(coreHeight, iconY + iconPx + itemIconExtra)
+
+        key(showBackground, bgColor, bgChroma, bgChromaSpeed, bgRadius) {
+            val margin = backgroundMargin * scale
+            PolyBox(modifier = hudBackground().padding(PolyInsets(padLeft + margin, padTop + margin, padRight + margin, padBottom + margin))) {
+                PolyRow(gap = if (icon != null && lines.isNotEmpty()) data.iconPadding * scale else 0f) {
+                    if (icon != null) {
+                        PolyBox(modifier = PolyModifier.size(iconPx + itemIconExtra, totalHeight)) {
+                            PolyBox(modifier = PolyModifier.absoluteAt(0f, iconY)) {
+                                PolyItemIcon(icon, iconPx, decorations = false)
+                            }
+
+                            data.itemIcon?.let { itemIcon ->
+                                val itemIconX = iconPx - itemIconPx / 2f + itemIconPad
+                                val itemIconY = iconY + iconPx - itemIconPx / 2f + itemIconPad
+                                PolyBox(modifier = PolyModifier.absoluteAt(itemIconX, itemIconY)) {
+                                    PolyItemIcon(itemIcon, itemIconPx, decorations = false)
+                                }
+                            }
+                        }
+                    }
+
+                    if (lines.isNotEmpty()) {
+                        PolyBox(modifier = PolyModifier.size(textWidth, totalHeight)) {
+                            PolyBox(modifier = PolyModifier.absoluteAt(0f, textY)) {
+                                PolyColumn(gap = linesGap) {
+                                    for (line in lines) TextLine(line, color, shadow, scale)
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
-
-        if (showName || showLevel) {
-            renderComponent(mcCtx, Component.literal(petNameLine), textStartX, textY)
-            textY += (mc.font.lineHeight + linesPadding)
-        }
-
-        if (shouldShowPetItem) {
-            renderComponent(mcCtx, Component.literal(petItemLine), textStartX, textY)
-            textY += (mc.font.lineHeight + linesPadding)
-        }
-
-        if (shouldShowPetXP) {
-            renderComponent(mcCtx, petXPLine, textStartX, textY)
-        }
-
-        mcCtx.pose().popMatrix()
     }
 
-    private fun renderComponent(mcCtx: GuiGraphicsExtractor, component: Component, textX: Float, textY: Float) {
-        val mc = Minecraft.getInstance()
+    private fun lineWidth(line: List<Segment>, scale: Float): Float =
+        line.sumOf { McFontQueue.measureTextWidth(it.text, scale).toDouble() }.toFloat()
 
-        if (textShadow) {
-            mcCtx.text(
-                mc.font,
-                component.string.removeFormatting(),
-                textX.toInt() + 1,
-                textY.toInt() + 1,
-                textShadowColor.argb,
-                false
-            )
+    @Composable
+    private fun TextLine(line: List<Segment>, color: PolyColor, shadow: Boolean, scale: Float) {
+        PolyRow(gap = 0f) {
+            for ((text, color1) in line) {
+                val segmentColor = color1?.let(::PolyColor) ?: color
+                ShadowedText(text, segmentColor, shadow, scale)
+            }
+        }
+    }
+
+    @Composable
+    private fun ShadowedText(text: String, color: PolyColor, shadow: Boolean, scale: Float) {
+        if (!shadow) {
+            PolyMcText(text, color = color, shadow = false, scale = scale)
+            return
         }
 
-        mcCtx.text(
-            mc.font,
-            component,
-            textX.toInt(),
-            textY.toInt(),
-            0xFFFFFFFF.toInt(),
-            false
-        )
+        val offset = 0.5f
+        val width = McFontQueue.measureTextWidth(text, scale)
+        val height = McFontQueue.measureTextHeight(scale)
+
+        PolyBox(modifier = PolyModifier.size(width, height)) {
+            PolyMcText(
+                text,
+                color = PolyColor(shadowColor, shadowChroma, shadowChromaSpeed),
+                shadow = false,
+                scale = scale,
+                modifier = PolyModifier.absoluteAt(
+                    shadowOffsetX * offset * scale,
+                    shadowOffsetY * offset * scale
+                )
+            )
+            PolyMcText(
+                text,
+                color = color,
+                shadow = false,
+                scale = scale,
+                modifier = PolyModifier.absoluteAt(0f, 0f)
+            )
+        }
+    }
+
+    override fun minimumSize(): Pair<Float, Float> =
+        (padLeft + padRight + 2f) to (padTop + padBottom + 2f)
+
+    override fun defaultPosition(): Pair<Float, Float> = 10f to 10f
+    override fun multipleInstancesAllowed(): Boolean = true
+    override fun deletable(): Boolean = true
+
+    override fun clone(): Hud = (super.clone() as PetDisplay).also {
+        it.dataState = mutableStateOf(dataState.value)
     }
 }
