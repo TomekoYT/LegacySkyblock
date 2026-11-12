@@ -139,7 +139,7 @@ object LegacySkyblockConfig : Config(
     private const val SUBCATEGORY_DUNGEONS = "Dungeons"
 
     @MultiSelectDropdown(
-        title = "Auto Refill",
+        title = "Auto Refill Dungeon Items",
         description = "Refill dungeon items when joining new dungeon instance",
         checkable = true,
         options = [
@@ -158,8 +158,8 @@ object LegacySkyblockConfig : Config(
     private const val SUBCATEGORY_KUUDRA = "Kuudra"
 
     @MultiSelectDropdown(
-        title = "Auto Refill",
-        description = "Refill dungeon items when joining new dungeon instance",
+        title = "Auto Refill Kuudra Items",
+        description = "Refill kuudra items when joining new kuudra instance",
         checkable = true,
         options = [
             "Ender Pearl"
