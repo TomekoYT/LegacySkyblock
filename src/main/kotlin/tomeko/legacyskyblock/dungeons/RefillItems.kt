@@ -1,6 +1,6 @@
 package tomeko.legacyskyblock.dungeons
 
-enum class DungeonItems(
+enum class RefillItems(
     val itemID: String,
     val itemName: String,
     val itemStackSize: Int
@@ -12,8 +12,8 @@ enum class DungeonItems(
     INFLATABLE_JERRY("INFLATABLE_JERRY", "Inflatable Jerry", 64);
 
     companion object {
-        private val byId = DungeonItems.entries.associateBy { it.itemID }
+        private val byName = RefillItems.entries.associateBy { it.itemName }
 
-        fun fromId(id: String): DungeonItems? = byId[id]
+        fun fromName(name: String): RefillItems? = byName[name]
     }
 }

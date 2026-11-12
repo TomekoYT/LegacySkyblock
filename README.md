@@ -35,12 +35,15 @@ Modern Hypixel Skyblock mod aimed to port features from 1.8.9 mods
 
 - Replace left click with middle click in GUIs
 
-### Dungeons
+### Auto Refill
 
-#### Auto Refill
+#### Dungeons
 
-- Refill dungeon items when joining new dungeon instance
-- Ender Pearl, Spirit Leap, Superboom TNT, Decoy, Inflatable Jerry
+- Refill dungeon items when joining new dungeon instance: `Ender Pearl`, `Spirit Leap`, `Superboom TNT`, `Decoy`, `Inflatable Jerry`
+
+#### Kuudra
+
+- Refill kuudra items when joining new dungeon instance: `Ender Pearl`
 
 ### Waypoints
 

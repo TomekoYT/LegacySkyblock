@@ -2,7 +2,7 @@ package tomeko.legacyskyblock.config
 
 import org.polyfrost.oneconfig.api.config.v1.Config
 import org.polyfrost.oneconfig.api.config.v1.annotations.*
-import tomeko.legacyskyblock.dungeons.DungeonItems
+import tomeko.legacyskyblock.dungeons.RefillItems
 import tomeko.legacyskyblock.tooltip.NBTTypes
 import tomeko.legacyskyblock.utils.Constants
 import tomeko.legacyskyblock.utils.Debug
@@ -21,11 +21,6 @@ object LegacySkyblockConfig : Config(
     )
 
     fun register() {
-        if (!LegacySkyblockConfig::class.java.getDeclaredField("autoRefillEnabledItems")
-                .getAnnotation(MultiSelectDropdown::class.java).options
-                .contentEquals(DungeonItems.entries.map { it.itemName }.toTypedArray())
-        ) Debug.forceError("autoRefillEnabledItems missing options")
-
         if (!LegacySkyblockConfig::class.java.getDeclaredField("NBTDataEnabledTypes")
                 .getAnnotation(MultiSelectDropdown::class.java).options
                 .contentEquals(NBTTypes.entries.map { it.nbtName }.toTypedArray())
@@ -44,9 +39,37 @@ object LegacySkyblockConfig : Config(
             }
         }
 
+        if (configVersion != CONFIG_VERSION) {
+            configVersion = CONFIG_VERSION
 
-        if (autoRefillEnabledItems.size != DungeonItems.entries.size)
-            autoRefillEnabledItems = BooleanArray(DungeonItems.entries.size) { false }
+            if (dungeonsAutoRefillEnabledItems.size !=
+                LegacySkyblockConfig::class.java
+                    .getDeclaredField("dungeonsAutoRefillEnabledItems")
+                    .getAnnotation(MultiSelectDropdown::class.java)
+                    .options.size
+            ) {
+                dungeonsAutoRefillEnabledItems = BooleanArray(
+                    LegacySkyblockConfig::class.java
+                        .getDeclaredField("dungeonsAutoRefillEnabledItems")
+                        .getAnnotation(MultiSelectDropdown::class.java)
+                        .options.size
+                ) { false }
+            }
+
+            if (kuudraAutoRefillEnabledItems.size !=
+                LegacySkyblockConfig::class.java
+                    .getDeclaredField("kuudraAutoRefillEnabledItems")
+                    .getAnnotation(MultiSelectDropdown::class.java)
+                    .options.size
+            ) {
+                kuudraAutoRefillEnabledItems = BooleanArray(
+                    LegacySkyblockConfig::class.java
+                        .getDeclaredField("kuudraAutoRefillEnabledItems")
+                        .getAnnotation(MultiSelectDropdown::class.java)
+                        .options.size
+                ) { false }
+            }
+        }
 
         if (NBTDataEnabledTypes.size != NBTTypes.entries.size)
             NBTDataEnabledTypes = BooleanArray(NBTTypes.entries.size) { it == NBTTypes.entries.size - 1 }
@@ -56,6 +79,11 @@ object LegacySkyblockConfig : Config(
 
         save()
     }
+
+    private const val CONFIG_VERSION = 0
+
+    @Include
+    var configVersion = CONFIG_VERSION
 
     private const val CATEGORY_HUD: String = "HUD"
     private const val SUBCATEGORY_PET_DISPLAY: String = "Pet Display"
@@ -106,8 +134,9 @@ object LegacySkyblockConfig : Config(
     var middleClickGUIItemsEnabled: Boolean = true
 
 
-    private const val CATEGORY_DUNGEONS = "Dungeons"
-    private const val SUBCATEGORY_AUTO_REFILL = "Auto Refill"
+    private const val CATEGORY_AUTO_REFILL = "Auto Refill"
+
+    private const val SUBCATEGORY_DUNGEONS = "Dungeons"
 
     @MultiSelectDropdown(
         title = "Auto Refill",
@@ -120,10 +149,25 @@ object LegacySkyblockConfig : Config(
             "Decoy",
             "Inflatable Jerry"
         ],
-        category = CATEGORY_DUNGEONS,
-        subcategory = SUBCATEGORY_AUTO_REFILL
+        category = CATEGORY_AUTO_REFILL,
+        subcategory = SUBCATEGORY_DUNGEONS
     )
-    var autoRefillEnabledItems: BooleanArray = BooleanArray(DungeonItems.entries.size) { false }
+    var dungeonsAutoRefillEnabledItems: BooleanArray = BooleanArray(5) { false }
+
+
+    private const val SUBCATEGORY_KUUDRA = "Kuudra"
+
+    @MultiSelectDropdown(
+        title = "Auto Refill",
+        description = "Refill dungeon items when joining new dungeon instance",
+        checkable = true,
+        options = [
+            "Ender Pearl"
+        ],
+        category = CATEGORY_AUTO_REFILL,
+        subcategory = SUBCATEGORY_KUUDRA
+    )
+    var kuudraAutoRefillEnabledItems: BooleanArray = BooleanArray(1) { false }
 
 
     private const val CATEGORY_WAYPOINTS = "Waypoints"

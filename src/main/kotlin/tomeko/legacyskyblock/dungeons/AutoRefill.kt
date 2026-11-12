@@ -2,6 +2,7 @@ package tomeko.legacyskyblock.dungeons
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.client.Minecraft
+import org.polyfrost.oneconfig.api.config.v1.annotations.MultiSelectDropdown
 import tomeko.legacyskyblock.config.LegacySkyblockConfig
 import tomeko.legacyskyblock.location.HypixelPackets
 import tomeko.legacyskyblock.location.SkyblockIslands
@@ -23,7 +24,7 @@ object AutoRefill {
     }
 
     private fun manageRefill(mc: Minecraft) {
-        if (HypixelPackets.currentIsland != SkyblockIslands.CATACOMBS || lastServerName == HypixelPackets.currentHypixelServerName) {
+        if ((HypixelPackets.currentIsland != SkyblockIslands.CATACOMBS && HypixelPackets.currentIsland != SkyblockIslands.KUUDRA) || lastServerName == HypixelPackets.currentHypixelServerName) {
             return
         }
 
@@ -34,7 +35,7 @@ object AutoRefill {
     }
 
     private fun scanInventory(client: Minecraft) {
-        if (!shouldScanInventory || client.player == null) {
+        if (!shouldScanInventory || client.player == null || (HypixelPackets.currentIsland != SkyblockIslands.CATACOMBS && HypixelPackets.currentIsland != SkyblockIslands.KUUDRA)) {
             return
         }
 
@@ -52,14 +53,26 @@ object AutoRefill {
             return
         }
 
-        val refillCounter = IntArray(DungeonItems.entries.size)
+        val refillItems =
+            if (HypixelPackets.currentIsland == SkyblockIslands.CATACOMBS)
+                LegacySkyblockConfig::class.java
+                    .getDeclaredField("dungeonsAutoRefillEnabledItems")
+                    .getAnnotation(MultiSelectDropdown::class.java)
+                    .options
+            else
+                LegacySkyblockConfig::class.java
+                    .getDeclaredField("kuudraAutoRefillEnabledItems")
+                    .getAnnotation(MultiSelectDropdown::class.java)
+                    .options
+
+        val refillCounter = IntArray(refillItems.size)
 
         for (stack in inventory) {
             if (stack.isEmpty) continue
 
             shouldScanInventory = false
 
-            for ((i, name) in DungeonItems.entries.map { it.itemName }.toTypedArray().withIndex()) {
+            for ((i, name) in refillItems.withIndex()) {
                 if (stack.hoverName.string == name) {
                     refillCounter[i] += stack.count
                 }
@@ -76,10 +89,12 @@ object AutoRefill {
             return
         }
 
-        for ((i, item) in DungeonItems.entries.withIndex()) {
+        for ((i, name) in refillItems.withIndex()) {
+            val item = RefillItems.fromName(name) ?: continue
+
             val missing = item.itemStackSize - refillCounter[i]
 
-            if (LegacySkyblockConfig.autoRefillEnabledItems[i] && missing > 0) {
+            if (LegacySkyblockConfig.dungeonsAutoRefillEnabledItems[i] && missing > 0) {
                 GFSQueue.add("gfs ${item.itemID} $missing")
             }
         }
