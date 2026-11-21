@@ -26,11 +26,11 @@ import org.polyfrost.compose.composables.padding
 import org.polyfrost.compose.composables.size
 import org.polyfrost.compose.layout.PolyInsets
 import org.polyfrost.compose.mc.McFontQueue
+import org.polyfrost.compose.minecraft.mc.NodeMcItemIcon
 import org.polyfrost.compose.render.PolyColor
 import org.polyfrost.oneconfig.api.config.v1.annotations.*
 import org.polyfrost.oneconfig.api.hud.v1.Hud
 import org.polyfrost.oneconfig.api.hud.v1.HudManager
-import org.polyfrost.oneconfig.api.ui.v1.item.PolyItemIcon
 import tomeko.legacyskyblock.neu.PetFetcher
 import tomeko.legacyskyblock.utils.Constants
 import tomeko.legacyskyblock.location.HypixelPackets
@@ -793,14 +793,14 @@ class PetDisplay : Hud("${Constants.MOD_ID}_pet_display.json", "Pet Display", Ca
                     if (icon != null) {
                         PolyBox(modifier = PolyModifier.size(iconPx + itemIconExtra, totalHeight)) {
                             PolyBox(modifier = PolyModifier.absoluteAt(0f, iconY)) {
-                                PolyItemIcon(icon, iconPx, decorations = false)
+                                NodeMcItemIcon(icon, iconPx, decorations = false)
                             }
 
                             data.itemIcon?.let { itemIcon ->
                                 val itemIconX = iconPx - itemIconPx / 2f + itemIconPad
                                 val itemIconY = iconY + iconPx - itemIconPx / 2f + itemIconPad
                                 PolyBox(modifier = PolyModifier.absoluteAt(itemIconX, itemIconY)) {
-                                    PolyItemIcon(itemIcon, itemIconPx, decorations = false)
+                                    NodeMcItemIcon(itemIcon, itemIconPx, decorations = false)
                                 }
                             }
                         }
