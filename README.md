@@ -74,3 +74,7 @@ Modern Hypixel Skyblock mod aimed to port features from 1.8.9 mods
 
 - Prevent Dropping Skyblock Menu
 - Prevent Closing Hoppity Call with New Rabbit
+
+## Special Thanks
+
+- [Sammi Deftu](https://github.com/Deftu) - OneConfig 1.9.0 migration
